@@ -14,19 +14,38 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private PlaylistInfo _playlistInfo;
         private Playlist _playlist;
 
-        public PlaylistViewModel(MainWindow view) : base(view) { }
+        public PlaylistViewModel(MainWindow view) : base(view) 
+        {
+        }
+
+        private void _songs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            PlaylistInfo.SongIDs.Clear();
+
+            foreach (var s in _songs)
+                PlaylistInfo.SongIDs.Add(s.ID);
+
+            PlaylistRepository.Instance.UpdatePlaylist(PlaylistInfo);
+        }
 
         public PlaylistInfo PlaylistInfo
         {
             get => _playlistInfo;
             set
             {
+                _songs.CollectionChanged -= _songs_CollectionChanged;
+
                 _playlist = (Playlist)value;
 
                 _songs.Clear();
 
                 foreach (var s in _playlist.Songs)
                     _songs.Add(s);
+
+                if (!value.IsEmpty)
+                {
+                    _songs.CollectionChanged += _songs_CollectionChanged;
+                }
 
                 ChangeProperty(ref _playlistInfo, value, nameof(PlaylistInfo), nameof(Playlist), nameof(Songs));
             }

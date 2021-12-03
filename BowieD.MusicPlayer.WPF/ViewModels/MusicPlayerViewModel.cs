@@ -7,6 +7,7 @@ using BowieD.MusicPlayer.WPF.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -182,6 +183,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             _prevTrackCommand,
             _showBigPictureCommand,
             _collapseBigPictureCommand,
+            _viewQueueCommand,
             _playPauseCommand;
 
         public ICommand PlayPauseCommand
@@ -314,6 +316,24 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 }
 
                 return _collapseBigPictureCommand;
+            }
+        }
+        public ICommand ViewQueueCommand
+        {
+            get
+            {
+                if (_viewQueueCommand is null)
+                {
+                    _viewQueueCommand = new GenericCommand<Popup>((p) =>
+                    {
+                        if (p is null)
+                            return;
+
+                        p.IsOpen = !p.IsOpen;
+                    });
+                }
+
+                return _viewQueueCommand;
             }
         }
 
