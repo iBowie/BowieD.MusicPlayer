@@ -27,7 +27,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             _timer.Tick += (sender, e) =>
             {
-                TriggerPropertyChanged(nameof(Position), nameof(Duration), nameof(IsPauseButton));
+                TriggerPropertyChanged(nameof(Position), nameof(DisplayPosition), nameof(Duration), nameof(DisplayDuration), nameof(IsPauseButton));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
 
                 if (CurrentSong.IsEmpty || Position >= Duration)
@@ -105,6 +105,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             }
         }
 
+        public string DisplayPosition => SecondsToText(Position);
+        public string DisplayDuration => SecondsToText(Duration);
+
         public void PlayPlaylist(Playlist playlist, bool shuffle = false)
         {
             CurrentSong = Song.EMPTY;
@@ -156,6 +159,18 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         public void PrevTrack()
         {
 
+        }
+
+        private string SecondsToText(double seconds)
+        {
+            TimeSpan span = TimeSpan.FromSeconds(seconds);
+
+            if (span.TotalHours >= 1)
+            {
+                return span.ToString("hh':'mm':'ss");
+            }
+
+            return span.ToString("mm':'ss");
         }
 
         #region Commands
