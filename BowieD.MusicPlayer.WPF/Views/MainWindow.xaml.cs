@@ -99,5 +99,20 @@ namespace BowieD.MusicPlayer.WPF.Views
                 playlistScrollViewerHeaderWhenScrolled.Visibility = Visibility.Collapsed;
             }
         }
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (PlaylistViewModel.PlaylistInfo.IsEmpty)
+                return;
+
+            var index = playlistSongsListView.SelectedIndex;
+
+            if (index == -1)
+                return;
+
+            var song = PlaylistViewModel.Playlist.Songs[index];
+
+            MusicPlayerViewModel.PlaySongFromPlaylist(song, PlaylistViewModel.Playlist);
+        }
     }
 }

@@ -109,11 +109,16 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         public string DisplayPosition => SecondsToText(Position);
         public string DisplayDuration => SecondsToText(Duration);
 
-        public void PlayPlaylist(Playlist playlist, bool shuffle = false)
+        private void Clean()
         {
             CurrentSong = Song.EMPTY;
             _songQueue.Clear();
             _songHistory.Clear();
+        }
+
+        public void PlayPlaylist(Playlist playlist, bool shuffle = false)
+        {
+            Clean();
 
             List<Song> safeSongs = new(playlist.Songs);
 
@@ -121,7 +126,28 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 safeSongs.Shuffle();
 
             foreach (var s in safeSongs)
-                _songQueue.Add(s);
+                _songQueue.Enqueue(s);
+        }
+        public void PlaySongFromPlaylist(Song song, Playlist playlist, bool shuffle = false)
+        {
+            Clean();
+
+            var index = playlist.Songs.IndexOf(song);
+
+            if (index == -1)
+                return;
+
+            _songQueue.Enqueue(song);
+
+            for (int i = index + 1; i < playlist.Songs.Count; i++)
+            {
+                _songQueue.Enqueue(playlist.Songs[i]);
+            }
+
+            for (int i = 0; i < index; i++)
+            {
+                _songQueue.Enqueue(playlist.Songs[i]);
+            }
         }
 
         public void NextTrackAuto()

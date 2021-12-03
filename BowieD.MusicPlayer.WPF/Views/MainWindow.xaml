@@ -135,8 +135,10 @@
                             <!--CONTENT-->
                             <Grid Margin="32,8,0,0">
                                 <ListView 
+                                    Name="playlistSongsListView"
                                     gong:DragDrop.IsDragSource="True"
                                     gong:DragDrop.IsDropTarget="True"
+                                    MouseDoubleClick="ListViewItem_MouseDoubleClick"
                                     Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" Drop="ListView_Drop" PreviewMouseWheel="ListView_PreviewMouseWheel">
                                     <ListView.ItemTemplate>
                                         <DataTemplate DataType="{x:Type models:Song}">
