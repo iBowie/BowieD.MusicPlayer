@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views"
         mc:Ignorable="d"
+                 WindowStartupLocation="CenterOwner"
         Title="EditPlaylistDetailsView" ShowTitleBar="False" Background="{DynamicResource MahApps.Brushes.Window.Background}" Height="384" Width="524" ResizeMode="NoResize">
     <StackPanel Margin="30" Name="mainPanel" d:DataContext="{d:DesignInstance Type=local:EditPlaylistDetailsView}">
         <TextBlock Text="Edit details" Margin="5" FontSize="24"/>

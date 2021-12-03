@@ -51,7 +51,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _editDetailsCommand = new BaseCommand(() =>
                     {
-                        EditPlaylistDetailsView detailsView = new(PlaylistInfo);
+                        EditPlaylistDetailsView detailsView = new(PlaylistInfo)
+                        {
+                            Owner = View
+                        };
 
                         if (detailsView.ShowDialog() == true)
                         {

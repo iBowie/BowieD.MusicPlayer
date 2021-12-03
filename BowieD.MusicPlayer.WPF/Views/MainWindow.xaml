@@ -20,7 +20,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Menu>
+            <Menu Visibility="Collapsed">
                 <MenuItem Header="File">
                     <MenuItem Header="Add song" Command="{Binding AddSongCommand}"/>
                 </MenuItem>
@@ -69,6 +69,13 @@
                               d:DataContext="{d:DesignInstance Type=viewmodels:PlaylistViewModel}"
                               Visibility="{Binding PlaylistInfo.IsEmpty, Converter={StaticResource invertedBoolToVisConverter}}">
                     <StackPanel VerticalAlignment="Top">
+                        <StackPanel.Background>
+                            <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,1600">
+                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent}" Offset="0.1"/>
+                                <GradientStop Color="{DynamicResource MahApps.Colors.ThemeBackground}" Offset="0.2"/>
+                            </LinearGradientBrush>
+                        </StackPanel.Background>
                         <!--HEADER-->
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -101,7 +108,7 @@
                         </Grid>
                         <!--CONTENT-->
                         <Grid Margin="32,8,0,0">
-                            <ListView ItemsSource="{Binding Songs}">
+                            <ListView Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" Drop="ListView_Drop" PreviewMouseWheel="ListView_PreviewMouseWheel">
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:Song}">
                                         <Grid>

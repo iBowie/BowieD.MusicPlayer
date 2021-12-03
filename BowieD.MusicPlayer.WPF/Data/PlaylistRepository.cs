@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Linq;
 
 namespace BowieD.MusicPlayer.WPF.Data
 {
@@ -124,7 +125,7 @@ namespace BowieD.MusicPlayer.WPF.Data
         {
             long plId = id ?? reader.GetInt64(COL_ID);
             string name = reader.GetString(COL_NAME);
-            long[] songs = System.Text.Json.JsonSerializer.Deserialize<long[]>(reader.GetString(COL_SONGS)) ?? Array.Empty<long>();
+            var songs = (System.Text.Json.JsonSerializer.Deserialize<long[]>(reader.GetString(COL_SONGS)) ?? Array.Empty<long>()).ToList();
             
             byte[] picture;
 
