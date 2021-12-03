@@ -1,6 +1,7 @@
 ﻿using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -83,6 +84,20 @@ namespace BowieD.MusicPlayer.WPF.Views
                 };
                 var parent = ((Control)sender).Parent as UIElement;
                 parent?.RaiseEvent(eventArg);
+            }
+        }
+
+        private void playlistScrollViewerContent_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            const double REQUIRED_OFFSET = 300.0;
+
+            if (e.VerticalOffset >= REQUIRED_OFFSET)
+            {
+                playlistScrollViewerHeaderWhenScrolled.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                playlistScrollViewerHeaderWhenScrolled.Visibility = Visibility.Collapsed;
             }
         }
     }

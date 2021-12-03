@@ -27,10 +27,11 @@
             </Menu>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition MinWidth="128" MaxWidth="392"/>
+                    <ColumnDefinition Width="2"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Grid Width="342">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
@@ -41,11 +42,22 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <StackPanel>
-                            <Button Content="Create playlist" Margin="5"
-                                    Command="{Binding CreatePlaylistCommand}"/>
+                            <Button Margin="5"
+                                    HorizontalAlignment="Left"
+                                    Style="{DynamicResource ContentOnlyButton}"
+                                    Command="{Binding CreatePlaylistCommand}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <iconPacks:PackIconMaterial Kind="Plus" Margin="5"/>
+                                    <TextBlock Grid.Column="1" Text="Create Playlist" Margin="5"/>
+                                </Grid>
+                            </Button>
                         </StackPanel>
-                        <ScrollViewer Grid.Row="1">
-                            <ListView ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}">
+                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                            <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:PlaylistInfo}">
                                         <Grid>
@@ -61,7 +73,7 @@
                             </ListView>
                         </ScrollViewer>
                     </Grid>
-                    <Grid Grid.Row="1" MaxHeight="342" Width="342" 
+                    <Grid Grid.Row="1" HorizontalAlignment="Stretch"
                           d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}"
                           DataContext="{Binding DataContext, ElementName=musicPlayer}"
                            Visibility="{Binding IsBigPicture, Converter={StaticResource boolToVisConverter}}">
@@ -72,76 +84,90 @@
                                 Command="{Binding CollapseBigPictureCommand}"/>
                     </Grid>
                 </Grid>
-                <ScrollViewer Name="playlistScrollViewer" Grid.Column="1" 
+                <GridSplitter Grid.Column="1" ShowsPreview="False"/>
+                <Grid Grid.Column="2" Name="playlistScrollViewer"
                               d:DataContext="{d:DesignInstance Type=viewmodels:PlaylistViewModel}"
                               Visibility="{Binding PlaylistInfo.IsEmpty, Converter={StaticResource invertedBoolToVisConverter}}">
-                    <StackPanel VerticalAlignment="Top">
-                        <StackPanel.Background>
-                            <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,1400">
-                                <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0"/>
-                                <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0.2"/>
-                                <GradientStop Color="{DynamicResource MahApps.Colors.ThemeBackground}" Offset="0.25"/>
-                            </LinearGradientBrush>
-                        </StackPanel.Background>
-                        <!--HEADER-->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Image Width="232" Height="232" Margin="32,32,8,32" Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
-                            <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="8,32,32,32">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" VerticalAlignment="Bottom" Margin="3.5" Text="PLAYLIST"/>
-                                <TextBlock Grid.Row="1" Text="{Binding PlaylistInfo.Name}" FontSize="36" VerticalAlignment="Center" Margin="3.5" d:Text="PLAYLIST NAME"/>
-                                <TextBlock Grid.Row="2" Text="{Binding Playlist.DisplayToolTip}" VerticalAlignment="Top" Margin="3.5" d:Text="173 трека, 11 ч. 28 мин."/>
+                    <ScrollViewer Name="playlistScrollViewerContent" ScrollChanged="playlistScrollViewerContent_ScrollChanged">
+                        <StackPanel VerticalAlignment="Top">
+                            <StackPanel.Background>
+                                <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,1400">
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0.2"/>
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.ThemeBackground}" Offset="0.25"/>
+                                </LinearGradientBrush>
+                            </StackPanel.Background>
+                            <!--HEADER-->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Image Width="232" Height="232" Margin="32,32,8,32" Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                                <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="8,32,32,32">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" VerticalAlignment="Bottom" Margin="3.5" Text="PLAYLIST"/>
+                                    <TextBlock Grid.Row="1" Text="{Binding PlaylistInfo.Name}" FontSize="36" VerticalAlignment="Center" Margin="3.5" d:Text="PLAYLIST NAME"/>
+                                    <TextBlock Grid.Row="2" Text="{Binding Playlist.DisplayToolTip}" VerticalAlignment="Top" Margin="3.5" d:Text="173 трека, 11 ч. 28 мин."/>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <!--CONTROLS-->
-                        <Grid Margin="32,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Content="{iconPacks:Material Kind=Play}" Margin="0,5,5,5"
+                            <!--CONTROLS-->
+                            <Grid Margin="32,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="{iconPacks:Material Kind=Play}" Margin="0,5,5,5"
                                     Command="{Binding PlayCommand}"
                                     Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
                                     Background="{DynamicResource MahApps.Brushes.AccentBase}"
                                     Style="{DynamicResource RoundButton}" Width="34" Height="34"/>
-                            <Button Grid.Column="1" Content="{iconPacks:Material Kind=More}" Margin="5"
+                                <Button Grid.Column="1" Content="{iconPacks:Material Kind=More}" Margin="5"
                                     Style="{DynamicResource ContentOnlyButton}"
                                     Command="{Binding EditDetailsCommand}"/>
-                        </Grid>
-                        <!--CONTENT-->
-                        <Grid Margin="32,8,0,0">
-                            <ListView Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" Drop="ListView_Drop" PreviewMouseWheel="ListView_PreviewMouseWheel">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type models:Song}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="50"/>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image Width="40" Height="40" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
-                                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" Text="{Binding Title}"/>
-                                            <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding Artist}"/>
-                                            <TextBlock Grid.Column="3" VerticalAlignment="Center" Margin="5" Text="{Binding Album}"/>
-                                            <TextBlock Grid.Column="4" VerticalAlignment="Center" Margin="5" Text="{Binding DisplayYear}"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
+                            </Grid>
+                            <!--CONTENT-->
+                            <Grid Margin="32,8,0,0">
+                                <ListView Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" Drop="ListView_Drop" PreviewMouseWheel="ListView_PreviewMouseWheel">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type models:Song}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="50"/>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Width="40" Height="40" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" Text="{Binding Title}"/>
+                                                <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding Artist}"/>
+                                                <TextBlock Grid.Column="3" VerticalAlignment="Center" Margin="5" Text="{Binding Album}"/>
+                                                <TextBlock Grid.Column="4" VerticalAlignment="Center" Margin="5" Text="{Binding DisplayYear}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <Grid Name="playlistScrollViewerHeaderWhenScrolled" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.Gray10}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{DynamicResource RoundButton}"
+                                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                                    Width="40" Height="40"
+                                    Content="{iconPacks:Material Kind=Play}"
+                                    Command="{Binding PlayCommand}"
+                                    Margin="5"/>
+                            <TextBlock Text="{Binding PlaylistInfo.Name}" FontSize="20" VerticalAlignment="Center" Margin="5"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Name="musicPlayer" d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}">
