@@ -218,7 +218,8 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="1" Margin="3.5" Content="{iconPacks:Material Kind=Shuffle}" Style="{DynamicResource ContentOnlyButton}"/>
+                    <Button Grid.Column="1" Margin="3.5" Content="{iconPacks:Material Kind=Shuffle}" Style="{DynamicResource ContentOnlyButton}"
+                            Command="{Binding ShuffleCommand}"/>
                     <Button Grid.Column="2" Margin="3.5" Content="{iconPacks:Material Kind=SkipPrevious}" Style="{DynamicResource ContentOnlyButton}"
                             Command="{Binding PrevTrackCommand}"/>
                     <Button Grid.Column="3" Margin="3.5" Content="{iconPacks:Material Kind=Play}" Width="34" Height="34" Style="{DynamicResource RoundButton}" Foreground="{DynamicResource MahApps.Brushes.Window.Background}" 

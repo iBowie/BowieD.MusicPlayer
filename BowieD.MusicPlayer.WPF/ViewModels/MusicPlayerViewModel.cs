@@ -154,12 +154,37 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         public void NextTrackManual()
         {
+            if (SongQueue.Count > 0)
+            {
+                var nextSong = SongQueue.Dequeue();
 
+                var cur = CurrentSong;
+
+                if (!cur.IsEmpty)
+                {
+                    if (LoopMode != ELoopMode.NONE)
+                    {
+                        SongQueue.Enqueue(cur);
+                    }
+                }
+
+                CurrentSong = nextSong;
+            }
         }
 
         public void PrevTrack()
         {
+            if (SongHistory.Count > 0)
+            {
+                var songFromHistory = SongHistory.Pop();
 
+                var cur = CurrentSong;
+
+                if (!cur.IsEmpty)
+                    SongQueue.Insert(0, cur);
+
+                CurrentSong = songFromHistory;
+            }
         }
 
         private string SecondsToText(double seconds)
