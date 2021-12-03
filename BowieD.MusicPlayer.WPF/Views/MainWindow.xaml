@@ -254,7 +254,12 @@
                 </Grid>
             </Grid>
             <Grid HorizontalAlignment="Stretch" Margin="17" VerticalAlignment="Center" Grid.Column="2">
-                <StackPanel Orientation="Horizontal">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
                     <Button Name="queueViewButton"
                             Command="{Binding ViewQueueCommand}"
                             CommandParameter="{Binding ElementName=queuePopup}"
@@ -281,9 +286,10 @@
                             </ListView>
                         </GroupBox>
                     </Popup>
-                    <Slider Minimum="0" Maximum="100" TickFrequency="1" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" IsSnapToTickEnabled="True"
+                    <iconPacks:PackIconMaterial Kind="VolumeSource" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Margin="5" Grid.Column="1"/>
+                    <Slider Grid.Column="2" Minimum="0" Maximum="100" TickFrequency="1" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" IsSnapToTickEnabled="True"
                         Value="{Binding Volume}"/>
-                </StackPanel>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>
