@@ -203,8 +203,8 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="{Binding CurrentSong.Title}" d:Text="His World" Margin="3.5" VerticalAlignment="Bottom"/>
-                    <TextBlock Grid.Row="1" Text="{Binding CurrentSong.Artist}" d:Text="Ali Tabatabaee Matty Lewis from Zebrahead" Margin="3.5" VerticalAlignment="Top" FontSize="10"/>
+                    <TextBlock Grid.Row="0" Text="{Binding CurrentSong.Title}" d:Text="His World" Margin="3.5" VerticalAlignment="Bottom" FontSize="14" FontWeight="Bold"/>
+                    <TextBlock Grid.Row="1" Text="{Binding CurrentSong.Artist}" d:Text="Ali Tabatabaee Matty Lewis from Zebrahead" Margin="3.5" VerticalAlignment="Top" FontSize="11"/>
                 </Grid>
             </Grid>
             <Grid HorizontalAlignment="Stretch" Margin="0,15,0,22" Grid.Column="1">
