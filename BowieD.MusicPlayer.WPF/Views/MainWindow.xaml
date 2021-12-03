@@ -108,9 +108,13 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Content="Play" Margin="0,5,5,5"
-                                    Command="{Binding PlayCommand}"/>
-                            <Button Grid.Column="1" Content="Edit Details" Margin="5"
+                            <Button Grid.Column="0" Content="{iconPacks:Material Kind=Play}" Margin="0,5,5,5"
+                                    Command="{Binding PlayCommand}"
+                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                    Background="{DynamicResource MahApps.Brushes.AccentBase}"
+                                    Style="{DynamicResource RoundButton}" Width="34" Height="34"/>
+                            <Button Grid.Column="1" Content="{iconPacks:Material Kind=More}" Margin="5"
+                                    Style="{DynamicResource ContentOnlyButton}"
                                     Command="{Binding EditDetailsCommand}"/>
                         </Grid>
                         <!--CONTENT-->
