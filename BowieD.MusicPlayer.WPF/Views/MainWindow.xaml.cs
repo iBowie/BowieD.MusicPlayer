@@ -24,6 +24,8 @@ namespace BowieD.MusicPlayer.WPF.Views
 
             playlistScrollViewer.DataContext = PlaylistViewModel;
 
+            PlaylistViewModel.PlaylistInfo = Models.PlaylistInfo.EMPTY;
+
             MusicPlayerViewModel = new MusicPlayerViewModel(this);
 
             musicPlayer.DataContext = MusicPlayerViewModel;

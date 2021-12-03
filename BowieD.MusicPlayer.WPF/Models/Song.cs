@@ -97,6 +97,10 @@ namespace BowieD.MusicPlayer.WPF.Models
         public string Name { get; set; }
         public IList<Song> Songs { get; }
         public byte[] PictureData { get; set; }
+        public string DisplayToolTip
+        {
+            get => $"{Songs.Count} tracks";
+        }
 
         public static implicit operator PlaylistInfo(Playlist playlist)
         {

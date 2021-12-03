@@ -48,7 +48,14 @@
                             <ListView ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:PlaylistInfo}">
-                                        <TextBlock Text="{Binding Name}"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Width="20" Height="20" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -91,7 +98,7 @@
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Row="0" VerticalAlignment="Bottom" Margin="3.5" Text="ПЛЕЙЛИСТ"/>
                                 <TextBlock Grid.Row="1" Text="{Binding PlaylistInfo.Name}" FontSize="36" VerticalAlignment="Center" Margin="3.5" d:Text="PLAYLIST NAME"/>
-                                <TextBlock Grid.Row="2" VerticalAlignment="Top" Margin="3.5" d:Text="173 трека, 11 ч. 28 мин."/>
+                                <TextBlock Grid.Row="2" Text="{Binding Playlist.DisplayToolTip}" VerticalAlignment="Top" Margin="3.5" d:Text="173 трека, 11 ч. 28 мин."/>
                             </Grid>
                         </Grid>
                         <!--CONTROLS-->
@@ -123,6 +130,7 @@
                                             <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" Text="{Binding Title}"/>
                                             <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding Artist}"/>
                                             <TextBlock Grid.Column="3" VerticalAlignment="Center" Margin="5" Text="{Binding Album}"/>
+                                            <TextBlock Grid.Column="4" VerticalAlignment="Center" Margin="5" Text="{Binding DisplayYear}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
