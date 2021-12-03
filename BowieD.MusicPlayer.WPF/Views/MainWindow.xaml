@@ -70,10 +70,10 @@
                               Visibility="{Binding PlaylistInfo.IsEmpty, Converter={StaticResource invertedBoolToVisConverter}}">
                     <StackPanel VerticalAlignment="Top">
                         <StackPanel.Background>
-                            <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,1600">
-                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent}" Offset="0"/>
-                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent}" Offset="0.1"/>
-                                <GradientStop Color="{DynamicResource MahApps.Colors.ThemeBackground}" Offset="0.2"/>
+                            <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,1400">
+                                <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0.2"/>
+                                <GradientStop Color="{DynamicResource MahApps.Colors.ThemeBackground}" Offset="0.25"/>
                             </LinearGradientBrush>
                         </StackPanel.Background>
                         <!--HEADER-->
