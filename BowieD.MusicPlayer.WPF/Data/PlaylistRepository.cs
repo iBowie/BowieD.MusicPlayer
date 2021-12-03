@@ -102,7 +102,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
         public void UpdatePlaylist(PlaylistInfo playlistInfo)
         {
-            string sql = 
+            string sql =
                 $"UPDATE {TABLE_NAME} " +
                 $"SET {COL_NAME} = @name, {COL_COVER} = @cover, {COL_SONGS} = @songs " +
                 $"WHERE {COL_ID} = @id";
@@ -126,7 +126,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             long plId = id ?? reader.GetInt64(COL_ID);
             string name = reader.GetString(COL_NAME);
             var songs = (System.Text.Json.JsonSerializer.Deserialize<long[]>(reader.GetString(COL_SONGS)) ?? Array.Empty<long>()).ToList();
-            
+
             byte[] picture;
 
             using (var blob = reader.GetBlob(COL_COVER, true))

@@ -25,7 +25,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             }
         }
 
-        private const string 
+        private const string
             TABLE_NAME = "songs",
             COL_ID = "id",
             COL_TITLE = "title",

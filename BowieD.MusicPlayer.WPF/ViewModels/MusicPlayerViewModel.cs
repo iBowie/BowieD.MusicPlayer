@@ -17,7 +17,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
     public sealed class MusicPlayerViewModel : BaseViewModelView<MainWindow>
     {
-        public MusicPlayerViewModel(MainWindow view) : base(view) 
+        public MusicPlayerViewModel(MainWindow view) : base(view)
         {
             BassFacade.Init();
 
@@ -201,7 +201,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         #region Commands
 
-        private ICommand 
+        private ICommand
             _nextTrackCommand,
             _loopCommand,
             _shuffleCommand,
@@ -292,7 +292,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 return _shuffleCommand;
             }
         }
-        public ICommand LoopCommand 
+        public ICommand LoopCommand
         {
             get
             {

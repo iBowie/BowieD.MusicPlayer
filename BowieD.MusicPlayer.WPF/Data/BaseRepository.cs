@@ -35,7 +35,7 @@ namespace BowieD.MusicPlayer.WPF.Data
         protected int ExecuteNonQuery(string sql, CommandBehavior behavior = CommandBehavior.Default)
         {
             using var con = CreateConnection();
-            
+
             con.Open();
 
             using var com = new SQLiteCommand(sql, con);

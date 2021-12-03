@@ -2,7 +2,6 @@
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -14,7 +13,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private PlaylistInfo _playlistInfo;
         private Playlist _playlist;
 
-        public PlaylistViewModel(MainWindow view) : base(view) 
+        public PlaylistViewModel(MainWindow view) : base(view)
         {
         }
 
@@ -78,7 +77,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                         if (detailsView.ShowDialog() == true)
                         {
                             PlaylistInfo result = detailsView.ResultInfo;
-                            
+
                             PlaylistRepository.Instance.UpdatePlaylist(result);
 
                             View.ViewModel.ObtainPlaylists();

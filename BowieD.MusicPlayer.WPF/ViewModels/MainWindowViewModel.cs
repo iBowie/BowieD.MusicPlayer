@@ -117,7 +117,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             _playlists.Clear();
 
             System.Collections.Generic.IList<PlaylistInfo> pls = PlaylistRepository.Instance.GetAllPlaylists();
-            
+
             foreach (var pl in pls)
             {
                 _playlists.Add(pl);

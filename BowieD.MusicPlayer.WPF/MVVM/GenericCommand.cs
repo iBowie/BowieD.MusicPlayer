@@ -45,7 +45,7 @@ namespace BowieD.MusicPlayer.WPF.MVVM
         public BaseCommand(Action<object?> action, Func<object?, bool> canExecute) : base(action, canExecute) { }
         public BaseCommand(Action action) : base(p => action())
         {
-            
+
         }
         public BaseCommand(Action action, Func<bool> canExecute) : base(p => action(), p => canExecute())
         {
