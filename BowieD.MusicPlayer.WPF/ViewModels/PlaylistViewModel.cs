@@ -2,7 +2,9 @@
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
+using GongSolutions.Wpf.DragDrop;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 
 namespace BowieD.MusicPlayer.WPF.ViewModels
@@ -12,9 +14,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private readonly ObservableCollection<Song> _songs = new();
         private PlaylistInfo _playlistInfo;
         private Playlist _playlist;
+        private readonly PlaylistViewModelDropHandler _dropHandler;
 
         public PlaylistViewModel(MainWindow view) : base(view)
         {
+            _dropHandler = new PlaylistViewModelDropHandler(this);
         }
 
         private void _songs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -53,6 +57,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get => _playlist;
         }
+        public PlaylistViewModelDropHandler DropHandler => _dropHandler;
 
         public ObservableCollection<Song> Songs
         {
@@ -103,6 +108,66 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 }
 
                 return _playCommand;
+            }
+        }
+    }
+    public sealed class PlaylistViewModelDropHandler : IDropTarget
+    {
+        private readonly PlaylistViewModel viewModel;
+
+        public PlaylistViewModelDropHandler(PlaylistViewModel viewModel)
+        {
+            this.viewModel = viewModel;
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+
+            var dataObject = dropInfo.Data as IDataObject;
+
+            if (dataObject is not null && dataObject.GetDataPresent(DataFormats.FileDrop))
+            {
+                dropInfo.Effects = DragDropEffects.Copy;
+            }
+            else
+            {
+                dropInfo.Effects = DragDropEffects.Move;
+            }
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var dataObject = dropInfo.Data as DataObject;
+
+            if (dataObject is not null && dataObject.ContainsFileDropList())
+            {
+                var files = dataObject.GetFileDropList();
+
+                if (files.Count > 0)
+                {
+                    var info = viewModel.PlaylistInfo;
+
+                    foreach (var fn in files)
+                    {
+                        if (string.IsNullOrWhiteSpace(fn))
+                            continue;
+
+                        var song = SongRepository.Instance.GetOrAddSong(fn);
+
+                        info.SongIDs.Add(song.ID);
+                    }
+
+                    PlaylistRepository.Instance.UpdatePlaylist(info);
+
+                    viewModel.View.ViewModel.ObtainPlaylists();
+
+                    viewModel.View.ViewModel.SelectedPlaylist = info;
+                }
+            }
+            else
+            {
+                GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.Drop(dropInfo);
             }
         }
     }

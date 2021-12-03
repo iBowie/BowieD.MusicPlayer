@@ -35,42 +35,6 @@ namespace BowieD.MusicPlayer.WPF.Views
         public PlaylistViewModel PlaylistViewModel { get; }
         public MusicPlayerViewModel MusicPlayerViewModel { get; }
 
-        private void ListView_Drop(object sender, System.Windows.DragEventArgs e)
-        {
-            if (PlaylistViewModel.PlaylistInfo.IsEmpty)
-                return;
-
-            if (e.Handled)
-                return;
-
-            var obj = e.Data;
-
-            string format = DataFormats.FileDrop;
-
-            if (obj.GetDataPresent(format))
-            {
-                string[] files = (string[])obj.GetData(format);
-
-                if (files.Length > 0)
-                {
-                    var info = PlaylistViewModel.PlaylistInfo;
-
-                    foreach (var fn in files)
-                    {
-                        var song = SongRepository.Instance.GetOrAddSong(fn);
-
-                        info.SongIDs.Add(song.ID);
-                    }
-
-                    PlaylistRepository.Instance.UpdatePlaylist(info);
-
-                    ViewModel.ObtainPlaylists();
-
-                    ViewModel.SelectedPlaylist = info;
-                }
-            }
-        }
-
         private void ListView_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             if (!e.Handled)
@@ -113,6 +77,19 @@ namespace BowieD.MusicPlayer.WPF.Views
             var song = PlaylistViewModel.Playlist.Songs[index];
 
             MusicPlayerViewModel.PlaySongFromPlaylist(song, PlaylistViewModel.Playlist);
+        }
+
+        private void playlistSongsListView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (PlaylistViewModel.PlaylistInfo.IsEmpty)
+                return;
+
+            var index = playlistSongsListView.SelectedIndex;
+
+            if (index == -1)
+                return;
+
+            PlaylistViewModel.Songs.RemoveAt(index);
         }
     }
 }
