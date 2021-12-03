@@ -1,0 +1,33 @@
+﻿<mah:MetroWindow xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="BowieD.MusicPlayer.WPF.Views.EditPlaylistDetailsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views"
+        mc:Ignorable="d"
+        Title="EditPlaylistDetailsView" ShowTitleBar="False" Background="{DynamicResource MahApps.Brushes.Window.Background}" Height="384" Width="524" ResizeMode="NoResize">
+    <StackPanel Margin="30" Name="mainPanel" d:DataContext="{d:DesignInstance Type=local:EditPlaylistDetailsView}">
+        <TextBlock Text="Edit details" Margin="5" FontSize="24"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Margin="5">
+                <Grid Width="180" Height="180" MouseDown="Image_MouseDown" Background="Transparent">
+                    <Image Width="180" Height="180" MouseDown="Image_MouseDown" Source="{Binding PlaylistPictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="1" Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBox Margin="5" Text="{Binding PlaylistName, Mode=TwoWay}"/>
+            </Grid>
+        </Grid>
+        <Grid>
+            <Button HorizontalAlignment="Right" Content="Save" Command="{Binding SaveCommand}" Margin="5"/>
+        </Grid>
+    </StackPanel>
+</mah:MetroWindow>
