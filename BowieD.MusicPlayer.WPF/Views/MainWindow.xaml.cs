@@ -54,6 +54,9 @@ namespace BowieD.MusicPlayer.WPF.Views
         {
             const double REQUIRED_OFFSET = 300.0;
 
+            if (e.VerticalChange == 0)
+                return;
+
             if (e.VerticalOffset >= REQUIRED_OFFSET)
             {
                 playlistScrollViewerHeaderWhenScrolled.Visibility = Visibility.Visible;
