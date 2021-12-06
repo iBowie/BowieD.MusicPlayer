@@ -347,6 +347,7 @@
             </Grid>
             <Grid Grid.Row="3" Name="fullScreenMediaControlGrid"
                   Background="Transparent"
+                  d:Opacity="1"
                   Opacity="{Binding IsMouseOver, ElementName=fullScreenMediaControlGrid, Converter={StaticResource boolToVisHiddenConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -358,9 +359,9 @@
                         <ColumnDefinition Width="20*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="{Binding DisplayPosition}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" d:Text="00:00" Text="{Binding DisplayPosition}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" Value="{Binding Position}" Maximum="{Binding Duration}"/>
-                    <TextBlock Grid.Column="2" Text="{Binding DisplayDuration}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" d:Text="59:59:59" Text="{Binding DisplayDuration}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
                 <Grid Grid.Row="1" Margin="30,0,30,30" DataContext="{Binding View.MusicPlayerViewModel}">
                     <Grid HorizontalAlignment="Center">
