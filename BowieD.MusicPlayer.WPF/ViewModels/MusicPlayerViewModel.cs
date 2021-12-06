@@ -42,7 +42,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 _prevState = newState;
 
-                TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(Duration), nameof(IsPauseButton));
+                TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(Duration), nameof(IsUpcomingSongVisible), nameof(IsPauseButton));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
 
                 if (CurrentSong.IsEmpty || newState == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED)
@@ -57,6 +57,13 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             };
 
             _timer.Start();
+
+            _songQueue.CollectionChanged += _songQueue_CollectionChanged;
+        }
+
+        private void _songQueue_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            TriggerPropertyChanged(nameof(UpcomingSong));
         }
 
         public event TrackChanged OnTrackChanged;
@@ -96,6 +103,16 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     if (!BassFacade.IsStopped)
                         BassFacade.Stop();
                 }
+            }
+        }
+        public Song UpcomingSong
+        {
+            get
+            {
+                if (SongQueue.Count > 0)
+                    return SongQueue.Peek();
+
+                return Song.EMPTY;
             }
         }
         public double Position
@@ -146,6 +163,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get => _isFullScreen;
             set => ChangeProperty(ref _isFullScreen, value, nameof(IsFullScreen));
+        }
+        public bool IsUpcomingSongVisible
+        {
+            get => SongQueue.Count > 0 && Duration - Position < 20.0;
         }
 
         public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(double), typeof(MusicPlayerViewModel), new PropertyMetadata(100.0, VolumeChangedCallback));

@@ -367,7 +367,35 @@
                 <RowDefinition Height="Auto"/> <!--slider and media control-->
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="{DynamicResource MahApps.Brushes.Border.NonActive}" BorderThickness="1" 
+                        Grid.Column="1" HorizontalAlignment="Right" Margin="30" 
+                        MaxWidth="512"
+                        Visibility="{Binding View.MusicPlayerViewModel.IsUpcomingSongVisible, Converter={StaticResource boolToVisConverter}}"
+                        Background="{DynamicResource MahApps.Brushes.Flyout.Background}">
+                    <Grid d:DataContext="{d:DesignInstance Type=models:Song}" DataContext="{Binding View.MusicPlayerViewModel.UpcomingSong}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Image Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|96}"/>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Up Next" Margin="10" FontSize="20" VerticalAlignment="Bottom"/>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" VerticalAlignment="Top">
+                                <TextBlock Text="{Binding Title}" d:Text="This Old Routine" FontWeight="Bold" FontSize="24"/>
+                                <TextBlock Text=" - " FontWeight="Bold" FontSize="24"/>
+                                <TextBlock Text="{Binding Artist}" d:Text="First Aid Kit" FontWeight="Bold" FontSize="24"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
             </Grid>
             <Grid Grid.Row="2" Margin="30" DataContext="{Binding View.MusicPlayerViewModel}">
                 <Grid>
