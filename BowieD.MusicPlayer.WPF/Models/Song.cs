@@ -45,6 +45,10 @@ namespace BowieD.MusicPlayer.WPF.Models
         }
 
         public static readonly Song EMPTY = new(true);
+
+        public static bool operator ==(Song a, Song b) => a.ID == b.ID;
+
+        public static bool operator !=(Song a, Song b) => a.ID != b.ID;
     }
 
     public struct PlaylistInfo
@@ -81,6 +85,10 @@ namespace BowieD.MusicPlayer.WPF.Models
         }
 
         public static readonly PlaylistInfo EMPTY = new(true);
+
+        public static bool operator ==(PlaylistInfo a, PlaylistInfo b) => a.ID == b.ID;
+
+        public static bool operator !=(PlaylistInfo a, PlaylistInfo b) => a.ID != b.ID;
     }
 
     public struct Playlist
@@ -106,5 +114,13 @@ namespace BowieD.MusicPlayer.WPF.Models
         {
             return new PlaylistInfo(playlist.ID, playlist.Name, playlist.Songs.Select(d => d.ID).ToList(), playlist.PictureData);
         }
+
+        public static bool operator ==(Playlist a, Playlist b) => a.ID == b.ID;
+        public static bool operator ==(Playlist a, PlaylistInfo b) => a.ID == b.ID;
+        public static bool operator ==(PlaylistInfo a, Playlist b) => a.ID == b.ID;
+
+        public static bool operator !=(Playlist a, Playlist b) => a.ID != b.ID;
+        public static bool operator !=(Playlist a, PlaylistInfo b) => a.ID != b.ID;
+        public static bool operator !=(PlaylistInfo a, Playlist b) => a.ID != b.ID;
     }
 }
