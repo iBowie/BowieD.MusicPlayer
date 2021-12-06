@@ -89,7 +89,7 @@
                 <Grid Grid.Column="2" Name="playlistScrollViewer"
                               d:DataContext="{d:DesignInstance Type=viewmodels:PlaylistViewModel}"
                               Visibility="{Binding PlaylistInfo.IsEmpty, Converter={StaticResource invertedBoolToVisConverter}}">
-                    <ScrollViewer Name="playlistScrollViewerContent" ScrollChanged="playlistScrollViewerContent_ScrollChanged">
+                    <ScrollViewer VerticalScrollBarVisibility="Hidden" Name="playlistScrollViewerContent" ScrollChanged="playlistScrollViewerContent_ScrollChanged">
                         <StackPanel VerticalAlignment="Top">
                             <StackPanel.Background>
                                 <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,1400">
@@ -164,7 +164,7 @@
                             </Grid>
                         </StackPanel>
                     </ScrollViewer>
-                    <Grid Name="playlistScrollViewerHeaderWhenScrolled" Margin="0,0,15,0" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.Gray10}">
+                    <Grid Name="playlistScrollViewerHeaderWhenScrolled" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.Gray10}">
                         <StackPanel Orientation="Horizontal">
                             <Button Style="{DynamicResource RoundButton}"
                                     Background="{DynamicResource MahApps.Brushes.Accent}"
