@@ -43,7 +43,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(DisplayPosition), nameof(Duration), nameof(DisplayDuration), nameof(IsPauseButton));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
 
-                if (CurrentSong.IsEmpty || Position >= Duration)
+                if (CurrentSong.IsEmpty || newState == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED)
                 {
                     NextTrackAuto();
                 }
@@ -198,7 +198,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             if (LoopMode == ELoopMode.CURRENT && !CurrentSong.IsEmpty)
             {
-                Position = 0;
+                CurrentSong = CurrentSong;
             }
             else
             {
