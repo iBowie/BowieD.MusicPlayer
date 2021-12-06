@@ -79,7 +79,10 @@ namespace BowieD.MusicPlayer.WPF.Views
 
             var song = PlaylistViewModel.Playlist.Songs[index];
 
-            MusicPlayerViewModel.PlaySongFromPlaylist(song, PlaylistViewModel.Playlist);
+            if (song.IsAvailable)
+            {
+                MusicPlayerViewModel.PlaySongFromPlaylist(song, PlaylistViewModel.Playlist);
+            }
         }
 
         private void playlistSongsListView_PreviewKeyDown(object sender, KeyEventArgs e)
