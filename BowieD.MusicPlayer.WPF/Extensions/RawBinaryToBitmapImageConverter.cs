@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows.Data;
@@ -9,45 +8,49 @@ namespace BowieD.MusicPlayer.WPF.Extensions
 {
     public class RawBinaryToBitmapImageConverter : IValueConverter
     {
-        private static readonly Dictionary<string, BitmapImage> _cache = new();
-
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is byte[] rawData && rawData.Length > 0)
             {
-                var hash = GetHash(rawData);
+                int decodeW = 0, decodeH = 0;
 
-                if (!_cache.ContainsKey(hash))
+                if (parameter is not null)
                 {
-                    BitmapImage bmp = new();
+                    string pString = parameter.ToString() ?? string.Empty;
 
-                    using (MemoryStream ms = new(rawData))
+                    string[] spl = pString.Split('|');
+
+                    if (spl.Length == 2 && int.TryParse(spl[0], out var newW) &&
+                        int.TryParse(spl[1], out var newH))
                     {
-                        bmp.BeginInit();
-                        bmp.StreamSource = ms;
-                        bmp.CacheOption = BitmapCacheOption.OnLoad;
-                        bmp.EndInit();
+                        decodeW = Math.Max(decodeW, newW);
+                        decodeH = Math.Max(decodeH, newH);
                     }
-
-                    bmp.Freeze();
-
-                    _cache[hash] = bmp;
                 }
 
-                return _cache[hash];
+                BitmapImage bmp = new();
+
+                using (MemoryStream ms = new(rawData))
+                {
+                    bmp.BeginInit();
+                    bmp.StreamSource = ms;
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;
+
+                    if (decodeH > 0)
+                        bmp.DecodePixelHeight = decodeH;
+
+                    if (decodeW > 0)
+                        bmp.DecodePixelWidth = decodeW;
+
+                    bmp.EndInit();
+                }
+
+                bmp.Freeze();
+
+                return bmp;
             }
 
             return null;
-        }
-
-        private string GetHash(byte[] array)
-        {
-            using (var md5 = System.Security.Cryptography.MD5.Create())
-            {
-                byte[] hash = md5.ComputeHash(array);
-
-                return System.Convert.ToHexString(hash);
-            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

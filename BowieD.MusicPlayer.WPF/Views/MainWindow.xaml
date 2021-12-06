@@ -67,7 +67,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition/>
                                                 </Grid.ColumnDefinitions>
-                                                <Image Width="20" Height="20" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                                                <Image Width="20" Height="20" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=20|20}"/>
                                                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
                                             </Grid>
                                         </DataTemplate>
@@ -81,7 +81,7 @@
                           DataContext="{Binding DataContext, ElementName=musicPlayer}"
                            Visibility="{Binding IsBigPicture, Converter={StaticResource boolToVisConverter}}">
                             <Image
-                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=392|392}"/>
                             <Button Margin="16" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource ContentOnlyButton}"
                             Content="{iconPacks:Material Kind=ArrowDown}"
                                 Visibility="{Binding IsMouseOver, ElementName=imgBigPicture, Converter={StaticResource boolToVisConverter}}"
@@ -107,7 +107,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Width="232" Height="232" Margin="32,32,8,32" Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                                    <Image Width="232" Height="232" Margin="32,32,8,32" 
+                                           Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=232|232}"/>
                                     <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="8,32,32,32">
                                         <Grid.RowDefinitions>
                                             <RowDefinition/>
@@ -156,7 +157,8 @@
                                                         <ColumnDefinition/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Image Width="40" Height="40" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                                                    <Image Width="40" Height="40" Margin="5" 
+                                                           Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=40|40}"/>
                                                     <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" Text="{Binding Title}"/>
                                                     <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding Artist}"/>
                                                     <TextBlock Grid.Column="3" VerticalAlignment="Center" Margin="5" Text="{Binding Album}"/>
@@ -202,7 +204,7 @@
                     </Grid.RenderTransform>
                     <Grid Margin="17,17,0,17" Grid.Column="0"  Name="imgSmallPicture">
                         <Image Width="75" Height="75" 
-                       Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                       Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=75|75}"/>
                         <Button
                         Margin="8"
                         HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource ContentOnlyButton}"
