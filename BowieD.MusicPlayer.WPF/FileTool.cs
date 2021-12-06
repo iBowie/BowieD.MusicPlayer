@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 
@@ -28,6 +30,26 @@ namespace BowieD.MusicPlayer.WPF
 
 
             return miw.Duration / 1000.0;
+        }
+    }
+    public static class ImageTool
+    {
+        public static byte[] ResizeInByteArray(byte[] imageBytes, int newMaxWidth, int newMaxHeight)
+        {
+            using MemoryStream fromStream = new(imageBytes);
+
+            Bitmap bmp = new(fromStream);
+
+            newMaxWidth = Math.Min(bmp.Width, newMaxWidth);
+            newMaxHeight = Math.Min(bmp.Height, newMaxHeight);
+
+            Bitmap result = new(bmp, newMaxWidth, newMaxHeight);
+
+            using MemoryStream toStream = new();
+
+            result.Save(toStream, ImageFormat.Jpeg);
+
+            return toStream.ToArray();
         }
     }
 }

@@ -107,6 +107,69 @@ namespace BowieD.MusicPlayer.WPF.Data
             return result;
         }
 
+        public IList<Song> GetAllSongs()
+        {
+            List<Song> result = new();
+
+            string sql = $"SELECT * FROM {TABLE_NAME}";
+
+            using var con = CreateConnection();
+
+            con.Open();
+
+            using var com = new SQLiteCommand(sql, con);
+
+            using var reader = com.ExecuteReader(System.Data.CommandBehavior.KeyInfo);
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    result.Add(ReadSong(reader));
+                }
+            }
+
+            con.Close();
+
+            return result;
+        }
+
+        public void UpdateSong(Song song)
+        {
+            Song meta = GetSongMetadata(song.FileName);
+
+            const string
+                PARAM_ID = "@id",
+                PARAM_TITLE = "@title",
+                PARAM_ARTIST = "@artist",
+                PARAM_ALBUM = "@album",
+                PARAM_YEAR = "@year",
+                PARAM_COVER = "@cover",
+                PARAM_FILE_NAME = "@fileName";
+
+            string sql = $"UPDATE {TABLE_NAME} " +
+                $"SET {COL_TITLE} = {PARAM_TITLE}, {COL_ARTIST} = {PARAM_ARTIST}, " +
+                $"{COL_ALBUM} = {PARAM_ALBUM}, {COL_YEAR} = {PARAM_YEAR}, " +
+                $"{COL_COVER} = {PARAM_COVER}, {COL_FILE_NAME} = {PARAM_FILE_NAME} " +
+                $"WHERE {COL_ID} = {PARAM_ID}";
+
+            using var con = CreateConnection();
+
+            con.Open();
+
+            using var com = new SQLiteCommand(sql, con);
+
+            com.Parameters.Add(PARAM_ID, DbType.Int32).Value = song.ID;
+            com.Parameters.Add(PARAM_TITLE, DbType.String).Value = meta.Title;
+            com.Parameters.Add(PARAM_ARTIST, DbType.String).Value = meta.Artist;
+            com.Parameters.Add(PARAM_ALBUM, DbType.String).Value = meta.Album;
+            com.Parameters.Add(PARAM_YEAR, DbType.UInt32).Value = meta.Year > 0 ? meta.Year : DBNull.Value;
+            com.Parameters.Add(PARAM_COVER, DbType.Binary).Value = meta.PictureData;
+            com.Parameters.Add(PARAM_FILE_NAME, DbType.String).Value = meta.FileName;
+
+            com.ExecuteNonQuery();
+        }
+
         private Song AddNewSong(string fileName)
         {
             Song meta = GetSongMetadata(fileName);
@@ -201,6 +264,11 @@ namespace BowieD.MusicPlayer.WPF.Data
                         }
                     }
                 }
+            }
+
+            if (picture is not null && picture.Length > 0)
+            {
+                picture = ImageTool.ResizeInByteArray(picture, 700, 700);
             }
 
             return new Song(0, title, artist, album, year, fileName, picture ?? Array.Empty<byte>());
