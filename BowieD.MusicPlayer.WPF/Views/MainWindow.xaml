@@ -164,7 +164,8 @@
                             </Grid>
                         </StackPanel>
                     </ScrollViewer>
-                    <Grid Name="playlistScrollViewerHeaderWhenScrolled" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.Gray10}">
+                    <Grid Name="playlistScrollViewerHeaderWhenScrolled" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.Gray10}"
+                          Visibility="Collapsed" d:Visibility="Visible">
                         <StackPanel Orientation="Horizontal">
                             <Button Style="{DynamicResource RoundButton}"
                                     Background="{DynamicResource MahApps.Brushes.Accent}"
