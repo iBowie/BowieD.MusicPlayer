@@ -7,7 +7,10 @@ using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace BowieD.MusicPlayer.WPF.ViewModels
 {
@@ -20,7 +23,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         #region Commands
 
-        private ICommand _addSongCommand, _createPlaylistCommand;
+        private ICommand _addSongCommand, _createPlaylistCommand, _selectFullscreenBackgroundCommand;
 
         public ICommand AddSongCommand
         {
@@ -59,6 +62,43 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 }
 
                 return _createPlaylistCommand;
+            }
+        }
+        public ICommand SelectFullscreenBackgroundCommand
+        {
+            get
+            {
+                if (_selectFullscreenBackgroundCommand is null)
+                {
+                    _selectFullscreenBackgroundCommand = new BaseCommand(() =>
+                    {
+                        OpenFileDialog ofd = new()
+                        {
+                            Filter = ImageTool.FileDialogFilter
+                        };
+
+                        if (ofd.ShowDialog() == true)
+                        {
+                            try
+                            {
+                                ImageBrush ibrush = new();
+                                
+                                var bmp = new BitmapImage();
+                                bmp.BeginInit();
+                                bmp.CacheOption = BitmapCacheOption.OnLoad;
+                                bmp.UriSource = new Uri(ofd.FileName);
+                                bmp.EndInit();
+
+                                ibrush.ImageSource = bmp;
+
+                                View.fullScreenViewGrid.Background = ibrush;
+                            }
+                            catch { }
+                        }
+                    });
+                }
+
+                return _selectFullscreenBackgroundCommand;
             }
         }
 

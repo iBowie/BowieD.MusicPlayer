@@ -61,5 +61,7 @@ namespace BowieD.MusicPlayer.WPF
 
             return toStream.ToArray();
         }
+
+        public static string FileDialogFilter => $"Supported formats|{string.Join(';', SupportedImageExtensions.Select(d => "*" + d))}";
     }
 }

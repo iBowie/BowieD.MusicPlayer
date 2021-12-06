@@ -70,7 +70,7 @@ namespace BowieD.MusicPlayer.WPF.Views
         {
             OpenFileDialog ofd = new()
             {
-                Filter = $"Supported formats|{string.Join(';', ImageTool.SupportedImageExtensions.Select(d => "*" + d))}"
+                Filter = ImageTool.FileDialogFilter
             };
 
             if (ofd.ShowDialog() == true)

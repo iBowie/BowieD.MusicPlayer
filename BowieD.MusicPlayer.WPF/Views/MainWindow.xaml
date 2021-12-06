@@ -318,10 +318,16 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Grid Name="fullScreenViewGrid" d:HorizontalAlignment="Left" d:Width="1280" d:Visibility="Visible" Visibility="Collapsed">
+        <Grid Name="fullScreenViewGrid" Background="Transparent" d:HorizontalAlignment="Left" d:Width="1280" d:Visibility="Visible" Visibility="Collapsed">
             <d:Grid.RenderTransform>
                 <TranslateTransform X="1280"/>
             </d:Grid.RenderTransform>
+            <Grid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Select background..." 
+                              Command="{Binding SelectFullscreenBackgroundCommand}"/>
+                </ContextMenu>
+            </Grid.ContextMenu>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/> <!--maybe something more-->
                 <RowDefinition/> <!--blank-->
