@@ -75,6 +75,7 @@
                         </ScrollViewer>
                     </Grid>
                     <Grid Grid.Row="1" HorizontalAlignment="Stretch"
+                          Name="imgBigPicture"
                           d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}"
                           DataContext="{Binding DataContext, ElementName=musicPlayer}"
                            Visibility="{Binding IsBigPicture, Converter={StaticResource boolToVisConverter}}">
@@ -82,6 +83,7 @@
                            Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
                         <Button Margin="16" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource ContentOnlyButton}"
                             Content="{iconPacks:Material Kind=ArrowDown}"
+                                Visibility="{Binding IsMouseOver, ElementName=imgBigPicture, Converter={StaticResource boolToVisConverter}}"
                                 Command="{Binding CollapseBigPictureCommand}"/>
                     </Grid>
                 </Grid>
@@ -190,14 +192,15 @@
                     <ColumnDefinition Width="Auto"/> <!--cover-->
                     <ColumnDefinition/> <!--name and artist-->
                 </Grid.ColumnDefinitions>
-                <Grid Margin="17,17,0,17" Grid.Column="0" Visibility="{Binding IsBigPicture, Converter={StaticResource invertedBoolToVisConverter}}">
+                <Grid Margin="17,17,0,17" Grid.Column="0" Name="imgSmallPicture" Visibility="{Binding IsBigPicture, Converter={StaticResource invertedBoolToVisConverter}}">
                     <Image Width="75" Height="75" 
                        Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
                     <Button
                         Margin="8"
                         HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource ContentOnlyButton}"
                             Command="{Binding ShowBigPictureCommand}"
-                            Content="{iconPacks:Material Kind=ArrowUp}"/>
+                            Content="{iconPacks:Material Kind=ArrowUp}"
+                        Visibility="{Binding IsMouseOver, ElementName=imgSmallPicture, Converter={StaticResource boolToVisConverter}}"/>
                 </Grid>
                 <Grid Grid.Column="1" Margin="17">
                     <Grid.RowDefinitions>
