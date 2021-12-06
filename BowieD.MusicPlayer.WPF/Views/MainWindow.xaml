@@ -328,7 +328,8 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Grid Name="fullScreenViewGrid" d:HorizontalAlignment="Left" d:Width="1280" d:Visibility="Visible" Visibility="Collapsed">
+        <Grid Name="fullScreenViewGrid" d:HorizontalAlignment="Left" d:Width="1280" d:Visibility="Visible" Visibility="Collapsed"
+              AllowDrop="True" Drop="fullScreenViewGrid_Drop">
             <d:Grid.RenderTransform>
                 <TranslateTransform X="1280"/>
             </d:Grid.RenderTransform>
@@ -375,7 +376,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Image Margin="10" d:Width="176" d:Height="176" MaxWidth="176" MaxHeight="176"
-                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
+                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=176|176}"/>
                     <Grid Margin="10" Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -384,6 +385,10 @@
                         <TextBlock Text="{Binding CurrentSong.Title}" TextWrapping="Wrap" VerticalAlignment="Bottom" d:Text="Your Contract Has Expired" FontSize="48" FontWeight="Bold"/>
                         <TextBlock Grid.Row="1" VerticalAlignment="Top" Text="{Binding CurrentSong.Artist}" d:Text="Pascal Michael Stiefel" FontSize="24"/>
                     </Grid>
+
+                    <Grid.BitmapEffect>
+                        <DropShadowBitmapEffect Color="Black" ShadowDepth="5" Softness="0.75"/>
+                    </Grid.BitmapEffect>
                 </Grid>
             </Grid>
             <Grid Grid.Row="3" Name="fullScreenMediaControlGrid"
@@ -463,7 +468,7 @@
     <mah:MetroWindow.TaskbarItemInfo>
         <TaskbarItemInfo ProgressValue="{Binding View.MusicPlayerViewModel.Position01}"
                          ProgressState="{Binding View.MusicPlayerViewModel.ProgressState}"
-                         Overlay="{Binding View.MusicPlayerViewModel.CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}">
+                         Overlay="{Binding View.MusicPlayerViewModel.CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=16|16}">
             <TaskbarItemInfo.ThumbButtonInfos>
                 <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.PrevTrackCommand}"
                                  ImageSource="{iconPacks:MaterialImage Kind=SkipPrevious, Brush=White}"

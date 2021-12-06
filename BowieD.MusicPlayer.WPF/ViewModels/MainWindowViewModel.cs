@@ -81,13 +81,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                         {
                             try
                             {
-                                var bmp = new BitmapImage();
-                                bmp.BeginInit();
-                                bmp.CacheOption = BitmapCacheOption.OnLoad;
-                                bmp.UriSource = new Uri(ofd.FileName);
-                                bmp.EndInit();
-
-                                View.fullScreenBackground.Source = bmp;
+                                SetBackground(ofd.FileName);
                             }
                             catch { }
                         }
@@ -167,6 +161,17 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             {
                 _playlists.Add(pl);
             }
+        }
+
+        public void SetBackground(string fileName)
+        {
+            var bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.UriSource = new Uri(fileName);
+            bmp.EndInit();
+
+            View.fullScreenBackground.Source = bmp;
         }
     }
 }

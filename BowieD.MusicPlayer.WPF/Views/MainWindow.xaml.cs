@@ -97,5 +97,40 @@ namespace BowieD.MusicPlayer.WPF.Views
 
             PlaylistViewModel.Songs.RemoveAt(index);
         }
+
+        private void fullScreenViewGrid_Drop(object sender, DragEventArgs e)
+        {
+            if (!MusicPlayerViewModel.IsFullScreen)
+                return;
+
+            if (e.Handled)
+                return;
+
+            var obj = e.Data;
+
+            string format = DataFormats.FileDrop;
+
+            if (obj.GetDataPresent(format))
+            {
+                string[] files = (string[])obj.GetData(format);
+
+                if (files.Length > 0)
+                {
+                    foreach (var fn in files)
+                    {
+                        if (FileTool.CheckFileValid(fn, ImageTool.SupportedImageExtensions))
+                        {
+                            try
+                            {
+                                ViewModel.SetBackground(fn);
+
+                                break;
+                            }
+                            catch { }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
