@@ -7,12 +7,14 @@ using BowieD.MusicPlayer.WPF.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace BowieD.MusicPlayer.WPF.ViewModels
 {
+    public delegate void PlaybackStateChanged(Song song, Un4seen.Bass.BASSActive newState, Un4seen.Bass.BASSActive oldState);
     public delegate void TrackChanged(Song newSong);
 
     public sealed class MusicPlayerViewModel : BaseViewModelView<MainWindow>
@@ -28,6 +30,15 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             _timer.Tick += (sender, e) =>
             {
+                Un4seen.Bass.BASSActive newState = BassFacade.State;
+
+                if (newState != _prevState)
+                {
+                    OnPlaybackStateChanged?.Invoke(CurrentSong, newState, _prevState);
+                }
+
+                _prevState = newState;
+
                 TriggerPropertyChanged(nameof(Position), nameof(DisplayPosition), nameof(Duration), nameof(DisplayDuration), nameof(IsPauseButton));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
 
@@ -41,7 +52,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
 
         public event TrackChanged OnTrackChanged;
+        public event PlaybackStateChanged OnPlaybackStateChanged;
 
+        private Un4seen.Bass.BASSActive _prevState = Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED;
         private DispatcherTimer _timer;
         private Song _currentSong;
         private ELoopMode _loopMode;
@@ -87,8 +100,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
         public double Volume
         {
-            get => BassFacade.Volume;
-            set => BassFacade.SetVolume(value);
+            get { return (double)GetValue(VolumeProperty); }
+            set { SetValue(VolumeProperty, value); }
         }
         public bool IsBigPicture
         {
@@ -108,6 +121,16 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         public string DisplayPosition => SecondsToText(Position);
         public string DisplayDuration => SecondsToText(Duration);
+
+        public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(double), typeof(MusicPlayerViewModel), new PropertyMetadata(100.0, VolumeChangedCallback));
+        
+        private static void VolumeChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is double newValue)
+            {
+                BassFacade.SetVolume(newValue);
+            }
+        }
 
         private void Clean()
         {
