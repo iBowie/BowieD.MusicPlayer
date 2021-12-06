@@ -67,7 +67,7 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition/>
                                                 </Grid.ColumnDefinitions>
-                                                <Image Width="20" Height="20" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=20|20}"/>
+                                                <Image Width="20" Height="20" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=20|0}"/>
                                                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
                                             </Grid>
                                         </DataTemplate>
@@ -81,7 +81,7 @@
                           DataContext="{Binding DataContext, ElementName=musicPlayer}"
                            Visibility="{Binding IsBigPicture, Converter={StaticResource boolToVisConverter}}">
                             <Image
-                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=392|392}"/>
+                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=392|0}"/>
                             <Button 
                                 Margin="16" 
                                 Background="{DynamicResource MahApps.Brushes.Window.Background}"
@@ -114,7 +114,7 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
                                     <Image Width="232" Height="232" Margin="32,32,8,32" 
-                                           Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=232|232}"/>
+                                           Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|232}"/>
                                     <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="8,32,32,32">
                                         <Grid.RowDefinitions>
                                             <RowDefinition/>
@@ -164,7 +164,7 @@
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
                                                     <Image Width="40" Height="40" Margin="5" 
-                                                           Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=40|40}"/>
+                                                           Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|40}"/>
                                                     <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" Text="{Binding Title}"/>
                                                     <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding Artist}"/>
                                                     <TextBlock Grid.Column="3" VerticalAlignment="Center" Margin="5" Text="{Binding Album}"/>
@@ -210,7 +210,7 @@
                     </Grid.RenderTransform>
                     <Grid Margin="17,17,0,17" Grid.Column="0"  Name="imgSmallPicture">
                         <Image Width="75" Height="75" 
-                       Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=75|75}"/>
+                       Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=75|0}"/>
                         <Button
                             Margin="8"
                             Background="{DynamicResource MahApps.Brushes.Window.Background}"
@@ -376,7 +376,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Image Margin="10" d:Width="176" d:Height="176" MaxWidth="176" MaxHeight="176"
-                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=176|176}"/>
+                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=176|0}"/>
                     <Grid Margin="10" Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -468,11 +468,11 @@
     <mah:MetroWindow.TaskbarItemInfo>
         <TaskbarItemInfo ProgressValue="{Binding View.MusicPlayerViewModel.Position01}"
                          ProgressState="{Binding View.MusicPlayerViewModel.ProgressState}"
-                         Overlay="{Binding View.MusicPlayerViewModel.CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=16|16}">
+                         Overlay="{Binding View.MusicPlayerViewModel.CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=16|0}">
             <TaskbarItemInfo.ThumbButtonInfos>
                 <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.PrevTrackCommand}"
                                  ImageSource="{iconPacks:MaterialImage Kind=SkipPrevious, Brush=White}"
-                                 Description="Previous Track"/>
+                                 Description="Previous"/>
                 <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.PlayPauseCommand}" 
                                  ImageSource="{iconPacks:MaterialImage Kind=Pause, Brush=White}"
                                  Description="Pause"
@@ -483,7 +483,7 @@
                                  Visibility="{Binding View.MusicPlayerViewModel.IsPauseButton, Converter={StaticResource invertedBoolToVisConverter}}"/>
                 <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.NextTrackCommand}"
                                  ImageSource="{iconPacks:MaterialImage Kind=SkipNext, Brush=White}"
-                                 Description="Next Track"/>
+                                 Description="Next"/>
             </TaskbarItemInfo.ThumbButtonInfos>
         </TaskbarItemInfo>
     </mah:MetroWindow.TaskbarItemInfo>
