@@ -81,17 +81,13 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                         {
                             try
                             {
-                                ImageBrush ibrush = new();
-                                
                                 var bmp = new BitmapImage();
                                 bmp.BeginInit();
                                 bmp.CacheOption = BitmapCacheOption.OnLoad;
                                 bmp.UriSource = new Uri(ofd.FileName);
                                 bmp.EndInit();
 
-                                ibrush.ImageSource = bmp;
-
-                                View.fullScreenViewGrid.Background = ibrush;
+                                View.fullScreenBackground.Source = bmp;
                             }
                             catch { }
                         }
