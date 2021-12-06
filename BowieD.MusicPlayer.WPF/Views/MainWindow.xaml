@@ -298,6 +298,27 @@
             </Grid>
         </Grid>
     </Grid>
+    <mah:MetroWindow.TaskbarItemInfo>
+        <TaskbarItemInfo ProgressValue="{Binding View.MusicPlayerViewModel.Position01}"
+                         ProgressState="{Binding View.MusicPlayerViewModel.ProgressState}">
+            <TaskbarItemInfo.ThumbButtonInfos>
+                <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.PrevTrackCommand}"
+                                 ImageSource="{iconPacks:MaterialImage Kind=SkipPrevious, Brush=White}"
+                                 Description="Previous Track"/>
+                <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.PlayPauseCommand}" 
+                                 ImageSource="{iconPacks:MaterialImage Kind=Pause, Brush=White}"
+                                 Description="Pause"
+                                 Visibility="{Binding View.MusicPlayerViewModel.IsPauseButton, Converter={StaticResource boolToVisConverter}}"/>
+                <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.PlayPauseCommand}" 
+                                 ImageSource="{iconPacks:MaterialImage Kind=Play, Brush=White}"
+                                 Description="Play"
+                                 Visibility="{Binding View.MusicPlayerViewModel.IsPauseButton, Converter={StaticResource invertedBoolToVisConverter}}"/>
+                <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.NextTrackCommand}"
+                                 ImageSource="{iconPacks:MaterialImage Kind=SkipNext, Brush=White}"
+                                 Description="Next Track"/>
+            </TaskbarItemInfo.ThumbButtonInfos>
+        </TaskbarItemInfo>
+    </mah:MetroWindow.TaskbarItemInfo>
     <mah:MetroWindow.Resources>
         <Style x:Key="ContentOnlyButton" TargetType="{x:Type Button}">
             <Setter Property="Template">

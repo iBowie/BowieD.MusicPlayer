@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Shell;
 using System.Windows.Threading;
 
 namespace BowieD.MusicPlayer.WPF.ViewModels
@@ -39,13 +40,18 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 _prevState = newState;
 
-                TriggerPropertyChanged(nameof(Position), nameof(DisplayPosition), nameof(Duration), nameof(DisplayDuration), nameof(IsPauseButton));
+                TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(DisplayPosition), nameof(Duration), nameof(DisplayDuration), nameof(IsPauseButton));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
 
                 if (CurrentSong.IsEmpty || Position >= Duration)
                 {
                     NextTrackAuto();
                 }
+            };
+
+            OnPlaybackStateChanged += (song, oldState, newState) =>
+            {
+                TriggerPropertyChanged(nameof(ProgressState));
             };
 
             _timer.Start();
@@ -116,6 +122,21 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     return true;
 
                 return false;
+            }
+        }
+        public double Position01 => Position / Duration;
+        public TaskbarItemProgressState ProgressState
+        {
+            get
+            {
+                return BassFacade.State switch
+                {
+                    Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED => TaskbarItemProgressState.None,
+                    Un4seen.Bass.BASSActive.BASS_ACTIVE_STALLED => TaskbarItemProgressState.Error,
+                    Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING => TaskbarItemProgressState.Normal,
+                    Un4seen.Bass.BASSActive.BASS_ACTIVE_PAUSED => TaskbarItemProgressState.Paused,
+                    _ => throw new Exception(),
+                };
             }
         }
 
