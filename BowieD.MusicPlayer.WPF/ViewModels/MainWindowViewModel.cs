@@ -107,6 +107,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             if (sender is MainWindowViewModel viewModel && e.NewValue is PlaylistInfo pinfo)
             {
                 viewModel.View.PlaylistViewModel.PlaylistInfo = pinfo;
+
+                viewModel.View.playlistScrollViewerContent.ScrollToTop();
             }
         }
 
