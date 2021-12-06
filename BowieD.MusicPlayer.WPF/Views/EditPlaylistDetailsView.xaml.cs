@@ -4,6 +4,7 @@ using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -67,7 +68,10 @@ namespace BowieD.MusicPlayer.WPF.Views
 
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            OpenFileDialog ofd = new();
+            OpenFileDialog ofd = new()
+            {
+                Filter = $"Supported formats|{string.Join(';', ImageTool.SupportedImageExtensions.Select(d => "*" + d))}"
+            };
 
             if (ofd.ShowDialog() == true)
             {
@@ -75,7 +79,7 @@ namespace BowieD.MusicPlayer.WPF.Views
                 {
                     var data = File.ReadAllBytes(ofd.FileName);
 
-                    PlaylistPictureData = data;
+                    PlaylistPictureData = ImageTool.ResizeInByteArray(data, 700, 700);
                 }
                 catch { }
             }

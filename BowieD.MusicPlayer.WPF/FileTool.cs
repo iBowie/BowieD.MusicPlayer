@@ -34,6 +34,16 @@ namespace BowieD.MusicPlayer.WPF
     }
     public static class ImageTool
     {
+        private static readonly string[] SUPPORTED_EXTENSIONS = new string[]
+        {
+            ".png",
+            ".jpeg",
+            ".jpg",
+            ".bmp"
+        };
+
+        public static IEnumerable<string> SupportedImageExtensions = SUPPORTED_EXTENSIONS;
+
         public static byte[] ResizeInByteArray(byte[] imageBytes, int newMaxWidth, int newMaxHeight)
         {
             using MemoryStream fromStream = new(imageBytes);
