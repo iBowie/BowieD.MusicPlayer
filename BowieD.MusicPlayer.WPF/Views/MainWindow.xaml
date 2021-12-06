@@ -154,12 +154,14 @@
                                                         <ColumnDefinition/>
                                                         <ColumnDefinition/>
                                                         <ColumnDefinition/>
+                                                        <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
                                                     <Image Width="40" Height="40" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
                                                     <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" Text="{Binding Title}"/>
                                                     <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding Artist}"/>
                                                     <TextBlock Grid.Column="3" VerticalAlignment="Center" Margin="5" Text="{Binding Album}"/>
                                                     <TextBlock Grid.Column="4" VerticalAlignment="Center" Margin="5" Text="{Binding DisplayYear}"/>
+                                                    <TextBlock Grid.Column="5" VerticalAlignment="Center" Margin="5" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </ListView.ItemTemplate>
@@ -260,12 +262,12 @@
                             <ColumnDefinition/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Margin="5" Text="{Binding DisplayPosition}" d:Text="00:00" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" Margin="5" Text="{Binding Position, Converter={StaticResource doubleToDisplayTimeConverter}}" d:Text="00:00" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         <Slider Grid.Column="1" Margin="3.5" MinWidth="212"
                             Minimum="0"
                             Value="{Binding Position}"
                             Maximum="{Binding Duration}"/>
-                        <TextBlock Grid.Column="2" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center" d:Text="59:59:59" Text="{Binding DisplayDuration}"/>
+                        <TextBlock Grid.Column="2" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center" d:Text="59:59:59" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
                     </Grid>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="17" VerticalAlignment="Center" Grid.Column="2">
@@ -359,9 +361,9 @@
                         <ColumnDefinition Width="20*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" d:Text="00:00" Text="{Binding DisplayPosition}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" d:Text="00:00" Text="{Binding Position, Converter={StaticResource doubleToDisplayTimeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" Value="{Binding Position}" Maximum="{Binding Duration}"/>
-                    <TextBlock Grid.Column="2" d:Text="59:59:59" Text="{Binding DisplayDuration}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" d:Text="59:59:59" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
                 <Grid Grid.Row="1" Margin="30,0,30,30" DataContext="{Binding View.MusicPlayerViewModel}">
                     <Grid HorizontalAlignment="Center">

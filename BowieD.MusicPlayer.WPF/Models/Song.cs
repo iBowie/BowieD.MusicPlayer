@@ -41,6 +41,13 @@ namespace BowieD.MusicPlayer.WPF.Models
                 return FileTool.CheckFileValid(FileName, BassFacade.SupportedExtensions);
             }
         }
+        public double Duration
+        {
+            get
+            {
+                return FileTool.GetDuration(FileName);
+            }
+        }
 
         public string DisplayYear
         {
@@ -114,9 +121,18 @@ namespace BowieD.MusicPlayer.WPF.Models
         public string Name { get; set; }
         public IList<Song> Songs { get; }
         public byte[] PictureData { get; set; }
+
+        public double TotalDuration
+        {
+            get
+            {
+                return Songs.Sum(d => d.Duration);
+            }
+        }
+
         public string DisplayToolTip
         {
-            get => $"{Songs.Count} tracks";
+            get => $"{Songs.Count} tracks, {Extensions.DoubleToReadableDisplayTimeConverter.ConvertSpan(TimeSpan.FromSeconds(TotalDuration))}";
         }
 
         public static implicit operator PlaylistInfo(Playlist playlist)

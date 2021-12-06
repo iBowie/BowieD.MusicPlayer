@@ -42,7 +42,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 _prevState = newState;
 
-                TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(DisplayPosition), nameof(Duration), nameof(DisplayDuration), nameof(IsPauseButton));
+                TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(Duration), nameof(IsPauseButton));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
 
                 if (CurrentSong.IsEmpty || newState == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED)
@@ -147,9 +147,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             get => _isFullScreen;
             set => ChangeProperty(ref _isFullScreen, value, nameof(IsFullScreen));
         }
-
-        public string DisplayPosition => SecondsToText(Position);
-        public string DisplayDuration => SecondsToText(Duration);
 
         public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(double), typeof(MusicPlayerViewModel), new PropertyMetadata(100.0, VolumeChangedCallback));
         
@@ -263,18 +260,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 CurrentSong = songFromHistory;
             }
-        }
-
-        private string SecondsToText(double seconds)
-        {
-            TimeSpan span = TimeSpan.FromSeconds(seconds);
-
-            if (span.TotalHours >= 1)
-            {
-                return span.ToString("hh':'mm':'ss");
-            }
-
-            return span.ToString("mm':'ss");
         }
 
         #region Animations

@@ -10,6 +10,8 @@
             <extensions:RawBinaryToBitmapImageConverter x:Key="binaryToPictureConverter"/>
             <extensions:CustomBooleanToDoubleConverter x:Key="boolToVisHiddenConverter" True="1.0" False="0.0"/>
             <extensions:CustomBooleanToDoubleConverter x:Key="boolToVisHalfTransparentConverter" True="1.0" False="0.5"/>
+            <extensions:DoubleToDisplayTimeConverter x:Key="doubleToDisplayTimeConverter"/>
+            <extensions:DoubleToReadableDisplayTimeConverter x:Key="doubleToFancyTimeConverter"/>
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />

@@ -21,5 +21,13 @@ namespace BowieD.MusicPlayer.WPF
 
             return true;
         }
+
+        public static double GetDuration(string fileName)
+        {
+            MediaInfo.MediaInfoWrapper miw = new(fileName);
+
+
+            return miw.Duration / 1000.0;
+        }
     }
 }
