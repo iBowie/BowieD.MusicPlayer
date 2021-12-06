@@ -300,7 +300,8 @@
     </Grid>
     <mah:MetroWindow.TaskbarItemInfo>
         <TaskbarItemInfo ProgressValue="{Binding View.MusicPlayerViewModel.Position01}"
-                         ProgressState="{Binding View.MusicPlayerViewModel.ProgressState}">
+                         ProgressState="{Binding View.MusicPlayerViewModel.ProgressState}"
+                         Overlay="{Binding View.MusicPlayerViewModel.CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}">
             <TaskbarItemInfo.ThumbButtonInfos>
                 <ThumbButtonInfo Command="{Binding View.MusicPlayerViewModel.PrevTrackCommand}"
                                  ImageSource="{iconPacks:MaterialImage Kind=SkipPrevious, Brush=White}"
