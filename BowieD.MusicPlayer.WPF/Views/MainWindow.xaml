@@ -192,7 +192,10 @@
                     <ColumnDefinition Width="Auto"/> <!--cover-->
                     <ColumnDefinition/> <!--name and artist-->
                 </Grid.ColumnDefinitions>
-                <Grid Margin="17,17,0,17" Grid.Column="0" Name="imgSmallPicture" Visibility="{Binding IsBigPicture, Converter={StaticResource invertedBoolToVisConverter}}">
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="smallPictureRenderTranslateTransform" X="0"/>
+                </Grid.RenderTransform>
+                <Grid Margin="17,17,0,17" Grid.Column="0"  Name="imgSmallPicture">
                     <Image Width="75" Height="75" 
                        Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"/>
                     <Button

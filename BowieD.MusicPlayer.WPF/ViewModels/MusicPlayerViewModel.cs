@@ -10,6 +10,8 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shell;
 using System.Windows.Threading;
 
@@ -269,6 +271,13 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             return span.ToString("mm':'ss");
         }
 
+        #region Animations
+
+        private static readonly DoubleAnimation SmallPictureAppearFromLeftAnimation = new(-92.0, 0.0, new Duration(TimeSpan.FromSeconds(0.1)));
+        private static readonly DoubleAnimation SmallPictureDisappearToLeftAnimation = new(0.0, -93.0, new Duration(TimeSpan.FromSeconds(0.1)));
+        
+        #endregion
+
         #region Commands
 
         private ICommand
@@ -392,7 +401,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     _showBigPictureCommand = new BaseCommand(() =>
                     {
                         IsBigPicture = true;
-                    });
+
+                        View.smallPictureRenderTranslateTransform.BeginAnimation(TranslateTransform.XProperty, SmallPictureDisappearToLeftAnimation); ;
+                    },
+                    () => !IsBigPicture);
                 }
 
                 return _showBigPictureCommand;
@@ -407,7 +419,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     _collapseBigPictureCommand = new BaseCommand(() =>
                     {
                         IsBigPicture = false;
-                    });
+
+                        View.smallPictureRenderTranslateTransform.BeginAnimation(TranslateTransform.XProperty, SmallPictureAppearFromLeftAnimation);
+                    }, () => IsBigPicture);
                 }
 
                 return _collapseBigPictureCommand;
