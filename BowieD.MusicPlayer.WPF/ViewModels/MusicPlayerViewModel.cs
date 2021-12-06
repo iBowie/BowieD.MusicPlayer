@@ -69,6 +69,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private readonly ObservableQueue<Song> _songQueue = new();
         private readonly ObservableStack<Song> _songHistory = new();
         private bool _isBigPicture = false;
+        private bool _isFullScreen = false;
 
         public ObservableQueue<Song> SongQueue => _songQueue;
         public ObservableStack<Song> SongHistory => _songHistory;
@@ -140,6 +141,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     _ => throw new Exception(),
                 };
             }
+        }
+        public bool IsFullScreen
+        {
+            get => _isFullScreen;
+            set => ChangeProperty(ref _isFullScreen, value, nameof(IsFullScreen));
         }
 
         public string DisplayPosition => SecondsToText(Position);
@@ -287,6 +293,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             _prevTrackCommand,
             _showBigPictureCommand,
             _collapseBigPictureCommand,
+            _enterFullScreenCommand,
+            _exitFullScreenCommand,
             _viewQueueCommand,
             _playPauseCommand;
 
@@ -425,6 +433,63 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 }
 
                 return _collapseBigPictureCommand;
+            }
+        }
+        public ICommand EnterFullScreenCommand
+        {
+            get
+            {
+                if (_enterFullScreenCommand is null)
+                {
+                    _enterFullScreenCommand = new BaseCommand(() =>
+                    {
+                        View.WindowState = WindowState.Maximized;
+                        View.WindowStyle = WindowStyle.None;
+                        View.ResizeMode = ResizeMode.NoResize;
+                        View.UseNoneWindowStyle = true;
+                        View.IgnoreTaskbarOnMaximize = true;
+
+                        View.fullScreenViewGrid.Visibility = Visibility.Visible;
+                        View.normalViewGrid.Visibility = Visibility.Collapsed;
+
+                        View.Activate();
+
+                        IsFullScreen = true;
+                    }, () =>
+                    {
+                        return !IsFullScreen;
+                    });
+                }
+
+                return _enterFullScreenCommand;
+            }
+        }
+        public ICommand ExitFullScreenCommand
+        {
+            get
+            {
+                if (_exitFullScreenCommand is null)
+                {
+                    _exitFullScreenCommand = new BaseCommand(() =>
+                    {
+                        View.WindowStyle = WindowStyle.SingleBorderWindow;
+                        View.WindowState = WindowState.Normal;
+                        View.ResizeMode = ResizeMode.CanResize;
+                        View.UseNoneWindowStyle = false;
+                        View.ShowTitleBar = true;
+                        View.IgnoreTaskbarOnMaximize = false;
+
+                        View.fullScreenViewGrid.Visibility = Visibility.Collapsed;
+                        View.normalViewGrid.Visibility = Visibility.Visible;
+
+                        IsFullScreen = false;
+                    }, () =>
+                    {
+                        return IsFullScreen;
+                    });
+                }
+
+                return _exitFullScreenCommand;
             }
         }
         public ICommand ViewQueueCommand

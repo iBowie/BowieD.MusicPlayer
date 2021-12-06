@@ -8,6 +8,7 @@
             <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
             <extensions:CustomBooleanToVisibilityConverter x:Key="invertedBoolToVisConverter" True="Collapsed" False="Visible"/>
             <extensions:RawBinaryToBitmapImageConverter x:Key="binaryToPictureConverter"/>
+            <extensions:CustomBooleanToDoubleConverter x:Key="boolToVisHiddenConverter" True="1.0" False="0.0"/>
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />

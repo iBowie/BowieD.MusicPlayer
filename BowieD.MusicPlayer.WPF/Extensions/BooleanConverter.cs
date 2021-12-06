@@ -32,4 +32,8 @@ namespace BowieD.MusicPlayer.WPF.Extensions
     {
         public CustomBooleanToVisibilityConverter() : base(Visibility.Visible, Visibility.Collapsed) { }
     }
+    public sealed class CustomBooleanToDoubleConverter : BooleanConverter<double>
+    {
+        public CustomBooleanToDoubleConverter() : base(1.0, 0.0) { }
+    }
 }
