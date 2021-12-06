@@ -103,6 +103,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         #region Data
 
         private readonly ObservableCollection<PlaylistInfo> _playlists = new();
+        private double _blurPower = 20.0;
 
         #endregion
 
@@ -111,6 +112,12 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         public ObservableCollection<PlaylistInfo> Playlists
         {
             get => _playlists;
+        }
+
+        public double BlurPower
+        {
+            get => _blurPower;
+            set => ChangeProperty(ref _blurPower, value, nameof(BlurPower));
         }
 
         public string WindowTitle
