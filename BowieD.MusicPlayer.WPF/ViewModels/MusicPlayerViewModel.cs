@@ -85,7 +85,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             {
                 ChangeProperty(ref _currentSong, value, nameof(CurrentSong));
 
-                if (!value.IsEmpty)
+                if (!value.IsEmpty && value.IsAvailable)
                 {
                     BassFacade.Play(value.FileName);
 

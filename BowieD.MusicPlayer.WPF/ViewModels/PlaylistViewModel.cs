@@ -1,4 +1,5 @@
-﻿using BowieD.MusicPlayer.WPF.Data;
+﻿using BowieD.MusicPlayer.WPF.Common;
+using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
@@ -29,6 +30,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 PlaylistInfo.SongIDs.Add(s.ID);
 
             PlaylistRepository.Instance.UpdatePlaylist(PlaylistInfo);
+
+            _playlist = (Playlist)_playlistInfo;
         }
 
         public PlaylistInfo PlaylistInfo
@@ -150,7 +153,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                     foreach (var fn in files)
                     {
-                        if (string.IsNullOrWhiteSpace(fn))
+                        if (!FileTool.CheckFileValid(fn, BassFacade.SupportedExtensions))
                             continue;
 
                         var song = SongRepository.Instance.GetOrAddSong(fn);

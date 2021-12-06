@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Un4seen.Bass;
 
 namespace BowieD.MusicPlayer.WPF.Common
@@ -103,5 +105,16 @@ namespace BowieD.MusicPlayer.WPF.Common
         }
 
         public static BASSActive State => Bass.BASS_ChannelIsActive(Handle);
+
+        public static IEnumerable<string> SupportedExtensions => SUPPORTED_EXTENSIONS;
+
+        private static readonly string[] SUPPORTED_EXTENSIONS = new string[]
+        {
+            ".mp3",
+            ".m4a",
+            ".wma",
+            ".ogg",
+            ".opus"
+        };
     }
 }

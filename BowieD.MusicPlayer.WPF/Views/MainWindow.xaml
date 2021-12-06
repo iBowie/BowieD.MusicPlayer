@@ -147,7 +147,7 @@
                                     Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" PreviewKeyDown="playlistSongsListView_PreviewKeyDown" PreviewMouseWheel="ListView_PreviewMouseWheel">
                                         <ListView.ItemTemplate>
                                             <DataTemplate DataType="{x:Type models:Song}">
-                                                <Grid>
+                                                <Grid Opacity="{Binding IsAvailable, Converter={StaticResource boolToVisHalfTransparentConverter}}">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="50"/>
                                                         <ColumnDefinition/>

@@ -1,6 +1,8 @@
-﻿using BowieD.MusicPlayer.WPF.Data;
+﻿using BowieD.MusicPlayer.WPF.Common;
+using BowieD.MusicPlayer.WPF.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace BowieD.MusicPlayer.WPF.Models
@@ -32,6 +34,13 @@ namespace BowieD.MusicPlayer.WPF.Models
         public string FileName { get; }
         public byte[] PictureData { get; }
         public bool IsEmpty { get; }
+        public bool IsAvailable
+        {
+            get
+            {
+                return FileTool.CheckFileValid(FileName, BassFacade.SupportedExtensions);
+            }
+        }
 
         public string DisplayYear
         {
