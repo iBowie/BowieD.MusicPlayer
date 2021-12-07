@@ -1,9 +1,11 @@
 ﻿using BowieD.MusicPlayer.WPF.Common;
 using BowieD.MusicPlayer.WPF.Data;
+using Humanizer;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace BowieD.MusicPlayer.WPF.Models
 {
@@ -132,7 +134,20 @@ namespace BowieD.MusicPlayer.WPF.Models
 
         public string DisplayToolTip
         {
-            get => $"{Songs.Count} tracks, {Extensions.DoubleToReadableDisplayTimeConverter.ConvertSpan(TimeSpan.FromSeconds(TotalDuration))}";
+            get
+            {
+                StringBuilder sb = new();
+
+                sb.Append("track".ToQuantity(Songs.Count));
+
+                sb.Append(", ");
+
+                var span = TimeSpan.FromSeconds(TotalDuration);
+
+                sb.Append(span.Humanize(precision: 2, minUnit: Humanizer.Localisation.TimeUnit.Second, collectionSeparator: " "));
+
+                return sb.ToString();
+            }
         }
 
         public static implicit operator PlaylistInfo(Playlist playlist)
