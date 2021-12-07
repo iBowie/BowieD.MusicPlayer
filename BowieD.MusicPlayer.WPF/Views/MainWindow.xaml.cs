@@ -1,5 +1,4 @@
-﻿using BowieD.MusicPlayer.WPF.Data;
-using BowieD.MusicPlayer.WPF.ViewModels;
+﻿using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
 using System.Windows;
 using System.Windows.Controls;

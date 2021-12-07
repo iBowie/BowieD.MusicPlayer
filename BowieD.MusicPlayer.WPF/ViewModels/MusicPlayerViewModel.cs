@@ -170,7 +170,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
 
         public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(double), typeof(MusicPlayerViewModel), new PropertyMetadata(100.0, VolumeChangedCallback));
-        
+
         private static void VolumeChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is double newValue)
@@ -287,7 +287,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         private static readonly DoubleAnimation SmallPictureAppearFromLeftAnimation = new(-92.0, 0.0, new Duration(TimeSpan.FromSeconds(0.1)));
         private static readonly DoubleAnimation SmallPictureDisappearToLeftAnimation = new(0.0, -93.0, new Duration(TimeSpan.FromSeconds(0.1)));
-        
+
         #endregion
 
         #region Commands
