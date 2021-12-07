@@ -166,7 +166,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
         public bool IsUpcomingSongVisible
         {
-            get => SongQueue.Count > 0 && Duration - Position < 20.0;
+            get => LoopMode != ELoopMode.CURRENT && SongQueue.Count > 0 && Duration - Position < 20.0;
         }
 
         public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(double), typeof(MusicPlayerViewModel), new PropertyMetadata(100.0, VolumeChangedCallback));
