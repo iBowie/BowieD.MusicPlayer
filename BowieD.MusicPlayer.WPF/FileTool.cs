@@ -50,10 +50,16 @@ namespace BowieD.MusicPlayer.WPF
 
             Bitmap bmp = new(fromStream);
 
-            newMaxWidth = Math.Min(bmp.Width, newMaxWidth);
-            newMaxHeight = Math.Min(bmp.Height, newMaxHeight);
+            int useMaxWidth = Math.Min(bmp.Width, newMaxWidth);
+            int useMaxHeight = Math.Min(bmp.Height, newMaxHeight);
 
-            Bitmap result = new(bmp, newMaxWidth, newMaxHeight);
+            if (useMaxHeight == newMaxHeight &&
+                useMaxWidth == newMaxWidth)
+            {
+                return imageBytes;
+            }
+
+            Bitmap result = new(bmp, useMaxWidth, useMaxHeight);
 
             using MemoryStream toStream = new();
 
