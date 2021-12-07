@@ -152,34 +152,62 @@
                                     gong:DragDrop.DropHandler="{Binding DropHandler}"
                                     MouseDoubleClick="ListViewItem_MouseDoubleClick"
                                     Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" PreviewKeyDown="playlistSongsListView_PreviewKeyDown" PreviewMouseWheel="ListView_PreviewMouseWheel">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type models:Song}">
-                                                <Grid Opacity="{Binding IsAvailable, Converter={StaticResource boolToVisHalfTransparentConverter}}">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="50"/>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Image Width="40" Height="40" Margin="5" 
-                                                           Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|40}"/>
-                                                    <Grid Grid.Column="1" Margin="5">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition/>
-                                                            <RowDefinition/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" FontWeight="Bold" VerticalAlignment="Bottom" FontSize="16"
-                                                                   Text="{Binding Title}"/>
-                                                        <TextBlock Grid.Row="1" VerticalAlignment="Top" FontSize="14" 
-                                                                   Text="{Binding Artist}"/>
-                                                    </Grid>
-                                                    <TextBlock Grid.Column="2" VerticalAlignment="Center" FontSize="14" Margin="5" Text="{Binding Album}"/>
-                                                    <TextBlock Grid.Column="3" VerticalAlignment="Center" FontSize="14" Margin="5" Text="{Binding DisplayYear}"/>
-                                                    <TextBlock Grid.Column="4" VerticalAlignment="Center" FontSize="14" Margin="5" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridView.ColumnHeaderContainerStyle>
+                                                    <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource MahApps.Styles.GridViewColumnHeader}">
+                                                        <Setter Property="FontSize" Value="14"/>
+                                                    </Style>
+                                                </GridView.ColumnHeaderContainerStyle>
+                                                <GridView.Columns>
+                                                    <GridViewColumn Header="Name">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate DataType="{x:Type models:Song}">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="50"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Image Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|40}"
+                                                                           Width="40" Height="40" Margin="5"/>
+                                                                    <Grid Margin="5" Grid.Column="1">
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition/>
+                                                                            <RowDefinition/>
+                                                                        </Grid.RowDefinitions>
+                                                                        <TextBlock Grid.Row="0" FontWeight="Bold" VerticalAlignment="Bottom" FontSize="16"
+                                                                                   Text="{Binding Title}"/>
+                                                                        <TextBlock Grid.Row="1" VerticalAlignment="Top" FontSize="14" 
+                                                                                   Text="{Binding Artist}"/>
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="Album">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate DataType="{x:Type models:Song}">
+                                                                <TextBlock FontSize="14" Text="{Binding Album}"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="Year">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate DataType="{x:Type models:Song}">
+                                                                <TextBlock FontSize="14" Text="{Binding DisplayYear}"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="Duration">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate DataType="{x:Type models:Song}">
+                                                                <TextBlock FontSize="14" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                </GridView.Columns>
+                                            </GridView>
+                                        </ListView.View>
                                     </ListView>
                                 </Grid>
                             </StackPanel>
