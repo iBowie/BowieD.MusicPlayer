@@ -24,7 +24,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private static readonly DoubleAnimation BACKGROUND_FADE_IN = new(0.0, 1.0, BACKGROUND_FADE_SPEED);
         private Image bg1, bg2;
         private DispatcherTimer _fullScreenBackgroundSwitcher;
-        private string prevRandom;
+        private string? prevRandom;
 
         public MainWindowViewModel(MainWindow view) : base(view)
         {
