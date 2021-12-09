@@ -6,7 +6,7 @@
       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:gong="urn:gong-wpf-dragdrop"
       xmlns:models="clr-namespace:BowieD.MusicPlayer.WPF.Models"
-      xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views.Pages" xmlns:viewmodels="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels"
+      xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views.Pages" xmlns:viewmodels="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels.Pages"
       mc:Ignorable="d"
       d:DesignHeight="595.4" d:DesignWidth="886"
       Title="PlaylistPage"
