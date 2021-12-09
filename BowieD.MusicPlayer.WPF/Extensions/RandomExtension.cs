@@ -7,6 +7,12 @@ namespace BowieD.MusicPlayer.WPF.Extensions
     {
         private static readonly Random _random = new();
 
+        public static T Random<T>(this IList<T> list)
+        {
+            var index = _random.Next(0, list.Count);
+
+            return list[index];
+        }
         public static void Shuffle<T>(this IList<T> list)
         {
             List<T> temp = new(list);

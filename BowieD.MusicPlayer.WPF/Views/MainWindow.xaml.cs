@@ -1,5 +1,6 @@
 ﻿using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -122,19 +123,7 @@ namespace BowieD.MusicPlayer.WPF.Views
 
                 if (files.Length > 0)
                 {
-                    foreach (var fn in files)
-                    {
-                        if (FileTool.CheckFileValid(fn, ImageTool.SupportedImageExtensions))
-                        {
-                            try
-                            {
-                                ViewModel.SetBackground(fn);
-
-                                break;
-                            }
-                            catch { }
-                        }
-                    }
+                    ViewModel.SetBackground(files.Where(fn => FileTool.CheckFileValid(fn, ImageTool.SupportedImageExtensions)).ToArray());
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using BowieD.MusicPlayer.WPF.Common;
 using BowieD.MusicPlayer.WPF.Data;
+using BowieD.MusicPlayer.WPF.Extensions;
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
@@ -9,14 +10,48 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace BowieD.MusicPlayer.WPF.ViewModels
 {
     public sealed class MainWindowViewModel : BaseViewModelView<MainWindow>
     {
+        private DispatcherTimer _fullScreenBackgroundSwitcher;
+
         public MainWindowViewModel(MainWindow view) : base(view)
         {
+            _fullScreenBackgroundSwitcher = new()
+            {
+                Interval = TimeSpan.FromSeconds(60)
+            };
+
+            _fullScreenBackgroundSwitcher.Tick += _fullScreenBackgroundSwitcher_Tick;
+
             ObtainPlaylists();
+        }
+
+        private void _fullScreenBackgroundSwitcher_Tick(object? sender, EventArgs? e)
+        {
+            if (!View.MusicPlayerViewModel.IsFullScreen)
+                return;
+
+            if (Backgrounds.Count > 1)
+            {
+                var fileName = Backgrounds.Random();
+
+                SetBackgroundFromFile(fileName);
+            }
+        }
+
+        private void SetBackgroundFromFile(string fileName)
+        {
+            var bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.UriSource = new Uri(fileName);
+            bmp.EndInit();
+
+            View.fullScreenBackground.Source = bmp;
         }
 
         #region Commands
@@ -72,14 +107,16 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     {
                         OpenFileDialog ofd = new()
                         {
-                            Filter = ImageTool.FileDialogFilter
+                            Filter = ImageTool.FileDialogFilter,
+                            CheckFileExists = true,
+                            Multiselect = true
                         };
 
                         if (ofd.ShowDialog() == true)
                         {
                             try
                             {
-                                SetBackground(ofd.FileName);
+                                SetBackground(ofd.FileNames);
                             }
                             catch { }
                         }
@@ -94,6 +131,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         #region Data
 
+        private readonly ObservableCollection<string> _backgrounds = new();
         private readonly ObservableCollection<PlaylistInfo> _playlists = new();
         private double _blurPower = 20.0;
 
@@ -106,10 +144,21 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             get => _playlists;
         }
 
+        public ObservableCollection<string> Backgrounds
+        {
+            get => _backgrounds;
+        }
+
         public double BlurPower
         {
             get => _blurPower;
             set => ChangeProperty(ref _blurPower, value, nameof(BlurPower));
+        }
+
+        public double BackgroundSwitchSpeedSeconds
+        {
+            get => _fullScreenBackgroundSwitcher.Interval.TotalSeconds;
+            set => _fullScreenBackgroundSwitcher.Interval = TimeSpan.FromSeconds(value);
         }
 
         public string WindowTitle
@@ -161,15 +210,34 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             }
         }
 
-        public void SetBackground(string fileName)
+        public void SetBackground(params string[] fileNames)
         {
-            var bmp = new BitmapImage();
-            bmp.BeginInit();
-            bmp.CacheOption = BitmapCacheOption.OnLoad;
-            bmp.UriSource = new Uri(fileName);
-            bmp.EndInit();
+            Backgrounds.Clear();
 
-            View.fullScreenBackground.Source = bmp;
+            if (fileNames.Length == 0)
+            {
+                _fullScreenBackgroundSwitcher.Stop();
+
+                View.fullScreenBackground.Source = null;
+            }
+            else if (fileNames.Length == 1)
+            {
+                _fullScreenBackgroundSwitcher.Stop();
+
+                Backgrounds.Add(fileNames[0]);
+                SetBackgroundFromFile(fileNames[0]);
+            }
+            else
+            {
+                foreach (var fn in fileNames)
+                {
+                    Backgrounds.Add(fn);
+                }
+
+                SetBackgroundFromFile(Backgrounds.Random());
+
+                _fullScreenBackgroundSwitcher.Start();
+            }
         }
     }
 }
