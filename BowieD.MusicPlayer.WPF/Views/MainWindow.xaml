@@ -82,7 +82,8 @@
                                                     <ColumnDefinition/>
                                                 </Grid.ColumnDefinitions>
                                                 <Image Width="20" Height="20" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=20|0}"/>
-                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"/>
+                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"
+                                                           TextTrimming="CharacterEllipsis"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
@@ -232,7 +233,7 @@
                         <Popup Name="queuePopup" MaxHeight="240" Width="400" 
                                PlacementTarget="{Binding ElementName=queueViewButton}" Placement="Top">
                             <GroupBox Header="Song Queue" Background="{DynamicResource MahApps.Brushes.Window.Background}">
-                                <ScrollViewer>
+                                <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="5">
                                     <StackPanel>
                                         <TextBlock Text="Now Playing"/>
                                         <ContentControl Content="{Binding CurrentSong}" ContentTemplate="{DynamicResource queueSongTemplate}"/>
@@ -252,6 +253,8 @@
                                                   ItemTemplate="{DynamicResource queueSongTemplate}"
                                                   PreviewMouseWheel="ListView_PreviewMouseWheel"
                                                   gong:DragDrop.IsDropTarget="True"
+                                                  ScrollViewer.CanContentScroll="False"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                                   gong:DragDrop.IsDragSource="True"/>
                                         
                                         <Grid>
@@ -275,15 +278,15 @@
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="30"/>
-                                                <ColumnDefinition Width="3*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="135"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Image Width="20" Height="20" Margin="5" 
                                                    Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=20|20}"/>
-                                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" Text="{Binding Title}"/>
-                                            <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" Text="{Binding Artist}"/>
-                                            <TextBlock Grid.Column="3" VerticalAlignment="Center" Margin="5" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
+                                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Title}"/>
+                                            <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Artist}"/>
+                                            <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </GroupBox.Resources>

@@ -31,7 +31,8 @@
                                         <Image Height="170" Width="170" Margin="16"
                                        Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=170|170}"/>
                                         <TextBlock Grid.Row="1" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                                           Text="{Binding Name}" Margin="16,0,16,13" FontWeight="Bold" FontSize="16"/>
+                                           Text="{Binding Name}" Margin="16,0,16,13" FontWeight="Bold" FontSize="16"
+                                                   TextTrimming="CharacterEllipsis"/>
                                         <TextBlock Grid.Row="2" Margin="16,0,16,16"/>
                                     </Grid>
                                 </Border>
