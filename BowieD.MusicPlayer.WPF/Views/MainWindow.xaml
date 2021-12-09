@@ -121,7 +121,7 @@
                     </Grid>
                     <GridSplitter Grid.Column="1" ShowsPreview="False"/>
                     <Frame Grid.Column="2" Name="navFrame" NavigationUIVisibility="Hidden"
-                           Source="Pages/EmptyPage.xaml"/>
+                           Source="Pages/EmptyPage.xaml" JournalOwnership="OwnsJournal"/>
                 </Grid>
             </Grid>
             <Grid Grid.Row="1" Name="musicPlayer" d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}">
