@@ -73,17 +73,25 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private readonly DispatcherTimer _timer;
         private Song _currentSong;
         private ELoopMode _loopMode;
+        private EPlayOrigin _playOrigin;
+        private readonly ObservableQueue<Song> _userSongQueue = new();
         private readonly ObservableQueue<Song> _songQueue = new();
         private readonly ObservableStack<Song> _songHistory = new();
         private bool _isBigPicture = false;
         private bool _isFullScreen = false;
 
+        public ObservableQueue<Song> UserSongQueue => _userSongQueue;
         public ObservableQueue<Song> SongQueue => _songQueue;
         public ObservableStack<Song> SongHistory => _songHistory;
         public ELoopMode LoopMode
         {
             get => _loopMode;
             set => ChangeProperty(ref _loopMode, value, nameof(LoopMode), nameof(LoopNoneVisible), nameof(LoopQueueVisible), nameof(LoopCurrentVisible));
+        }
+        public EPlayOrigin PlayOrigin
+        {
+            get => _playOrigin;
+            private set => ChangeProperty(ref _playOrigin, value, nameof(PlayOrigin));
         }
         public Song CurrentSong
         {
@@ -109,6 +117,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get
             {
+                if (UserSongQueue.Count > 0)
+                    return UserSongQueue.Peek();
+
                 if (SongQueue.Count > 0)
                     return SongQueue.Peek();
 
@@ -228,44 +239,47 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             }
             else
             {
-                if (SongQueue.Count > 0)
+                var oldSong = CurrentSong;
+                var nextSong = DequeueNextSong(out var newOrigin);
+
+                if (newOrigin == EPlayOrigin.NONE)
+                    return;
+
+                if (!oldSong.IsEmpty)
                 {
-                    var oldSong = CurrentSong;
-                    var nextSong = SongQueue.Dequeue();
-
-                    if (!oldSong.IsEmpty)
+                    if (LoopMode == ELoopMode.QUEUE)
                     {
-                        if (LoopMode == ELoopMode.QUEUE)
-                        {
-                            SongQueue.Enqueue(oldSong);
-                        }
-
-                        SongHistory.Push(oldSong);
+                        SongQueue.Enqueue(oldSong);
                     }
 
-                    CurrentSong = nextSong;
+                    SongHistory.Push(oldSong);
                 }
+
+                CurrentSong = nextSong;
             }
         }
 
         public void NextTrackManual()
         {
-            if (SongQueue.Count > 0)
+            var nextSong = DequeueNextSong(out var newOrigin);
+
+            if (newOrigin == EPlayOrigin.NONE)
+                return;
+
+            var cur = CurrentSong;
+
+            if (!cur.IsEmpty)
             {
-                var nextSong = SongQueue.Dequeue();
-
-                var cur = CurrentSong;
-
-                if (!cur.IsEmpty)
+                if (LoopMode != ELoopMode.NONE)
                 {
-                    if (LoopMode != ELoopMode.NONE)
-                    {
-                        SongQueue.Enqueue(cur);
-                    }
+                    SongQueue.Enqueue(cur);
                 }
 
-                CurrentSong = nextSong;
+                SongHistory.Push(cur);
             }
+
+            PlayOrigin = newOrigin;
+            CurrentSong = nextSong;
         }
 
         public void PrevTrack()
@@ -281,6 +295,42 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 CurrentSong = songFromHistory;
             }
+        }
+
+        public Song PeekNextSong(out EPlayOrigin origin)
+        {
+            if (UserSongQueue.Count > 0)
+            {
+                origin = EPlayOrigin.USER_QUEUE;
+                return UserSongQueue.Peek();
+            }
+
+            if (SongQueue.Count > 0)
+            {
+                origin = EPlayOrigin.SOURCE;
+                return SongQueue.Peek();
+            }
+
+            origin = EPlayOrigin.NONE;
+            return Song.EMPTY;
+        }
+
+        public Song DequeueNextSong(out EPlayOrigin origin)
+        {
+            if (UserSongQueue.Count > 0)
+            {
+                origin = EPlayOrigin.USER_QUEUE;
+                return UserSongQueue.Dequeue();
+            }
+
+            if (SongQueue.Count > 0)
+            {
+                origin = EPlayOrigin.SOURCE;
+                return SongQueue.Dequeue();
+            }
+
+            origin = EPlayOrigin.NONE;
+            return Song.EMPTY;
         }
 
         #region Animations
@@ -302,7 +352,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             _enterFullScreenCommand,
             _exitFullScreenCommand,
             _viewQueueCommand,
-            _playPauseCommand;
+            _playPauseCommand,
+            _clearUserQueueCommand;
 
         public ICommand PlayPauseCommand
         {
@@ -516,6 +567,21 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 return _viewQueueCommand;
             }
         }
+        public ICommand ClearUserQueueCommand
+        {
+            get
+            {
+                if (_clearUserQueueCommand is null)
+                {
+                    _clearUserQueueCommand = new BaseCommand(() =>
+                    {
+                        UserSongQueue.Clear();
+                    });
+                }
+
+                return _clearUserQueueCommand;
+            }
+        }
 
         #endregion
 
@@ -535,5 +601,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         CURRENT,
         [Description("Queue")]
         QUEUE
+    }
+    public enum EPlayOrigin : byte
+    {
+        NONE,
+        USER_QUEUE,
+        SOURCE
     }
 }
