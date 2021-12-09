@@ -51,6 +51,28 @@ namespace BowieD.MusicPlayer.WPF.Data
         }
         #endregion
 
+        public Song GetSong(long id)
+        {
+            string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_ID} = @id";
+
+            using var con = CreateConnection();
+
+            con.Open();
+
+            using var com = new SQLiteCommand(sql, con);
+
+            com.Parameters.Add("@id", System.Data.DbType.Int64).Value = id;
+
+            using var reader = com.ExecuteReader(System.Data.CommandBehavior.KeyInfo);
+
+            if (reader.HasRows && reader.Read())
+            {
+                return ReadSong(reader, id);
+            }
+
+            return Song.EMPTY;
+        }
+
         public Song GetOrAddSong(string fileName)
         {
             string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_FILE_NAME} = @fileName";
@@ -84,24 +106,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
             foreach (var songId in songIDs)
             {
-                string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_ID} = @id";
-
-                using var con = CreateConnection();
-
-                con.Open();
-
-                using var com = new SQLiteCommand(sql, con);
-
-                com.Parameters.Add("@id", System.Data.DbType.Int64).Value = songId;
-
-                using var reader = com.ExecuteReader(System.Data.CommandBehavior.KeyInfo);
-
-                if (reader.HasRows && reader.Read())
-                {
-                    result.Add(ReadSong(reader, songId));
-                }
-
-                con.Close();
+                result.Add(GetSong(songId));
             }
 
             return result;

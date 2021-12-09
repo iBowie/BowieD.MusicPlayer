@@ -28,6 +28,13 @@ namespace BowieD.MusicPlayer.WPF.Views
             MusicPlayerViewModel = new MusicPlayerViewModel(this);
 
             musicPlayer.DataContext = MusicPlayerViewModel;
+
+            Memento.RestoreState(this);
+
+            Closing += (sender, e) =>
+            {
+                Memento.SaveState(this);
+            };
         }
 
         public MainWindowViewModel ViewModel { get; }

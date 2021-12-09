@@ -155,7 +155,12 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 return false;
             }
         }
-        public double Position01 => Position / Duration;
+        public double Position01
+        {
+            get => Position / Duration;
+            set => Position = value * Duration;
+        }
+
         public TaskbarItemProgressState ProgressState
         {
             get
@@ -331,6 +336,14 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             origin = EPlayOrigin.NONE;
             return Song.EMPTY;
+        }
+
+        internal void SetCurrentSong(Song song, bool autoPlay = true)
+        {
+            CurrentSong = song;
+
+            if (!autoPlay)
+                BassFacade.Pause();
         }
 
         #region Animations
