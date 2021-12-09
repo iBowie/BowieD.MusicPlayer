@@ -67,7 +67,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             get => _songs;
         }
 
-        private ICommand _editDetailsCommand, _playCommand;
+        private ICommand? _editDetailsCommand, _playCommand;
 
         public ICommand EditDetailsCommand
         {
