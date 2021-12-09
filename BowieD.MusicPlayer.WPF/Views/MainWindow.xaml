@@ -125,7 +125,8 @@
                            Source="Pages/EmptyPage.xaml" JournalOwnership="OwnsJournal"/>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1" Name="musicPlayer" d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}">
+            <Grid Grid.Row="1" Name="musicPlayer" d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}"
+                  Background="{DynamicResource MahApps.Brushes.Gray10}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" MinWidth="180"/>
                     <ColumnDefinition Width="4*" MaxWidth="722"/>
