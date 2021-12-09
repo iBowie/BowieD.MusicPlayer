@@ -364,6 +364,7 @@
                                         <ListView ItemsSource="{Binding UserSongQueue}"
                                                   MinHeight="30"
                                                   ItemTemplate="{DynamicResource queueSongTemplate}"
+                                                  PreviewMouseWheel="ListView_PreviewMouseWheel"
                                                   gong:DragDrop.IsDropTarget="True"
                                                   gong:DragDrop.IsDragSource="True"/>
                                         
@@ -378,6 +379,7 @@
                                         <ListView ItemsSource="{Binding SongQueue}"
                                                   MinHeight="30"
                                                   ItemTemplate="{DynamicResource queueSongTemplate}"
+                                                  PreviewMouseWheel="ListView_PreviewMouseWheel"
                                                   gong:DragDrop.IsDropTarget="True"
                                                   gong:DragDrop.IsDragSource="True"/>
                                     </StackPanel>
