@@ -16,7 +16,6 @@ namespace BowieD.MusicPlayer.WPF
         {
             var vm = mainWindow.ViewModel;
             var mp = mainWindow.MusicPlayerViewModel;
-            var pl = mainWindow.PlaylistViewModel;
 
             using FileStream fs = new(FILE_NAME, FileMode.Create, FileAccess.Write, FileShare.Read);
             using BinaryWriter bw = new(fs);
@@ -60,7 +59,6 @@ namespace BowieD.MusicPlayer.WPF
 
             var vm = mainWindow.ViewModel;
             var mp = mainWindow.MusicPlayerViewModel;
-            var pl = mainWindow.PlaylistViewModel;
 
             try
             {

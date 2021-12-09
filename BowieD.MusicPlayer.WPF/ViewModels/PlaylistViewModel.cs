@@ -3,6 +3,7 @@ using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
+using BowieD.MusicPlayer.WPF.Views.Pages;
 using GongSolutions.Wpf.DragDrop;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -17,10 +18,14 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private Playlist _playlist;
         private readonly PlaylistViewModelDropHandler _dropHandler;
 
-        public PlaylistViewModel(MainWindow view) : base(view)
+        public PlaylistViewModel(PlaylistPage page, MainWindow view) : base(view)
         {
+            this.Page = page;
+
             _dropHandler = new PlaylistViewModelDropHandler(this);
         }
+
+        public PlaylistPage Page { get; }
 
         private void _songs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
