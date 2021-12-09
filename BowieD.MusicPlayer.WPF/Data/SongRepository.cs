@@ -11,7 +11,7 @@ namespace BowieD.MusicPlayer.WPF.Data
     public sealed class SongRepository : BaseRepository
     {
         #region BOILER PLATE
-        private static SongRepository _instance;
+        private static SongRepository? _instance;
         public static SongRepository Instance
         {
             get

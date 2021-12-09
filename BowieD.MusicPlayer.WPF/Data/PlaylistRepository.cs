@@ -10,7 +10,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 {
     public sealed class PlaylistRepository : BaseRepository
     {
-        private static PlaylistRepository _instance;
+        private static PlaylistRepository? _instance;
         public static PlaylistRepository Instance
         {
             get
