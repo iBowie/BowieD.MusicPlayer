@@ -299,189 +299,189 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Grid Name="fullScreenViewGrid" d:HorizontalAlignment="Left" d:Width="1280" d:Visibility="Visible" Visibility="Collapsed"
-              AllowDrop="True" Drop="fullScreenViewGrid_Drop">
+        <Grid Name="fullScreenViewGrid" d:HorizontalAlignment="Left" d:Width="1280" d:Visibility="Visible" Visibility="Collapsed">
             <d:Grid.RenderTransform>
                 <TranslateTransform X="1280"/>
             </d:Grid.RenderTransform>
-            <Grid.Background>
-                <VisualBrush Viewbox="0.05,0.05,0.9,0.9" ViewboxUnits="RelativeToBoundingBox">
-                    <VisualBrush.Visual>
-                        <Canvas>
-                            <Image Name="fullScreenBackground">
-                                <Image.BitmapEffect>
-                                    <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian"/>
-                                </Image.BitmapEffect>
-                            </Image>
-                            <Image Name="fullScreenBackground2" Opacity="0">
-                                <Image.BitmapEffect>
-                                    <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian"/>
-                                </Image.BitmapEffect>
-                            </Image>
-                        </Canvas>
-                    </VisualBrush.Visual>
-                </VisualBrush>
-            </Grid.Background>
-            <Grid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Select background..." 
+            <Grid Background="Transparent" AllowDrop="True" Drop="fullScreenViewGrid_Drop"> <!--background-->
+                <Image Name="fullScreenBackground" Stretch="UniformToFill">
+                    <Image.BitmapEffect>
+                        <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian"/>
+                    </Image.BitmapEffect>
+                </Image>
+                <Image Name="fullScreenBackground2" Opacity="0" Stretch="UniformToFill">
+                    <Image.BitmapEffect>
+                        <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian"/>
+                    </Image.BitmapEffect>
+                </Image>
+                
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Select background..." 
                               Command="{Binding SelectFullscreenBackgroundCommand}"/>
-                    <Separator/>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Blur Power" IsEnabled="False"/>
-                        <Slider Grid.Row="1" Minimum="0" Maximum="50" TickFrequency="1"
-                                AutoToolTipPlacement="BottomRight"
-                                AutoToolTipPrecision="0"
-                                IsSnapToTickEnabled="True" Value="{Binding View.ViewModel.BlurPower}"/>
-                    </Grid>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Switch Background Speed" IsEnabled="False"/>
-                        <Slider Grid.Row="1" Minimum="5" Maximum="120" TickFrequency="1"
-                                AutoToolTipPlacement="BottomRight"
-                                AutoToolTipPrecision="0"
-                                IsSnapToTickEnabled="True" Value="{Binding View.ViewModel.BackgroundSwitchSpeedSeconds}"/>
-                    </Grid>
-                </ContextMenu>
-            </Grid.ContextMenu>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/> <!--maybe something more-->
-                <RowDefinition/> <!--blank-->
-                <RowDefinition Height="Auto"/> <!--media info-->
-                <RowDefinition Height="Auto"/> <!--slider and media control-->
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Border BorderBrush="{DynamicResource MahApps.Brushes.Border.NonActive}" BorderThickness="1" 
-                        Grid.Column="1" HorizontalAlignment="Right" Margin="30" 
-                        MaxWidth="512"
-                        Visibility="{Binding View.MusicPlayerViewModel.IsUpcomingSongVisible, Converter={StaticResource boolToVisConverter}}"
-                        Background="{DynamicResource MahApps.Brushes.Flyout.Background}">
-                    <Grid d:DataContext="{d:DesignInstance Type=models:Song}" DataContext="{Binding View.MusicPlayerViewModel.UpcomingSong}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Image Margin="5" 
-                               d:Source="/Resources/Images/missing_texture.jpg"
-                               Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|96}"/>
-                        <Grid Grid.Column="1">
+                        <Separator/>
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="Up Next" Margin="10" FontSize="20" VerticalAlignment="Bottom"/>
-                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" VerticalAlignment="Top">
-                                <TextBlock Text="{Binding Title}" d:Text="This Old Routine" FontWeight="Bold" FontSize="24"/>
-                                <TextBlock Text=" - " FontWeight="Bold" FontSize="24"/>
-                                <TextBlock Text="{Binding Artist}" d:Text="First Aid Kit" FontWeight="Bold" FontSize="24"/>
-                            </StackPanel>
+                            <TextBlock Text="Blur Power" IsEnabled="False"/>
+                            <Slider Grid.Row="1" Minimum="0" Maximum="50" TickFrequency="1"
+                                AutoToolTipPlacement="BottomRight"
+                                AutoToolTipPrecision="0"
+                                IsSnapToTickEnabled="True" Value="{Binding View.ViewModel.BlurPower}"/>
                         </Grid>
-                    </Grid>
-                </Border>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Switch Background Speed" IsEnabled="False"/>
+                            <Slider Grid.Row="1" Minimum="5" Maximum="120" TickFrequency="1"
+                                AutoToolTipPlacement="BottomRight"
+                                AutoToolTipPrecision="0"
+                                IsSnapToTickEnabled="True" Value="{Binding View.ViewModel.BackgroundSwitchSpeedSeconds}"/>
+                        </Grid>
+                    </ContextMenu>
+                </Grid.ContextMenu>
             </Grid>
-            <Grid Grid.Row="2" Margin="30" DataContext="{Binding View.MusicPlayerViewModel}">
-                <Grid>
+            <Grid> <!--controls-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!--maybe something more-->
+                    <RowDefinition/>
+                    <!--blank-->
+                    <RowDefinition Height="Auto"/>
+                    <!--media info-->
+                    <RowDefinition Height="Auto"/>
+                    <!--slider and media control-->
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Image Margin="10" d:Width="176" d:Height="176" MaxWidth="176" MaxHeight="176"
+                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Border.NonActive}" BorderThickness="1" 
+                        Grid.Column="1" HorizontalAlignment="Right" Margin="30" 
+                        MaxWidth="512"
+                        Visibility="{Binding View.MusicPlayerViewModel.IsUpcomingSongVisible, Converter={StaticResource boolToVisConverter}}"
+                        Background="{DynamicResource MahApps.Brushes.Flyout.Background}">
+                        <Grid d:DataContext="{d:DesignInstance Type=models:Song}" DataContext="{Binding View.MusicPlayerViewModel.UpcomingSong}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Image Margin="5" 
+                               d:Source="/Resources/Images/missing_texture.jpg"
+                               Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|96}"/>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Up Next" Margin="10" FontSize="20" VerticalAlignment="Bottom"/>
+                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" VerticalAlignment="Top">
+                                    <TextBlock Text="{Binding Title}" d:Text="This Old Routine" FontWeight="Bold" FontSize="24"/>
+                                    <TextBlock Text=" - " FontWeight="Bold" FontSize="24"/>
+                                    <TextBlock Text="{Binding Artist}" d:Text="First Aid Kit" FontWeight="Bold" FontSize="24"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+                <Grid Grid.Row="2" Margin="30" DataContext="{Binding View.MusicPlayerViewModel}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Image Margin="10" d:Width="176" d:Height="176" MaxWidth="176" MaxHeight="176"
                            d:Source="/Resources/Images/missing_texture.jpg"
                            Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=176|0}"/>
-                    <Grid Margin="10" Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding CurrentSong.Title}" TextWrapping="Wrap" VerticalAlignment="Bottom" d:Text="Your Contract Has Expired" FontSize="48" FontWeight="Bold"/>
-                        <TextBlock Grid.Row="1" VerticalAlignment="Top" Text="{Binding CurrentSong.Artist}" d:Text="Pascal Michael Stiefel" FontSize="24"/>
-                    </Grid>
+                        <Grid Margin="10" Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding CurrentSong.Title}" TextWrapping="Wrap" VerticalAlignment="Bottom" d:Text="Your Contract Has Expired" FontSize="48" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="1" VerticalAlignment="Top" Text="{Binding CurrentSong.Artist}" d:Text="Pascal Michael Stiefel" FontSize="24"/>
+                        </Grid>
 
-                    <Grid.BitmapEffect>
-                        <DropShadowBitmapEffect Color="Black" ShadowDepth="5" Softness="0.75"/>
-                    </Grid.BitmapEffect>
+                        <Grid.BitmapEffect>
+                            <DropShadowBitmapEffect Color="Black" ShadowDepth="5" Softness="0.75"/>
+                        </Grid.BitmapEffect>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid Grid.Row="3" Name="fullScreenMediaControlGrid"
+                <Grid Grid.Row="3" Name="fullScreenMediaControlGrid"
                   Background="Transparent"
                   d:Opacity="1"
                   Opacity="{Binding IsMouseOver, ElementName=fullScreenMediaControlGrid, Converter={StaticResource boolToVisHiddenConverter}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Margin="30,30,30,15" DataContext="{Binding View.MusicPlayerViewModel}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="20*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" d:Text="00:00" Text="{Binding Position, Converter={StaticResource doubleToDisplayTimeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Slider Grid.Column="1" Value="{Binding Position}" Maximum="{Binding Duration}"/>
-                    <TextBlock Grid.Column="2" d:Text="59:59:59" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Grid>
-                <Grid Grid.Row="1" Margin="30,0,30,30" DataContext="{Binding View.MusicPlayerViewModel}">
-                    <Grid HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="30,30,30,15" DataContext="{Binding View.MusicPlayerViewModel}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="20*"/>
+                            <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Content="{iconPacks:Material Kind=Shuffle}" 
+                        <TextBlock Grid.Column="0" d:Text="00:00" Text="{Binding Position, Converter={StaticResource doubleToDisplayTimeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Slider Grid.Column="1" Value="{Binding Position}" Maximum="{Binding Duration}"/>
+                        <TextBlock Grid.Column="2" d:Text="59:59:59" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="30,0,30,30" DataContext="{Binding View.MusicPlayerViewModel}">
+                        <Grid HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="{iconPacks:Material Kind=Shuffle}" 
                             Margin="10" Width="30" Height="30" 
                             Command="{Binding ShuffleCommand}"
                             Style="{DynamicResource ContentOnlyButton}"/>
-                        <Button Grid.Column="1" Content="{iconPacks:Material Kind=SkipPrevious}" 
+                            <Button Grid.Column="1" Content="{iconPacks:Material Kind=SkipPrevious}" 
                             Margin="10" Width="30" Height="30" 
                             Command="{Binding PrevTrackCommand}"
                             Style="{DynamicResource ContentOnlyButton}"/>
-                        <Button Grid.Column="2" Content="{iconPacks:Material Kind=Play}" 
+                            <Button Grid.Column="2" Content="{iconPacks:Material Kind=Play}" 
                             Command="{Binding PlayPauseCommand}"
                             Visibility="{Binding IsPauseButton, Converter={StaticResource invertedBoolToVisConverter}}"
                             Foreground="{DynamicResource MahApps.Brushes.Window.Background}"
                             Margin="5" Width="48" Height="48" 
                             Style="{DynamicResource RoundButton}"/>
-                        <Button Grid.Column="2" Content="{iconPacks:Material Kind=Pause}" 
+                            <Button Grid.Column="2" Content="{iconPacks:Material Kind=Pause}" 
                             Command="{Binding PlayPauseCommand}"
                             Visibility="{Binding IsPauseButton, Converter={StaticResource boolToVisConverter}}"
                             Foreground="{DynamicResource MahApps.Brushes.Window.Background}"
                             Margin="5" Width="48" Height="48" 
                             Style="{DynamicResource RoundButton}"/>
-                        <Button Grid.Column="3" Content="{iconPacks:Material Kind=SkipNext}" 
+                            <Button Grid.Column="3" Content="{iconPacks:Material Kind=SkipNext}" 
                             Margin="10" Width="30" Height="30" 
                             Command="{Binding NextTrackCommand}"
                             Style="{DynamicResource ContentOnlyButton}"/>
-                        <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=Repeat}" Style="{DynamicResource ContentOnlyButton}"
+                            <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=Repeat}" Style="{DynamicResource ContentOnlyButton}"
                             Visibility="{Binding LoopNoneVisible, Converter={StaticResource boolToVisConverter}}"
                             Command="{Binding LoopCommand}"/>
-                        <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=RepeatOnce}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
+                            <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=RepeatOnce}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
                             Visibility="{Binding LoopCurrentVisible, Converter={StaticResource boolToVisConverter}}"
                             Command="{Binding LoopCommand}"/>
-                        <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=Repeat}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
+                            <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=Repeat}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
                             Visibility="{Binding LoopQueueVisible, Converter={StaticResource boolToVisConverter}}"
                             Command="{Binding LoopCommand}"/>
-                    </Grid>
-                    <Grid HorizontalAlignment="Right">
-                        <StackPanel Orientation="Horizontal">
-                            <iconPacks:PackIconMaterial Kind="VolumeSource" Margin="10" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                            <Slider Value="{Binding Volume}" Maximum="100" Width="128" Margin="10"/>
-                            <Button Command="{Binding ExitFullScreenCommand}"
+                        </Grid>
+                        <Grid HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="VolumeSource" Margin="10" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                                <Slider Value="{Binding Volume}" Maximum="100" Width="128" Margin="10"/>
+                                <Button Command="{Binding ExitFullScreenCommand}"
                                 Content="{iconPacks:Material Kind=FullscreenExit}"
                                 Style="{DynamicResource ContentOnlyButton}" Margin="10"/>
-                        </StackPanel>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
