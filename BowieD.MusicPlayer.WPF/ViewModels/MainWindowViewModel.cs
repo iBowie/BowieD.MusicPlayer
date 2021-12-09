@@ -21,7 +21,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         #region Commands
 
-        private ICommand _addSongCommand, _createPlaylistCommand, _selectFullscreenBackgroundCommand;
+        private ICommand? _addSongCommand, _createPlaylistCommand, _selectFullscreenBackgroundCommand;
 
         public ICommand AddSongCommand
         {
