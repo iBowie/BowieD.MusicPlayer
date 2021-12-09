@@ -76,12 +76,24 @@
                             </ScrollViewer>
                         </Grid>
                         <Grid Grid.Row="1" HorizontalAlignment="Stretch"
-                          Name="imgBigPicture"
-                          d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}"
-                          DataContext="{Binding DataContext, ElementName=musicPlayer}"
-                           Visibility="{Binding IsBigPicture, Converter={StaticResource boolToVisConverter}}">
-                            <Image
-                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=392|0}"/>
+                              Name="imgBigPicture"
+                              Margin="0,0,0,0"
+                              VerticalAlignment="Bottom"
+                              d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}"
+                              DataContext="{Binding DataContext, ElementName=musicPlayer}"
+                              d:Visibility="Visible"
+                              Visibility="{Binding IsBigPicture, Converter={StaticResource boolToVisConverter}}">
+                            <Grid.OpacityMask>
+                                <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop x:Name="bigPictureGradient1" Color="Black" Offset="1"/>
+                                    <GradientStop x:Name="bigPictureGradient2" Color="Transparent" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Grid.OpacityMask>
+                            <Grid.RenderTransform>
+                                <TranslateTransform x:Name="bigPictureRenderTTransform"/>
+                            </Grid.RenderTransform>
+                            <Image d:Source="/Resources/Images/missing_texture.jpg"
+                                   Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=392|0}"/>
                             <Button 
                                 Margin="16" 
                                 Background="{DynamicResource MahApps.Brushes.Window.Background}"

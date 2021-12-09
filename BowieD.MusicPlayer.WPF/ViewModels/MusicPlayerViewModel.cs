@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -346,10 +347,27 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 BassFacade.Pause();
         }
 
+
         #region Animations
 
-        private static readonly DoubleAnimation SmallPictureAppearFromLeftAnimation = new(-92.0, 0.0, new Duration(TimeSpan.FromSeconds(0.1)));
-        private static readonly DoubleAnimation SmallPictureDisappearToLeftAnimation = new(0.0, -93.0, new Duration(TimeSpan.FromSeconds(0.1)));
+        private static readonly Duration BigPictureSwitchDuration = new Duration(TimeSpan.FromSeconds(0.1));
+
+        private static readonly DoubleAnimation SmallPictureAppearFromLeftAnimation 
+            = new(-92.0, 0.0, BigPictureSwitchDuration);
+        private static readonly DoubleAnimation SmallPictureDisappearToLeftAnimation 
+            = new(0.0, -93.0, BigPictureSwitchDuration);
+        private static readonly DoubleAnimation BigPictureOpacityMaskAppearGradientAnimation 
+            = new(0.0, 1.0, BigPictureSwitchDuration);
+        private static readonly DoubleAnimation BigPictureOpacityMaskDisappearGradientAnimation 
+            = new(1.0, 0.0, BigPictureSwitchDuration);
+        private static readonly ThicknessAnimation BigPictureMarginAppearGridAnimation 
+            = new(new(0, -392, 0, 0), new(0, 0, 0, 0), BigPictureSwitchDuration);
+        private static readonly ThicknessAnimation BigPictureMarginDisappearGridAnimation 
+            = new(new(0, 0, 0, 0), new(0, -392, 0, 0), BigPictureSwitchDuration);
+        private static readonly DoubleAnimation BigPictureRenderTransformAppearAnimation
+            = new(392, 0, BigPictureSwitchDuration);
+        private static readonly DoubleAnimation BigPictureRenderTransformDisappearAnimation
+            = new(0, 392, BigPictureSwitchDuration);
 
         #endregion
 
@@ -480,7 +498,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     {
                         IsBigPicture = true;
 
-                        View.smallPictureRenderTranslateTransform.BeginAnimation(TranslateTransform.XProperty, SmallPictureDisappearToLeftAnimation); ;
+                        View.smallPictureRenderTranslateTransform.BeginAnimation(TranslateTransform.XProperty, SmallPictureDisappearToLeftAnimation);
+                        View.bigPictureGradient1.BeginAnimation(GradientStop.OffsetProperty, BigPictureOpacityMaskAppearGradientAnimation);
+                        View.bigPictureGradient2.BeginAnimation(GradientStop.OffsetProperty, BigPictureOpacityMaskAppearGradientAnimation);
+                        View.imgBigPicture.BeginAnimation(Grid.MarginProperty, BigPictureMarginAppearGridAnimation);
+                        View.bigPictureRenderTTransform.BeginAnimation(TranslateTransform.YProperty, BigPictureRenderTransformAppearAnimation);
                     },
                     () => !IsBigPicture);
                 }
@@ -499,6 +521,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                         IsBigPicture = false;
 
                         View.smallPictureRenderTranslateTransform.BeginAnimation(TranslateTransform.XProperty, SmallPictureAppearFromLeftAnimation);
+                        // View.bigPictureGradient1.BeginAnimation(GradientStop.OffsetProperty, BigPictureOpacityMaskDisappearGradientAnimation);
+                        // View.bigPictureGradient2.BeginAnimation(GradientStop.OffsetProperty, BigPictureOpacityMaskDisappearGradientAnimation);
+                        // View.imgBigPicture.BeginAnimation(Grid.MarginProperty, BigPictureMarginDisappearGridAnimation);
+                        // View.bigPictureRenderTTransform.BeginAnimation(TranslateTransform.YProperty, BigPictureRenderTransformDisappearAnimation);
                     }, () => IsBigPicture);
                 }
 
