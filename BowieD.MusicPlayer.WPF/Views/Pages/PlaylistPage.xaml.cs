@@ -1,5 +1,5 @@
 ﻿using BowieD.MusicPlayer.WPF.Models;
-using BowieD.MusicPlayer.WPF.ViewModels;
+using BowieD.MusicPlayer.WPF.ViewModels.Pages;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

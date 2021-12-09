@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BowieD.MusicPlayer.WPF.Models;
+using BowieD.MusicPlayer.WPF.ViewModels.Pages;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BowieD.MusicPlayer.WPF.Views.Pages
 {
@@ -20,9 +10,25 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
     /// </summary>
     public partial class LibraryPage : Page
     {
-        public LibraryPage()
+        public LibraryPage(LibraryPageExtraData data)
         {
             InitializeComponent();
+
+            ViewModel = new LibraryPageViewModel(this, data.MainWindow);
+
+            DataContext = ViewModel;
         }
+
+        public LibraryPageViewModel ViewModel { get; }
+
+        private void b_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement frameworkElement && frameworkElement.DataContext is PlaylistInfo pInfo)
+            {
+                ViewModel.View.ViewModel.SelectedPlaylist = pInfo;
+            }
+        }
+
+        public record struct LibraryPageExtraData(MainWindow MainWindow);
     }
 }

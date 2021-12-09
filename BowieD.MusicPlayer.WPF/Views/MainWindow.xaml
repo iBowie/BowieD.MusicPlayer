@@ -44,7 +44,7 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <StackPanel>
-                                <Button Margin="5"
+                                <Button Margin="5" Command="{Binding OpenLibraryCommand}"
                                         HorizontalAlignment="Left"
                                         Style="{DynamicResource ContentOnlyButton}">
                                     <Grid>

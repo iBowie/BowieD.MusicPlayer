@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
-namespace BowieD.MusicPlayer.WPF.ViewModels
+namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 {
     public sealed class PlaylistViewModel : BaseViewModelView<MainWindow>
     {
@@ -20,7 +20,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         public PlaylistViewModel(PlaylistPage page, MainWindow view) : base(view)
         {
-            this.Page = page;
+            Page = page;
 
             _dropHandler = new PlaylistViewModelDropHandler(this);
         }

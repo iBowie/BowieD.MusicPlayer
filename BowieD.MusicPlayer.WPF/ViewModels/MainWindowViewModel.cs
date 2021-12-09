@@ -77,7 +77,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         #region Commands
 
-        private ICommand? _addSongCommand, _createPlaylistCommand, _selectFullscreenBackgroundCommand;
+        private ICommand? _addSongCommand, _createPlaylistCommand, _selectFullscreenBackgroundCommand,
+            _openLibraryCommand;
 
         public ICommand AddSongCommand
         {
@@ -145,6 +146,23 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 }
 
                 return _selectFullscreenBackgroundCommand;
+            }
+        }
+        public ICommand OpenLibraryCommand
+        {
+            get
+            {
+                if (_openLibraryCommand is null)
+                {
+                    _openLibraryCommand = new BaseCommand(() =>
+                    {
+                        LibraryPage page = new(new(View));
+
+                        View.navFrame.Navigate(page);
+                    });
+                }
+
+                return _openLibraryCommand;
             }
         }
 

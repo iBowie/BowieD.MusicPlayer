@@ -3,11 +3,54 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views.Pages"
-      mc:Ignorable="d" 
+      xmlns:models="clr-namespace:BowieD.MusicPlayer.WPF.Models"
+      xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views.Pages" xmlns:pagesViewmodels="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels.Pages"
+      mc:Ignorable="d"
       d:DesignHeight="595.4" d:DesignWidth="886"
-      Title="LibraryPage">
+      Title="LibraryPage"
+      d:DataContext="{d:DesignInstance Type=pagesViewmodels:LibraryPageViewModel}">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Playlists" Margin="24"
+                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                   FontWeight="Bold"
+                   FontSize="18"/>
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Playlists}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:PlaylistInfo}">
+                        <Border Margin="24" Height="281" Width="202" x:Name="b" MouseDown="b_MouseDown"
+                                CornerRadius="2" Background="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background.Inactive}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Image Height="170" Width="170" Margin="16"
+                                       Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=170|170}"/>
+                                <TextBlock Grid.Row="1" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                           Text="{Binding Name}" Margin="16,0,16,13" FontWeight="Bold" FontSize="16"/>
+                                <TextBlock Grid.Row="2" Margin="16,0,16,16"/>
+                            </Grid>
+                        </Border>
+
+                        <DataTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background}"/>
+                            </Trigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </Page>
