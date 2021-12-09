@@ -66,11 +66,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             TriggerPropertyChanged(nameof(UpcomingSong));
         }
 
-        public event TrackChanged OnTrackChanged;
-        public event PlaybackStateChanged OnPlaybackStateChanged;
+        public event TrackChanged? OnTrackChanged;
+        public event PlaybackStateChanged? OnPlaybackStateChanged;
 
         private Un4seen.Bass.BASSActive _prevState = Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED;
-        private DispatcherTimer _timer;
+        private readonly DispatcherTimer _timer;
         private Song _currentSong;
         private ELoopMode _loopMode;
         private readonly ObservableQueue<Song> _songQueue = new();
@@ -292,7 +292,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         #region Commands
 
-        private ICommand
+        private ICommand?
             _nextTrackCommand,
             _loopCommand,
             _shuffleCommand,
