@@ -435,6 +435,8 @@
                         </Grid.RowDefinitions>
                         <TextBlock Text="Blur Power" IsEnabled="False"/>
                         <Slider Grid.Row="1" Minimum="0" Maximum="50" TickFrequency="1"
+                                AutoToolTipPlacement="BottomRight"
+                                AutoToolTipPrecision="0"
                                 IsSnapToTickEnabled="True" Value="{Binding View.ViewModel.BlurPower}"/>
                     </Grid>
                     <Grid>
@@ -444,6 +446,8 @@
                         </Grid.RowDefinitions>
                         <TextBlock Text="Switch Background Speed" IsEnabled="False"/>
                         <Slider Grid.Row="1" Minimum="5" Maximum="120" TickFrequency="1"
+                                AutoToolTipPlacement="BottomRight"
+                                AutoToolTipPrecision="0"
                                 IsSnapToTickEnabled="True" Value="{Binding View.ViewModel.BackgroundSwitchSpeedSeconds}"/>
                     </Grid>
                 </ContextMenu>
