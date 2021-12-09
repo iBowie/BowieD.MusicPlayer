@@ -15,12 +15,8 @@ namespace BowieD.MusicPlayer.WPF.Views
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        public static MainWindow? Instance { get; private set; }
-
         public MainWindow()
         {
-            Instance = this;
-
             CultureInfo currentCulture = new CultureInfo("en_US");
 
             CultureInfo.CurrentCulture = currentCulture;

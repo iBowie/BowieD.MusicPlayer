@@ -45,6 +45,19 @@
                             </Grid.RowDefinitions>
                             <StackPanel>
                                 <Button Margin="5"
+                                        HorizontalAlignment="Left"
+                                        Style="{DynamicResource ContentOnlyButton}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <iconPacks:PackIconMaterial Kind="Bookshelf" Margin="5"/>
+                                        <TextBlock Grid.Column="1" Text="My library" Margin="5"/>
+                                    </Grid>
+                                </Button>
+                                <Separator/>
+                                <Button Margin="5"
                                     HorizontalAlignment="Left"
                                     Style="{DynamicResource ContentOnlyButton}"
                                     Command="{Binding CreatePlaylistCommand}">
@@ -107,7 +120,8 @@
                         </Grid>
                     </Grid>
                     <GridSplitter Grid.Column="1" ShowsPreview="False"/>
-                    <Frame Grid.Column="2" Name="navFrame" NavigationUIVisibility="Hidden"/>
+                    <Frame Grid.Column="2" Name="navFrame" NavigationUIVisibility="Hidden"
+                           Source="Pages/EmptyPage.xaml"/>
                 </Grid>
             </Grid>
             <Grid Grid.Row="1" Name="musicPlayer" d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}">

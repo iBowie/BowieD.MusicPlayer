@@ -11,24 +11,18 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
     /// </summary>
     public partial class PlaylistPage : Page
     {
-        public PlaylistPage()
+        public PlaylistPage(PlaylistPageExtraData data)
         {
             InitializeComponent();
 
-            this.ViewModel = new PlaylistViewModel(this, MainWindow.Instance);
+            ViewModel = new(this, data.MainWindow);
 
-            Loaded += (sender, e) =>
-            {
-                NavigationService.LoadCompleted += (sender, e) =>
-                {
-                    ViewModel.PlaylistInfo = (PlaylistInfo)e.ExtraData;
+            ViewModel.PlaylistInfo = data.Playlist;
 
-                    DataContext = ViewModel;
-                };
-            };
+            DataContext = ViewModel;
         }
 
-        public PlaylistViewModel ViewModel { get; }
+        public PlaylistViewModel? ViewModel { get; private set; }
 
         private void ListView_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
@@ -64,6 +58,9 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (ViewModel is null)
+                return;
+
             if (ViewModel.PlaylistInfo.IsEmpty)
                 return;
 
@@ -82,6 +79,9 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
 
         private void playlistSongsListView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (ViewModel is null)
+                return;
+
             if (ViewModel.PlaylistInfo.IsEmpty)
                 return;
 
@@ -92,5 +92,7 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
 
             ViewModel.Songs.RemoveAt(index);
         }
+
+        public record struct PlaylistPageExtraData(PlaylistInfo Playlist, MainWindow MainWindow);
     }
 }

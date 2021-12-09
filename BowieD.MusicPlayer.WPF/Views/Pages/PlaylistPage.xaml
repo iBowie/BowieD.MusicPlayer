@@ -8,7 +8,7 @@
       xmlns:models="clr-namespace:BowieD.MusicPlayer.WPF.Models"
       xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views.Pages" xmlns:viewmodels="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels"
       mc:Ignorable="d"
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="595.4" d:DesignWidth="886"
       Title="PlaylistPage"
       d:DataContext="{d:DesignInstance Type=viewmodels:PlaylistViewModel}">
     <Grid>

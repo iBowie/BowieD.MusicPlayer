@@ -4,6 +4,7 @@ using BowieD.MusicPlayer.WPF.Extensions;
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
+using BowieD.MusicPlayer.WPF.Views.Pages;
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
@@ -210,7 +211,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             if (sender is MainWindowViewModel viewModel && e.NewValue is PlaylistInfo pinfo)
             {
-                viewModel.View.navFrame.Navigate(new Uri("Views/Pages/PlaylistPage.xaml", UriKind.Relative), pinfo);
+                var page = new PlaylistPage(new(pinfo, viewModel.View));
+
+                viewModel.View.navFrame.Navigate(page);
             }
         }
 
