@@ -1,6 +1,7 @@
 ﻿using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,13 @@ namespace BowieD.MusicPlayer.WPF.Views
     {
         public MainWindow()
         {
+            CultureInfo currentCulture = new CultureInfo("en_US");
+
+            CultureInfo.CurrentCulture = currentCulture;
+            CultureInfo.CurrentUICulture = currentCulture;
+            CultureInfo.DefaultThreadCurrentCulture = currentCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = currentCulture;
+
             InitializeComponent();
 
             ViewModel = new MainWindowViewModel(this);
