@@ -8,7 +8,9 @@ using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -16,10 +18,17 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 {
     public sealed class MainWindowViewModel : BaseViewModelView<MainWindow>
     {
+        private static readonly Duration BACKGROUND_FADE_SPEED = new(TimeSpan.FromSeconds(1));
+        private static readonly DoubleAnimation BACKGROUND_FADE_OUT = new(1.0, 0.0, BACKGROUND_FADE_SPEED);
+        private static readonly DoubleAnimation BACKGROUND_FADE_IN = new(0.0, 1.0, BACKGROUND_FADE_SPEED);
+        private Image bg1, bg2;
         private DispatcherTimer _fullScreenBackgroundSwitcher;
 
         public MainWindowViewModel(MainWindow view) : base(view)
         {
+            bg1 = View.fullScreenBackground;
+            bg2 = View.fullScreenBackground2;
+
             _fullScreenBackgroundSwitcher = new()
             {
                 Interval = TimeSpan.FromSeconds(60)
@@ -51,7 +60,15 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             bmp.UriSource = new Uri(fileName);
             bmp.EndInit();
 
-            View.fullScreenBackground.Source = bmp;
+            bg2.Source = bmp;
+
+            bg1.BeginAnimation(Image.OpacityProperty, BACKGROUND_FADE_OUT);
+            bg2.BeginAnimation(Image.OpacityProperty, BACKGROUND_FADE_IN);
+
+            var t = bg1;
+            bg1 = bg2;
+            bg2 = t;
+
         }
 
         #region Commands

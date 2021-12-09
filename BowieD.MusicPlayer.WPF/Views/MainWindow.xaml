@@ -408,11 +408,18 @@
             <Grid.Background>
                 <VisualBrush Viewbox="0.05,0.05,0.9,0.9" ViewboxUnits="RelativeToBoundingBox">
                     <VisualBrush.Visual>
-                        <Image Name="fullScreenBackground">
-                            <Image.BitmapEffect>
-                                <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian"/>
-                            </Image.BitmapEffect>
-                        </Image>
+                        <Canvas>
+                            <Image Name="fullScreenBackground">
+                                <Image.BitmapEffect>
+                                    <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian"/>
+                                </Image.BitmapEffect>
+                            </Image>
+                            <Image Name="fullScreenBackground2" Opacity="0">
+                                <Image.BitmapEffect>
+                                    <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian"/>
+                                </Image.BitmapEffect>
+                            </Image>
+                        </Canvas>
                     </VisualBrush.Visual>
                 </VisualBrush>
             </Grid.Background>

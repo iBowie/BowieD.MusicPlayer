@@ -1,9 +1,11 @@
 ﻿using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace BowieD.MusicPlayer.WPF.Views
 {
