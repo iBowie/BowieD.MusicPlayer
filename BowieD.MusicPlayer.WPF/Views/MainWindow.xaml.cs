@@ -40,6 +40,13 @@ namespace BowieD.MusicPlayer.WPF.Views
             {
                 Memento.SaveState(this);
             };
+
+#if WINDOWS10_0_19041_0_OR_GREATER
+            Loaded += (sender, e) =>
+            {
+                MusicPlayerViewModel.SetupMediaTransport();
+            };
+#endif
         }
 
         public MainWindowViewModel ViewModel { get; }
@@ -82,5 +89,12 @@ namespace BowieD.MusicPlayer.WPF.Views
                 }
             }
         }
+
+#if WINDOWS10_0_19041_0_OR_GREATER
+        internal Windows.Media.SystemMediaTransportControls GetSystemMediaTransportControls()
+        {
+            return Windows.Media.SystemMediaTransportControlsInterop.GetForWindow(this.CriticalHandle);
+        }
+#endif
     }
 }

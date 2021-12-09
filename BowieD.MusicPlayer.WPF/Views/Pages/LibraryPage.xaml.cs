@@ -29,6 +29,10 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
             }
         }
 
+#if NET6_0_OR_GREATER
         public record struct LibraryPageExtraData(MainWindow MainWindow);
+#elif NET5_0_OR_GREATER
+        public record LibraryPageExtraData(MainWindow MainWindow);
+#endif
     }
 }

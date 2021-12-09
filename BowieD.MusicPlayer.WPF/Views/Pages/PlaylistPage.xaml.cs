@@ -93,6 +93,11 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
             ViewModel.Songs.RemoveAt(index);
         }
 
+
+#if NET6_0_OR_GREATER
         public record struct PlaylistPageExtraData(PlaylistInfo Playlist, MainWindow MainWindow);
+#elif NET5_0_OR_GREATER
+        public record PlaylistPageExtraData(PlaylistInfo Playlist, MainWindow MainWindow);
+#endif
     }
 }

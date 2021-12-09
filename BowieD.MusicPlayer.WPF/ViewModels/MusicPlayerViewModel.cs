@@ -631,6 +631,117 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         public bool LoopQueueVisible => LoopMode == ELoopMode.QUEUE;
 
         #endregion
+
+        #region System Media Transport Controls
+        #if WINDOWS10_0_19041_0_OR_GREATER
+        private Windows.Media.SystemMediaTransportControls? _systemMediaTransportControls;
+
+        public void SetupMediaTransport()
+        {
+            if (_systemMediaTransportControls is not null)
+                return;
+
+            _systemMediaTransportControls = View.GetSystemMediaTransportControls();
+
+            _systemMediaTransportControls.IsRecordEnabled = false;
+            _systemMediaTransportControls.IsRewindEnabled = false;
+            _systemMediaTransportControls.IsStopEnabled = false;
+            _systemMediaTransportControls.PlaybackRate = 1.0;
+
+            _systemMediaTransportControls.ButtonPressed += _systemMediaTransportControls_ButtonPressed;
+
+            OnTrackChanged += async (song) =>
+            {
+                var updater = _systemMediaTransportControls.DisplayUpdater;
+
+                updater.Type = Windows.Media.MediaPlaybackType.Music;
+
+                using (var inMemory = new Windows.Storage.Streams.InMemoryRandomAccessStream())
+                {
+                    await System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(inMemory).WriteAsync(song.PictureData, 0, song.PictureData.Length);
+
+                    await inMemory.FlushAsync();
+
+                    inMemory.Seek(0);
+
+                    updater.Thumbnail = Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(inMemory);
+
+                    updater.MusicProperties.Artist = song.Artist;
+                    updater.MusicProperties.Title = song.Title;
+                    updater.MusicProperties.AlbumTitle = song.Album;
+
+                    updater.Update();
+                }
+            };
+
+            OnTrackChanged?.Invoke(CurrentSong);
+
+            OnPlaybackStateChanged += (song, oldState, newState) =>
+            {
+                _systemMediaTransportControls.PlaybackStatus = BassFacade.State switch
+                {
+                    Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED => Windows.Media.MediaPlaybackStatus.Stopped,
+                    Un4seen.Bass.BASSActive.BASS_ACTIVE_STALLED => Windows.Media.MediaPlaybackStatus.Changing,
+                    Un4seen.Bass.BASSActive.BASS_ACTIVE_PAUSED => Windows.Media.MediaPlaybackStatus.Paused,
+                    Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING => Windows.Media.MediaPlaybackStatus.Playing,
+                    _ => throw new Exception(),
+                };
+
+                var timeline = new Windows.Media.SystemMediaTransportControlsTimelineProperties();
+
+                timeline.StartTime = TimeSpan.FromSeconds(0);
+                timeline.EndTime = TimeSpan.FromSeconds(Duration);
+                timeline.MinSeekTime = TimeSpan.FromSeconds(0);
+                timeline.MaxSeekTime = TimeSpan.FromSeconds(Duration);
+                timeline.Position = TimeSpan.FromSeconds(Position);
+
+                _systemMediaTransportControls.UpdateTimelineProperties(timeline);
+            };
+
+            _timer.Tick += (sender, e) =>
+            {
+                UpdateMediaTransport();
+            };
+        }
+
+        private void _systemMediaTransportControls_ButtonPressed(Windows.Media.SystemMediaTransportControls sender, Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs args)
+        {
+            switch (args.Button)
+            {
+                case Windows.Media.SystemMediaTransportControlsButton.Play:
+                case Windows.Media.SystemMediaTransportControlsButton.Pause:
+                    Dispatcher.Invoke(() =>
+                    {
+                        PlayPauseCommand.Execute(null);
+                    });
+                    break;
+                case Windows.Media.SystemMediaTransportControlsButton.Next:
+                    Dispatcher.Invoke(() =>
+                    {
+                        NextTrackCommand.Execute(null);
+                    });
+                    break;
+                case Windows.Media.SystemMediaTransportControlsButton.Previous:
+                    Dispatcher.Invoke(() =>
+                    {
+                        PrevTrackCommand.Execute(null);
+                    });
+                    break;
+            }
+        }
+
+        public void UpdateMediaTransport()
+        {
+            if (_systemMediaTransportControls is not null)
+            {
+                _systemMediaTransportControls.IsPauseEnabled = IsPauseButton;
+                _systemMediaTransportControls.IsPlayEnabled = !IsPauseButton;
+                _systemMediaTransportControls.IsNextEnabled = !PeekNextSong(out _).IsEmpty;
+                _systemMediaTransportControls.IsPreviousEnabled = SongHistory.Count > 0;
+            }
+        }
+        #endif
+        #endregion
     }
     public enum ELoopMode : byte
     {
