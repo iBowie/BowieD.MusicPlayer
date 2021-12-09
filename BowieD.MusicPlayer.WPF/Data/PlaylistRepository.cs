@@ -121,6 +121,23 @@ namespace BowieD.MusicPlayer.WPF.Data
             com.ExecuteNonQuery();
         }
 
+        public void RemovePlaylist(PlaylistInfo playlistInfo)
+        {
+            string sql =
+                $"DELETE FROM {TABLE_NAME} " +
+                $"WHERE {COL_ID} = @id";
+
+            using var con = CreateConnection();
+
+            con.Open();
+
+            using var com = new SQLiteCommand(sql, con);
+
+            com.Parameters.Add("@id", DbType.Int32).Value = playlistInfo.ID;
+
+            com.ExecuteNonQuery();
+        }
+
         private static PlaylistInfo ReadPlaylist(SQLiteDataReader reader, long? id = null)
         {
             long plId = id ?? reader.GetInt64(COL_ID);
