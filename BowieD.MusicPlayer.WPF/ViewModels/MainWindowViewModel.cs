@@ -7,6 +7,7 @@ using BowieD.MusicPlayer.WPF.Views;
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,6 +24,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private static readonly DoubleAnimation BACKGROUND_FADE_IN = new(0.0, 1.0, BACKGROUND_FADE_SPEED);
         private Image bg1, bg2;
         private DispatcherTimer _fullScreenBackgroundSwitcher;
+        private string prevRandom;
 
         public MainWindowViewModel(MainWindow view) : base(view)
         {
@@ -46,7 +48,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             if (Backgrounds.Count > 1)
             {
-                var fileName = Backgrounds.Random();
+                var fileName = Backgrounds.Where(d => d != prevRandom).ToList().Random();
 
                 SetBackgroundFromFile(fileName);
             }
@@ -69,6 +71,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             bg1 = bg2;
             bg2 = t;
 
+            prevRandom = fileName;
         }
 
         #region Commands
