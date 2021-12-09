@@ -170,6 +170,23 @@ namespace BowieD.MusicPlayer.WPF.Data
             com.ExecuteNonQuery();
         }
 
+        public void RemoveSong(Song song)
+        {
+            string sql =
+                $"DELETE FROM {TABLE_NAME} " +
+                $"WHERE {COL_ID} = @id";
+
+            using var con = CreateConnection();
+            
+            con.Open();
+
+            using var com = new SQLiteCommand(sql, con);
+
+            com.Parameters.Add("@id", DbType.Int32).Value = song.ID;
+
+            com.ExecuteNonQuery();
+        }
+
         private Song AddNewSong(string fileName)
         {
             Song meta = GetSongMetadata(fileName);
