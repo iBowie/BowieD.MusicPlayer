@@ -182,25 +182,25 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="1" Margin="3.5" Content="{iconPacks:Material Kind=Shuffle}" Style="{DynamicResource ContentOnlyButton}"
+                        <Button Grid.Column="1" Margin="10,3.5" Content="{iconPacks:Material Kind=Shuffle}" Style="{DynamicResource ContentOnlyButton}"
                             Command="{Binding ShuffleCommand}"/>
-                        <Button Grid.Column="2" Margin="3.5" Content="{iconPacks:Material Kind=SkipPrevious}" Style="{DynamicResource ContentOnlyButton}"
+                        <Button Grid.Column="2" Margin="10,3.5" Content="{iconPacks:Material Kind=SkipPrevious}" Style="{DynamicResource ContentOnlyButton}"
                             Command="{Binding PrevTrackCommand}"/>
-                        <Button Grid.Column="3" Margin="3.5" Content="{iconPacks:Material Kind=Play}" Width="34" Height="34" Style="{DynamicResource RoundButton}" Foreground="{DynamicResource MahApps.Brushes.Window.Background}" 
+                        <Button Grid.Column="3" Margin="10,3.5" Content="{iconPacks:Material Kind=Play}" Width="34" Height="34" Style="{DynamicResource RoundButton}" Foreground="{DynamicResource MahApps.Brushes.Window.Background}" 
                             Command="{Binding PlayPauseCommand}"
                             Visibility="{Binding IsPauseButton, Converter={StaticResource invertedBoolToVisConverter}}"/>
-                        <Button Grid.Column="3" Margin="3.5" Content="{iconPacks:Material Kind=Pause}" Width="34" Height="34" Style="{DynamicResource RoundButton}" Foreground="{DynamicResource MahApps.Brushes.Window.Background}" 
+                        <Button Grid.Column="3" Margin="10,3.5" Content="{iconPacks:Material Kind=Pause}" Width="34" Height="34" Style="{DynamicResource RoundButton}" Foreground="{DynamicResource MahApps.Brushes.Window.Background}" 
                             Command="{Binding PlayPauseCommand}"
                             Visibility="{Binding IsPauseButton, Converter={StaticResource boolToVisConverter}}"/>
-                        <Button Grid.Column="4" Margin="3.5" Content="{iconPacks:Material Kind=SkipNext}" Style="{DynamicResource ContentOnlyButton}"
+                        <Button Grid.Column="4" Margin="10,3.5" Content="{iconPacks:Material Kind=SkipNext}" Style="{DynamicResource ContentOnlyButton}"
                             Command="{Binding NextTrackCommand}"/>
-                        <Button Grid.Column="5" Margin="3.5" Content="{iconPacks:Material Kind=Repeat}" Style="{DynamicResource ContentOnlyButton}"
+                        <Button Grid.Column="5" Margin="10,3.5" Content="{iconPacks:Material Kind=Repeat}" Style="{DynamicResource ContentOnlyButton}"
                             Visibility="{Binding LoopNoneVisible, Converter={StaticResource boolToVisConverter}}"
                             Command="{Binding LoopCommand}"/>
-                        <Button Grid.Column="5" Margin="3.5" Content="{iconPacks:Material Kind=RepeatOnce}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
+                        <Button Grid.Column="5" Margin="10,3.5" Content="{iconPacks:Material Kind=RepeatOnce}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
                             Visibility="{Binding LoopCurrentVisible, Converter={StaticResource boolToVisConverter}}"
                             Command="{Binding LoopCommand}"/>
-                        <Button Grid.Column="5" Margin="3.5" Content="{iconPacks:Material Kind=Repeat}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
+                        <Button Grid.Column="5" Margin="10,3.5" Content="{iconPacks:Material Kind=Repeat}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
                             Visibility="{Binding LoopQueueVisible, Converter={StaticResource boolToVisConverter}}"
                             Command="{Binding LoopCommand}"/>
                     </Grid>
