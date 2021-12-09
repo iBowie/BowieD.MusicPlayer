@@ -45,7 +45,8 @@
                             </Grid.RowDefinitions>
                             <StackPanel>
                                 <Button Margin="5" Command="{Binding OpenLibraryCommand}"
-                                        HorizontalAlignment="Left"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
                                         Style="{DynamicResource ContentOnlyButton}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -57,10 +58,10 @@
                                     </Grid>
                                 </Button>
                                 <Separator/>
-                                <Button Margin="5"
-                                    HorizontalAlignment="Left"
-                                    Style="{DynamicResource ContentOnlyButton}"
-                                    Command="{Binding CreatePlaylistCommand}">
+                                <Button Margin="5" Command="{Binding CreatePlaylistCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Style="{DynamicResource ContentOnlyButton}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
