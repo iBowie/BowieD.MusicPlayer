@@ -296,7 +296,7 @@
                         </Popup>
                         <iconPacks:PackIconMaterial Kind="VolumeSource" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Margin="5" Grid.Column="1"/>
                         <Slider Grid.Column="2" Minimum="0" Maximum="100" TickFrequency="1" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" IsSnapToTickEnabled="True"
-                        Value="{Binding Volume}"/>
+                        Value="{Binding Volume}" d:Value="50"/>
                         <Button Command="{Binding EnterFullScreenCommand}"
                                 Content="{iconPacks:Material Kind=Fullscreen}"
                                 Margin="5"
@@ -483,7 +483,7 @@
                         <Grid HorizontalAlignment="Right">
                             <StackPanel Orientation="Horizontal">
                                 <iconPacks:PackIconMaterial Kind="VolumeSource" Margin="10" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                                <Slider Value="{Binding Volume}" Maximum="100" Width="128" Margin="10"/>
+                                <Slider Value="{Binding Volume}" Maximum="100" Width="128" Margin="10" d:Value="50" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"/>
                                 <Button Command="{Binding ExitFullScreenCommand}"
                                 Content="{iconPacks:Material Kind=FullscreenExit}"
                                 Style="{DynamicResource ContentOnlyButton}" Margin="10"/>
