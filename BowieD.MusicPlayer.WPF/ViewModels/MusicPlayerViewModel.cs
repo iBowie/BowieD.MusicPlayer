@@ -171,6 +171,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             get => Position / Duration;
             set => Position = value * Duration;
         }
+        public bool LockAuto { get; set; } = false;
 
         public TaskbarItemProgressState ProgressState
         {
@@ -249,6 +250,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         public void NextTrackAuto()
         {
+            if (LockAuto)
+                return;
+
             if (LoopMode == ELoopMode.CURRENT && !CurrentSong.IsEmpty)
             {
                 CurrentSong = CurrentSong;
