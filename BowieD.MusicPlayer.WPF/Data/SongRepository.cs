@@ -35,7 +35,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             COL_COVER = "cover",
             COL_FILE_NAME = "fileName";
 
-        public SongRepository() : base("songs.db") { }
+        public SongRepository() : base(Path.Combine(DataFolder.DataDirectory, "songs.db")) { }
 
         protected override void OnPrepare()
         {

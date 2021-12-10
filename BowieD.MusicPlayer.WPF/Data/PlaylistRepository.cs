@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 
 namespace BowieD.MusicPlayer.WPF.Data
@@ -31,7 +32,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             COL_COVER = "cover",
             COL_SONGS = "songs";
 
-        public PlaylistRepository() : base("playlists.db") { }
+        public PlaylistRepository() : base(Path.Combine(DataFolder.DataDirectory, "playlists.db")) { }
 
         protected override void OnPrepare()
         {

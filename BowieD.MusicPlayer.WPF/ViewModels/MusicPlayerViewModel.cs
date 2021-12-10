@@ -654,23 +654,32 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             {
                 var updater = _systemMediaTransportControls.DisplayUpdater;
 
-                updater.Type = Windows.Media.MediaPlaybackType.Music;
-
-                using (var inMemory = new Windows.Storage.Streams.InMemoryRandomAccessStream())
+                if (song.IsEmpty || song.PictureData is null)
                 {
-                    await System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(inMemory).WriteAsync(song.PictureData, 0, song.PictureData.Length);
-
-                    await inMemory.FlushAsync();
-
-                    inMemory.Seek(0);
-
-                    updater.Thumbnail = Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(inMemory);
-
-                    updater.MusicProperties.Artist = song.Artist;
-                    updater.MusicProperties.Title = song.Title;
-                    updater.MusicProperties.AlbumTitle = song.Album;
+                    updater.ClearAll();
 
                     updater.Update();
+                }
+                else
+                {
+                    updater.Type = Windows.Media.MediaPlaybackType.Music;
+
+                    using (var inMemory = new Windows.Storage.Streams.InMemoryRandomAccessStream())
+                    {
+                        await System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(inMemory).WriteAsync(song.PictureData, 0, song.PictureData.Length);
+
+                        await inMemory.FlushAsync();
+
+                        inMemory.Seek(0);
+
+                        updater.Thumbnail = Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(inMemory);
+
+                        updater.MusicProperties.Artist = song.Artist;
+                        updater.MusicProperties.Title = song.Title;
+                        updater.MusicProperties.AlbumTitle = song.Album;
+
+                        updater.Update();
+                    }
                 }
             };
 

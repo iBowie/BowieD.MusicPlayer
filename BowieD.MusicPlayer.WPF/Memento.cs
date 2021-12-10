@@ -1,5 +1,6 @@
 ﻿using BowieD.MusicPlayer.WPF.Common;
 using BowieD.MusicPlayer.WPF.Data;
+using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.ViewModels;
 using BowieD.MusicPlayer.WPF.Views;
 using System.IO;
@@ -17,7 +18,7 @@ namespace BowieD.MusicPlayer.WPF
             var vm = mainWindow.ViewModel;
             var mp = mainWindow.MusicPlayerViewModel;
 
-            using FileStream fs = new(FILE_NAME, FileMode.Create, FileAccess.Write, FileShare.Read);
+            using FileStream fs = new(Path.Combine(DataFolder.DataDirectory, FILE_NAME), FileMode.Create, FileAccess.Write, FileShare.Read);
             using BinaryWriter bw = new(fs);
 
             bw.Write(VERSION);
@@ -54,7 +55,9 @@ namespace BowieD.MusicPlayer.WPF
 
         public static void RestoreState(MainWindow mainWindow)
         {
-            if (!File.Exists(FILE_NAME))
+            string filePath = Path.Combine(DataFolder.DataDirectory, FILE_NAME);
+
+            if (!File.Exists(filePath))
                 return;
 
             var vm = mainWindow.ViewModel;
@@ -62,7 +65,7 @@ namespace BowieD.MusicPlayer.WPF
 
             try
             {
-                using FileStream fs = new(FILE_NAME, FileMode.Open, FileAccess.Read, FileShare.Read);
+                using FileStream fs = new(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 using BinaryReader br = new(fs);
 
                 int savedVer = br.ReadInt32();
@@ -78,6 +81,10 @@ namespace BowieD.MusicPlayer.WPF
                         mp.SetCurrentSong(SongRepository.Instance.GetSong(songId), autoPlay);
 
                         mp.Position01 = br.ReadDouble();
+                    }
+                    else
+                    {
+                        mp.SetCurrentSong(Song.EMPTY, false);
                     }
 
                     mp.Volume = br.ReadDouble();
