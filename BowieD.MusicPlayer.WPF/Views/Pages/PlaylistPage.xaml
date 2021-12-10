@@ -39,8 +39,9 @@
                         <TextBlock Grid.Row="0" VerticalAlignment="Bottom" Margin="3.5" Text="PLAYLIST"
                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
                         <TextBlock Grid.Row="1" FontWeight="Bold" Text="{Binding PlaylistInfo.Name}" FontSize="36" 
-                                   VerticalAlignment="Center" Margin="3.5" d:Text="PLAYLIST NAME"
-                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center" Margin="3.5" d:Text="PLAYLIST NAME THAT IS REALLY LONG AND SHOULD BE CONTAINED IN THREE LINES YOO"
+                                   TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                                   MaxHeight="150"
                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
                         <TextBlock Grid.Row="2" Text="{Binding Playlist.DisplayToolTip}" VerticalAlignment="Top" 
                                    Margin="3.5" d:Text="173 трека, 11 ч. 28 мин."
