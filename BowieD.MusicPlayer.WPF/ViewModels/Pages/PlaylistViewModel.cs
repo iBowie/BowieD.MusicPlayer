@@ -142,24 +142,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                         var mp = View.MusicPlayerViewModel;
 
-                        mp.LockAuto = true;
-
-                        bool restoreState = false;
-                        double savedPos = 0.0;
-                        bool autoPlay = false;
-                        Song savedSong = Song.EMPTY;
-
-                        if (!mp.CurrentSong.IsEmpty && mp.CurrentSong.FileName == song.FileName)
-                        {
-                            savedSong = mp.CurrentSong;
-                            savedPos = mp.Position01;
-                            autoPlay = BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING;
-                            restoreState = true;
-
-                            BassFacade.Stop();
-                        }
-
                         EditSongDetailsView esdv = new(song);
+
+                        esdv.LockState(mp);
 
                         if (esdv.ShowDialog() == true)
                         {
@@ -170,13 +155,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                             Songs[index] = resultSong;
                         }
 
-                        if (restoreState)
-                        {
-                            mp.SetCurrentSong(savedSong, autoPlay);
-                            mp.Position01 = savedPos;
-                        }
-
-                        mp.LockAuto = false;
+                        esdv.RestoreState(mp);
                     }, (p) =>
                     {
                         return p.HasValue && !p.Value.IsEmpty && p.Value.IsAvailable;

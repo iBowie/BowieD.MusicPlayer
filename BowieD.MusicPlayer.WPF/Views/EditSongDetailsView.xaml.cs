@@ -1,5 +1,7 @@
-﻿using BowieD.MusicPlayer.WPF.Models;
+﻿using BowieD.MusicPlayer.WPF.Common;
+using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
+using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
 using System;
 using System.Linq;
@@ -28,6 +30,42 @@ namespace BowieD.MusicPlayer.WPF.Views
             SongYear = song.Year;
 
             mainGrid.DataContext = this;
+        }
+
+        private bool restoreState = false;
+        private double savedPos;
+        private bool autoPlay;
+        private Song savedSong;
+
+        public void LockState(MusicPlayerViewModel musicPlayer)
+        {
+            musicPlayer.LockAuto = true;
+
+            restoreState = false;
+            savedPos = 0.0;
+            autoPlay = false;
+            savedSong = Song.EMPTY;
+
+            if (!musicPlayer.CurrentSong.IsEmpty && musicPlayer.CurrentSong.FileName == _original.FileName)
+            {
+                savedSong = musicPlayer.CurrentSong;
+                savedPos = musicPlayer.Position01;
+                autoPlay = BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING;
+                restoreState = true;
+
+                BassFacade.Stop();
+            }
+        }
+
+        public void RestoreState(MusicPlayerViewModel musicPlayer)
+        {
+            if (restoreState)
+            {
+                musicPlayer.SetCurrentSong(savedSong, autoPlay);
+                musicPlayer.Position01 = savedPos;
+            }
+
+            musicPlayer.LockAuto = false;
         }
 
         public Song ResultSong { get; private set; }
