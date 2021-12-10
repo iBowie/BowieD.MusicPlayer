@@ -73,7 +73,8 @@
                                 </Button>
                             </StackPanel>
                             <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Playlists}" SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}">
+                                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Playlists}" 
+                                          SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <ListView.ItemTemplate>
                                         <DataTemplate DataType="{x:Type models:PlaylistInfo}">
                                             <Grid>

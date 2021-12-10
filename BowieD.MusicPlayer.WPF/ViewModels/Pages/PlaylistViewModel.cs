@@ -155,6 +155,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                 if (files.Count > 0)
                 {
                     var info = viewModel.PlaylistInfo;
+                    int insertIndex = dropInfo.InsertIndex;
 
                     foreach (var fn in files)
                     {
@@ -163,14 +164,12 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                         var song = SongRepository.Instance.GetOrAddSong(fn);
 
-                        info.SongIDs.Add(song.ID);
+                        info.SongIDs.Insert(insertIndex++, song.ID);
                     }
 
                     PlaylistRepository.Instance.UpdatePlaylist(info);
 
-                    viewModel.View.ViewModel.ObtainPlaylists();
-
-                    viewModel.View.ViewModel.SelectedPlaylist = info;
+                    viewModel.PlaylistInfo = info;
                 }
             }
             else
