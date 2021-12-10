@@ -713,20 +713,17 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     _ => throw new Exception(),
                 };
 
-                var timeline = new Windows.Media.SystemMediaTransportControlsTimelineProperties();
-
-                timeline.StartTime = TimeSpan.FromSeconds(0);
-                timeline.EndTime = TimeSpan.FromSeconds(Duration);
-                timeline.MinSeekTime = TimeSpan.FromSeconds(0);
-                timeline.MaxSeekTime = TimeSpan.FromSeconds(Duration);
-                timeline.Position = TimeSpan.FromSeconds(Position);
-
-                _systemMediaTransportControls.UpdateTimelineProperties(timeline);
+                UpdateMediaTransportTimeline();
             };
 
             _timer.Tick += (sender, e) =>
             {
                 UpdateMediaTransport();
+            };
+
+            _fiveSecondTimer.Tick += (sender, e) =>
+            {
+                UpdateMediaTransportTimeline();
             };
         }
 
@@ -765,6 +762,33 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 _systemMediaTransportControls.IsNextEnabled = !PeekNextSong(out _).IsEmpty;
                 _systemMediaTransportControls.IsPreviousEnabled = SongHistory.Count > 0;
             }
+        }
+
+        private void UpdateMediaTransportTimeline()
+        {
+            if (_systemMediaTransportControls is null)
+                return;
+
+            var timeline = new Windows.Media.SystemMediaTransportControlsTimelineProperties();
+
+            if (!CurrentSong.IsEmpty && CurrentSong.IsAvailable)
+            {
+                timeline.StartTime = TimeSpan.FromSeconds(0);
+                timeline.EndTime = TimeSpan.FromSeconds(Duration);
+                timeline.MinSeekTime = TimeSpan.FromSeconds(0);
+                timeline.MaxSeekTime = TimeSpan.FromSeconds(Duration);
+                timeline.Position = TimeSpan.FromSeconds(Position);
+            }
+            else
+            {
+                timeline.StartTime = TimeSpan.FromSeconds(0);
+                timeline.EndTime = TimeSpan.FromSeconds(0);
+                timeline.MinSeekTime = TimeSpan.FromSeconds(0);
+                timeline.MaxSeekTime = TimeSpan.FromSeconds(0);
+                timeline.Position = TimeSpan.FromSeconds(0);
+            }
+
+            _systemMediaTransportControls.UpdateTimelineProperties(timeline);
         }
         #endif
         #endregion
