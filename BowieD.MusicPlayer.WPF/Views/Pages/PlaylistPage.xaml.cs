@@ -1,5 +1,6 @@
 ﻿using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.ViewModels.Pages;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -79,18 +80,45 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
 
         private void playlistSongsListView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Handled)
+                return;
+
             if (ViewModel is null)
                 return;
 
             if (ViewModel.PlaylistInfo.IsEmpty)
                 return;
 
-            var index = playlistSongsListView.SelectedIndex;
+            switch (e.Key)
+            {
+                case Key.Delete:
+                    {
+                        var selectedItems = playlistSongsListView.SelectedItems;
 
-            if (index == -1)
-                return;
+                        List<object> list = new();
 
-            ViewModel.Songs.RemoveAt(index);
+                        foreach (var si in selectedItems)
+                            list.Add(si);
+
+                        foreach (var si in list)
+                        {
+                            if (si is Song song)
+                            {
+                                ViewModel.Songs.Remove(song);
+                            }
+                        }
+
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.Enter:
+                    {
+                        // play songs by adding to queue selected ones
+
+                        e.Handled = true;
+                    }
+                    break;
+            }
         }
 
 
