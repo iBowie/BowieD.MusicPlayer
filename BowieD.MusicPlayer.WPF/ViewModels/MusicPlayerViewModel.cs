@@ -31,6 +31,14 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             {
                 Interval = TimeSpan.FromMilliseconds(100)
             };
+            _secondTimer = new DispatcherTimer()
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _fiveSecondTimer = new DispatcherTimer()
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
 
             _timer.Tick += (sender, e) =>
             {
@@ -58,6 +66,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             };
 
             _timer.Start();
+            _secondTimer.Start();
+            _fiveSecondTimer.Start();
 
             _songQueue.CollectionChanged += _songQueue_CollectionChanged;
         }
@@ -71,7 +81,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         public event PlaybackStateChanged? OnPlaybackStateChanged;
 
         private Un4seen.Bass.BASSActive _prevState = Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED;
-        private readonly DispatcherTimer _timer;
+        private readonly DispatcherTimer _timer, _secondTimer, _fiveSecondTimer;
         private Song _currentSong;
         private ELoopMode _loopMode;
         private EPlayOrigin _playOrigin;
