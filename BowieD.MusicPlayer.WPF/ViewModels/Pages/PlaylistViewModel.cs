@@ -5,7 +5,11 @@ using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
 using BowieD.MusicPlayer.WPF.Views.Pages;
 using GongSolutions.Wpf.DragDrop;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 
@@ -158,6 +162,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
     }
     public sealed class PlaylistViewModelDropHandler : IDropTarget
     {
+        private const string REGEX_YT_PATTERN = @"http(?:s|)\:\/\/(?:(?:www|music)\.youtube\.com\/watch\?v=([a-zA-Z0-9\-_]+)|youtu\.be\/([a-zA-Z0-9\-_]+))";
         private readonly PlaylistViewModel viewModel;
 
         public PlaylistViewModelDropHandler(PlaylistViewModel viewModel)
@@ -171,7 +176,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
             var dataObject = dropInfo.Data as IDataObject;
 
-            if (dataObject is not null && dataObject.GetDataPresent(DataFormats.FileDrop))
+            if (dataObject is not null && 
+                (dataObject.GetDataPresent(DataFormats.FileDrop) || dataObject.GetDataPresent(DataFormats.Text)))
             {
                 dropInfo.Effects = DragDropEffects.Copy;
             }
@@ -185,34 +191,117 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
         {
             var dataObject = dropInfo.Data as DataObject;
 
-            if (dataObject is not null && dataObject.ContainsFileDropList())
+            if (dataObject is not null)
             {
-                var files = dataObject.GetFileDropList();
-
-                if (files.Count > 0)
+                if (dataObject.ContainsFileDropList())
                 {
-                    var info = viewModel.PlaylistInfo;
-                    int insertIndex = dropInfo.InsertIndex;
+                    var files = dataObject.GetFileDropList();
 
-                    foreach (var fn in files)
+                    if (files.Count > 0)
                     {
-                        if (!FileTool.CheckFileValid(fn, BassFacade.SupportedExtensions))
-                            continue;
+                        var info = viewModel.PlaylistInfo;
+                        int insertIndex = dropInfo.InsertIndex;
 
-                        var song = SongRepository.Instance.GetOrAddSong(fn);
+                        foreach (var fn in files)
+                        {
+                            if (!FileTool.CheckFileValid(fn, BassFacade.SupportedExtensions))
+                                continue;
 
-                        info.SongIDs.Insert(insertIndex++, song.ID);
+                            var song = SongRepository.Instance.GetOrAddSong(fn);
+
+                            info.SongIDs.Insert(insertIndex++, song.ID);
+                        }
+
+                        PlaylistRepository.Instance.UpdatePlaylist(info);
+
+                        viewModel.PlaylistInfo = info;
                     }
 
-                    PlaylistRepository.Instance.UpdatePlaylist(info);
+                    return;
+                }
+                else if (dataObject.ContainsText(TextDataFormat.Text))
+                {
+                    string text = dataObject.GetText(TextDataFormat.Text);
 
-                    viewModel.PlaylistInfo = info;
+                    var m = Regex.Match(text, REGEX_YT_PATTERN);
+
+                    Group? rGroup;
+
+                    if (m.Groups[1].Success)
+                    {
+                        rGroup = m.Groups[1];
+                    }
+                    else if (m.Groups[2].Success)
+                    {
+                        rGroup = m.Groups[2];
+                    }
+                    else
+                    {
+                        rGroup = null;
+                    }
+
+                    if (rGroup is not null)
+                    {
+                        SaveFileDialog sfd = new()
+                        {
+                            Filter = "MP3 Audio File|*.mp3"
+                        };
+
+                        if (sfd.ShowDialog() == true)
+                        {
+                            var fn = sfd.FileName;
+
+                            var fullFn = Path.GetFullPath(fn);
+
+                            var dir = Path.GetDirectoryName(fullFn);
+                            var nameNoExt = Path.GetFileNameWithoutExtension(fullFn);
+                            var fullFnNoExt = Path.Combine(dir, nameNoExt);
+
+                            string url = $"https://www.youtube.com/watch?v={rGroup.Value}";
+
+                            ProcessStartInfo psi = new("youtube-dl.exe", $"-x --audio-format mp3 -o \"{fullFnNoExt}.%(ext)s\" {url}")
+                            {
+                                UseShellExecute = false
+                            };
+
+                            var p = Process.Start(psi);
+
+                            try
+                            {
+                                p.WaitForInputIdle();
+                            }
+                            catch { }
+
+                            p.WaitForExit();
+
+                            while (!p.HasExited) { }
+
+                            var song = SongRepository.Instance.GetOrAddSong(fullFn);
+
+                            EditSongDetailsView esdv = new(song);
+
+                            if (esdv.ShowDialog() == true)
+                            {
+                                song = esdv.ResultSong;
+
+                                SongRepository.Instance.UpdateSong(song, false);
+                            }
+
+                            var info = viewModel.PlaylistInfo;
+
+                            info.SongIDs.Insert(dropInfo.InsertIndex, song.ID);
+
+                            PlaylistRepository.Instance.UpdatePlaylist(info);
+
+                            viewModel.PlaylistInfo = info;
+                        }
+
+                        return;
+                    }
                 }
             }
-            else
-            {
-                GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.Drop(dropInfo);
-            }
+
+            GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.Drop(dropInfo);
         }
     }
 }
