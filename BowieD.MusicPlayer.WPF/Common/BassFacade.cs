@@ -27,7 +27,7 @@ namespace BowieD.MusicPlayer.WPF.Common
 
         public static void Play(string fileName)
         {
-            if (Bass.BASS_ChannelIsActive(Handle) != BASSActive.BASS_ACTIVE_PAUSED)
+            if (State != BASSActive.BASS_ACTIVE_PAUSED)
             {
                 Stop();
 
