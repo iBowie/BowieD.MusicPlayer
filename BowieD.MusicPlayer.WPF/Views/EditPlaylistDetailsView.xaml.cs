@@ -44,7 +44,7 @@ namespace BowieD.MusicPlayer.WPF.Views
 
         public static readonly DependencyProperty PlaylistPictureDataProperty = DependencyProperty.Register("PlaylistPictureData", typeof(byte[]), typeof(EditPlaylistDetailsView), new PropertyMetadata(Array.Empty<byte>()));
 
-        private ICommand _saveCommand;
+        private ICommand? _saveCommand;
 
         public ICommand SaveCommand
         {

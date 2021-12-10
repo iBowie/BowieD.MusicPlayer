@@ -139,9 +139,14 @@ namespace BowieD.MusicPlayer.WPF.Data
             return result;
         }
 
-        public void UpdateSong(Song song)
+        public void UpdateSong(Song song, bool updateFromMeta = true)
         {
-            Song meta = GetSongMetadata(song.FileName);
+            Song meta;
+
+            if (updateFromMeta)
+                meta = GetSongMetadata(song.FileName);
+            else
+                meta = song;
 
             const string
                 PARAM_ID = "@id",

@@ -1,0 +1,25 @@
+﻿<mah:MetroWindow xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" 
+                 x:Class="BowieD.MusicPlayer.WPF.Views.EditSongDetailsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views"
+        mc:Ignorable="d"
+        Title="EditSongDetailsView" Height="450" Width="800" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+    <Grid Name="mainGrid" d:DataContext="{d:DesignInstance Type=local:EditSongDetailsView}">
+        <StackPanel Margin="30">
+            <TextBlock Margin="5" Text="Title" TextAlignment="Center"/>
+            <TextBox Margin="5" Text="{Binding SongTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Margin="5" Text="Artist" TextAlignment="Center"/>
+            <TextBox Margin="5" Text="{Binding SongArtist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Margin="5" Text="Album" TextAlignment="Center"/>
+            <TextBox Margin="5" Text="{Binding SongAlbum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Margin="5" Text="Year" TextAlignment="Center"/>
+            <mah:NumericUpDown Minimum="0" Maximum="10000" ParsingNumberStyle="Integer"
+                               Margin="5" Value="{Binding SongYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Margin="5" Text="Cover" TextAlignment="Center"/>
+            <Button Content="Save" Margin="5" Command="{Binding SaveCommand}"/>
+        </StackPanel>
+    </Grid>
+</mah:MetroWindow>

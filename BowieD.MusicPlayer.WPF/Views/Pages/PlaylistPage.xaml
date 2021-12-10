@@ -72,9 +72,18 @@
                               Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" PreviewKeyDown="playlistSongsListView_PreviewKeyDown" PreviewMouseWheel="ListView_PreviewMouseWheel">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                <Setter Property="ContextMenu" Value="{DynamicResource ItemContextMenu}"/>
                                 <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                             </Style>
                         </ListView.ItemContainerStyle>
+                        <ListView.Resources>
+                            <ContextMenu x:Key="ItemContextMenu">
+                                <MenuItem Header="Edit Details"
+                                          DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                          Command="{Binding DataContext.EditSongDetailsCommand}"
+                                          CommandParameter="{Binding SelectedItem}"/>
+                            </ContextMenu>
+                        </ListView.Resources>
                         <ListView.View>
                             <GridView>
                                 <GridView.ColumnHeaderContainerStyle>

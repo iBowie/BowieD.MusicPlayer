@@ -72,7 +72,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
             get => _songs;
         }
 
-        private ICommand? _editDetailsCommand, _playCommand;
+        private ICommand? _editDetailsCommand, _playCommand, _editSongDetailsCommand;
 
         public ICommand EditDetailsCommand
         {
@@ -116,6 +116,43 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                 }
 
                 return _playCommand;
+            }
+        }
+        public ICommand EditSongDetailsCommand
+        {
+            get
+            {
+                if (_editSongDetailsCommand is null)
+                {
+                    _editSongDetailsCommand = new GenericCommand<Song?>((p) =>
+                    {
+                        if (!p.HasValue)
+                            return;
+
+                        var song = p.Value;
+
+                        var index = Songs.IndexOf(song);
+
+                        if (index == -1)
+                            return;
+
+                        EditSongDetailsView esdv = new(song);
+
+                        if (esdv.ShowDialog() == true)
+                        {
+                            Song resultSong = esdv.ResultSong;
+                            
+                            SongRepository.Instance.UpdateSong(resultSong, false);
+
+                            Songs[index] = resultSong;
+                        }
+                    }, (p) =>
+                    {
+                        return p.HasValue && !p.Value.IsEmpty && p.Value.IsAvailable;
+                    });
+                }
+
+                return _editSongDetailsCommand;
             }
         }
     }
