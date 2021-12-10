@@ -642,11 +642,18 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         #endregion
 
+        public void SetupIntegrations()
+        {
+#if WINDOWS10_0_19041_0_OR_GREATER
+            SetupMediaTransport();
+#endif
+        }
+
         #region System Media Transport Controls
         #if WINDOWS10_0_19041_0_OR_GREATER
         private Windows.Media.SystemMediaTransportControls? _systemMediaTransportControls;
 
-        public void SetupMediaTransport()
+        private void SetupMediaTransport()
         {
             if (_systemMediaTransportControls is not null)
                 return;
@@ -749,7 +756,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             }
         }
 
-        public void UpdateMediaTransport()
+        private void UpdateMediaTransport()
         {
             if (_systemMediaTransportControls is not null)
             {

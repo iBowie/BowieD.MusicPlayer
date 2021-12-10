@@ -41,12 +41,10 @@ namespace BowieD.MusicPlayer.WPF.Views
                 Memento.SaveState(this);
             };
 
-#if WINDOWS10_0_19041_0_OR_GREATER
             Loaded += (sender, e) =>
             {
-                MusicPlayerViewModel.SetupMediaTransport();
+                MusicPlayerViewModel.SetupIntegrations();
             };
-#endif
         }
 
         public MainWindowViewModel ViewModel { get; }
