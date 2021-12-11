@@ -265,7 +265,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                             string url = $"https://www.youtube.com/watch?v={rGroup.Value}";
 
-                            ProcessStartInfo psi = new("youtube-dl.exe", $"-x --audio-format mp3 -o \"{fullFnNoExt}.%(ext)s\" {url}")
+                            ProcessStartInfo psi = new("youtube-dl.exe", $"-x --audio-format mp3 --embed-thumbnail --add-metadata -o \"{fullFnNoExt}.%(ext)s\" {url}")
                             {
                                 UseShellExecute = false
                             };
