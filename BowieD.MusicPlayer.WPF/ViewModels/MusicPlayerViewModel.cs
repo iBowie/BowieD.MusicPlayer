@@ -416,11 +416,15 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                             case Un4seen.Bass.BASSActive.BASS_ACTIVE_PAUSED:
                                 BassFacade.Resume();
                                 break;
+                            case Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED:
+                                BassFacade.Play(CurrentSong.FileName);
+                                break;
                         }
                     }, () =>
                     {
                         return BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PAUSED ||
-                               BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING;
+                               BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING ||
+                               (BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED && !CurrentSong.IsEmpty && CurrentSong.IsAvailable);
                     });
                 }
 
@@ -453,10 +457,17 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _prevTrackCommand = new BaseCommand(() =>
                     {
-                        PrevTrack();
+                        if (Position >= 15)
+                        {
+                            Position = 0;
+                        }
+                        else
+                        {
+                            PrevTrack();
+                        }
                     }, () =>
                     {
-                        return SongHistory.Count > 0;
+                        return (BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING && Position >= 15) || SongHistory.Count > 0;
                     });
                 }
 
