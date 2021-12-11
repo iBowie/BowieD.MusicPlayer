@@ -662,6 +662,12 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 #if WINDOWS10_0_19041_0_OR_GREATER
             SetupMediaTransport();
 #endif
+            SetupDiscordRichPresence();
+        }
+
+        public void RemoveIntegrations()
+        {
+            RemoveRichPresence();
         }
 
         #region System Media Transport Controls
@@ -805,8 +811,109 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             _systemMediaTransportControls.UpdateTimelineProperties(timeline);
         }
-        #endif
+#endif
         #endregion
+
+        #region Discord Rich Presence
+        private DiscordRPC.DiscordRpcClient? _discordClient;
+
+        private void SetupDiscordRichPresence()
+        {
+            _discordClient = new DiscordRPC.DiscordRpcClient("919242231037169684", autoEvents: true);
+            
+            if (_discordClient.Initialize())
+            {
+                OnPlaybackStateChanged += DiscordRichPresence_OnPlaybackStateChanged;
+
+                _fiveSecondTimer.Tick += DiscordRichPresence_FiveSecondTimerTick;
+            }
+        }
+
+        private void DiscordRichPresence_FiveSecondTimerTick(object? sender, EventArgs e)
+        {
+            UpdateRichPresence();
+        }
+
+        private void DiscordRichPresence_OnPlaybackStateChanged(Song song, Un4seen.Bass.BASSActive newState, Un4seen.Bass.BASSActive oldState)
+        {
+            UpdateRichPresence();
+        }
+
+        private void UpdateRichPresence()
+        {
+            if (_discordClient is null)
+                return;
+
+            if (!CurrentSong.IsEmpty && CurrentSong.IsAvailable)
+            {
+                DiscordRPC.RichPresence presence = new()
+                {
+                    State = CurrentSong.Artist,
+                    Details = CurrentSong.Title
+                };
+
+                presence.Assets = new DiscordRPC.Assets();
+
+                switch (BassFacade.State)
+                {
+                    case Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING:
+                        {
+                            var utc = DateTime.UtcNow;
+
+                            presence.Timestamps = new DiscordRPC.Timestamps()
+                            {
+                                Start = utc.Subtract(TimeSpan.FromSeconds(Position)),
+                                End = utc.Add(TimeSpan.FromSeconds(Duration - Position))
+                            };
+
+                            presence.Assets.SmallImageText = "Playing";
+                        }
+                        break;
+                    case Un4seen.Bass.BASSActive.BASS_ACTIVE_PAUSED:
+                        {
+                            presence.Assets.SmallImageText = "Paused";
+                        }
+                        break;
+                    case Un4seen.Bass.BASSActive.BASS_ACTIVE_STALLED:
+                        {
+                            presence.Assets.SmallImageText = "Stalled";
+                        }
+                        break;
+                    case Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED:
+                        {
+                            presence.Assets.SmallImageText = "Stopped";
+                        }
+                        break;
+                }
+
+                _discordClient.SetPresence(presence);
+            }
+            else
+            {
+                _discordClient.ClearPresence();
+            }
+        }
+
+        private void RemoveRichPresence()
+        {
+            if (_discordClient is not null)
+            {
+                OnPlaybackStateChanged -= DiscordRichPresence_OnPlaybackStateChanged;
+                _fiveSecondTimer.Tick -= DiscordRichPresence_FiveSecondTimerTick;
+
+                _discordClient.Deinitialize();
+
+                _discordClient.Dispose();
+
+                _discordClient = null;
+            }
+        }
+        #endregion
+
+        ~MusicPlayerViewModel()
+        {
+            RemoveIntegrations();
+        }
     }
     public enum ELoopMode : byte
     {

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bass.NetWrapper" Version="2.4.12.5" />
+    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.4.3" />
     <PackageReference Include="Humanizer" Version="2.13.14" />
     <PackageReference Include="Humanizer.Core" Version="2.13.14" />
