@@ -6,6 +6,7 @@ using BowieD.MusicPlayer.WPF.Views;
 using BowieD.MusicPlayer.WPF.Views.Pages;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -248,59 +249,48 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                     if (rGroup is not null)
                     {
-                        SaveFileDialog sfd = new()
+                        viewModel.View.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            Filter = "MP3 Audio File|*.mp3"
-                        };
-
-                        if (sfd.ShowDialog() == true)
-                        {
-                            var fn = sfd.FileName;
-
-                            var fullFn = Path.GetFullPath(fn);
-
-                            var dir = Path.GetDirectoryName(fullFn);
-                            var nameNoExt = Path.GetFileNameWithoutExtension(fullFn);
-                            var fullFnNoExt = Path.Combine(dir, nameNoExt);
-
-                            string url = $"https://www.youtube.com/watch?v={rGroup.Value}";
-
-                            ProcessStartInfo psi = new("youtube-dl.exe", $"-x --audio-format mp3 --embed-thumbnail --add-metadata -o \"{fullFnNoExt}.%(ext)s\" {url}")
+                            SaveFileDialog sfd = new()
                             {
-                                UseShellExecute = false
+                                Filter = "MP3 Audio File|*.mp3"
                             };
 
-                            var p = Process.Start(psi);
-
-                            try
+                            if (sfd.ShowDialog() == true)
                             {
-                                p.WaitForInputIdle();
+                                var fn = sfd.FileName;
+
+                                var fullFn = Path.GetFullPath(fn);
+
+                                var dir = Path.GetDirectoryName(fullFn);
+                                var nameNoExt = Path.GetFileNameWithoutExtension(fullFn);
+                                var fullFnNoExt = Path.Combine(dir, nameNoExt);
+
+                                YouTubeDownloadView ytd = new(fullFnNoExt, rGroup.Value);
+
+                                if (ytd.ShowDialog() == true)
+                                {
+                                    var song = SongRepository.Instance.GetOrAddSong(fullFn);
+
+                                    EditSongDetailsView esdv = new(song);
+
+                                    if (esdv.ShowDialog() == true)
+                                    {
+                                        song = esdv.ResultSong;
+
+                                        SongRepository.Instance.UpdateSong(song, false);
+                                    }
+
+                                    var info = viewModel.PlaylistInfo;
+
+                                    info.SongIDs.Insert(dropInfo.InsertIndex, song.ID);
+
+                                    PlaylistRepository.Instance.UpdatePlaylist(info);
+
+                                    viewModel.PlaylistInfo = info;
+                                }
                             }
-                            catch { }
-
-                            p.WaitForExit();
-
-                            while (!p.HasExited) { }
-
-                            var song = SongRepository.Instance.GetOrAddSong(fullFn);
-
-                            EditSongDetailsView esdv = new(song);
-
-                            if (esdv.ShowDialog() == true)
-                            {
-                                song = esdv.ResultSong;
-
-                                SongRepository.Instance.UpdateSong(song, false);
-                            }
-
-                            var info = viewModel.PlaylistInfo;
-
-                            info.SongIDs.Insert(dropInfo.InsertIndex, song.ID);
-
-                            PlaylistRepository.Instance.UpdatePlaylist(info);
-
-                            viewModel.PlaylistInfo = info;
-                        }
+                        }));
 
                         return;
                     }
