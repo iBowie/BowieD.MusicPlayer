@@ -30,7 +30,7 @@ namespace BowieD.MusicPlayer.WPF.Views
 
                 string url = $"https://www.youtube.com/watch?v={videoId}";
 
-                ProcessStartInfo psi = new("youtube-dl.exe", $"-x --audio-format mp3 --embed-thumbnail --add-metadata -o \"{fileNameNoExtension}.%(ext)s\" {url}")
+                ProcessStartInfo psi = new("yt-dlp.exe", $"-x --audio-format mp3 --embed-thumbnail --add-metadata -o \"{fileNameNoExtension}.%(ext)s\" {url}")
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
