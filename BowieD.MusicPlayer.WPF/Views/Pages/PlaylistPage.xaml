@@ -80,6 +80,11 @@
                         </ListView.ItemContainerStyle>
                         <ListView.Resources>
                             <ContextMenu x:Key="ItemContextMenu">
+                                <MenuItem Header="Add To Queue"
+                                          DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                          Command="{Binding DataContext.AddSongsToQueueCommand}"
+                                          CommandParameter="{Binding SelectedItems}"/>
+                                <Separator/>
                                 <MenuItem Header="Edit Details"
                                           DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
                                           Command="{Binding DataContext.EditSongDetailsCommand}"

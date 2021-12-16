@@ -7,9 +7,12 @@ using BowieD.MusicPlayer.WPF.Views.Pages;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
@@ -77,7 +80,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
             get => _songs;
         }
 
-        private ICommand? _editDetailsCommand, _playCommand, _editSongDetailsCommand;
+        private ICommand? _editDetailsCommand, _playCommand, _editSongDetailsCommand,
+            _addSongsToQueueCommand;
 
         public ICommand EditDetailsCommand
         {
@@ -164,6 +168,33 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                 }
 
                 return _editSongDetailsCommand;
+            }
+        }
+        public ICommand AddSongsToQueueCommand
+        {
+            get
+            {
+                if (_addSongsToQueueCommand is null)
+                {
+                    _addSongsToQueueCommand = new GenericCommand<IEnumerable>((songs) =>
+                    {
+                        foreach (var s in songs)
+                        {
+                            if (s is Song song)
+                            {
+                                if (song.IsEmpty || !song.IsAvailable)
+                                    continue;
+
+                                View.MusicPlayerViewModel.UserSongQueue.Enqueue(song);
+                            }
+                        }
+                    }, (songs) =>
+                    {
+                        return songs is not null;
+                    });
+                }
+
+                return _addSongsToQueueCommand;
             }
         }
     }
