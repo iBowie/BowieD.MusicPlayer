@@ -7,6 +7,12 @@ namespace BowieD.MusicPlayer.WPF.MVVM
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        internal void ChangeProperty<T>(ref T backField, T newValue, string propertyName)
+        {
+            backField = newValue;
+
+            TriggerPropertyChanged(propertyName);
+        }
         internal void ChangeProperty<T>(ref T backField, T newValue, params string[] properties)
         {
             backField = newValue;
@@ -14,10 +20,14 @@ namespace BowieD.MusicPlayer.WPF.MVVM
             TriggerPropertyChanged(properties);
         }
 
+        internal void TriggerPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         internal void TriggerPropertyChanged(params string[] properties)
         {
             foreach (var p in properties)
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
+                TriggerPropertyChanged(p);
         }
     }
     public abstract class BaseViewModelView<TView> : BaseViewModel where TView : Window

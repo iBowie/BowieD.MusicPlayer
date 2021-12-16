@@ -84,6 +84,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private readonly DispatcherTimer _timer, _secondTimer, _fiveSecondTimer;
         private Song _currentSong;
         private ELoopMode _loopMode;
+        private bool _isShuffleEnabled = false;
         private EPlayOrigin _playOrigin;
         private readonly ObservableQueue<Song> _userSongQueue = new();
         private readonly ObservableQueue<Song> _songQueue = new();
@@ -98,6 +99,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get => _loopMode;
             set => ChangeProperty(ref _loopMode, value, nameof(LoopMode), nameof(LoopNoneVisible), nameof(LoopQueueVisible), nameof(LoopCurrentVisible));
+        }
+        public bool IsShuffleEnabled
+        {
+            get => _isShuffleEnabled;
+            set => ChangeProperty(ref _isShuffleEnabled, value, nameof(IsShuffleEnabled));
         }
         public EPlayOrigin PlayOrigin
         {
