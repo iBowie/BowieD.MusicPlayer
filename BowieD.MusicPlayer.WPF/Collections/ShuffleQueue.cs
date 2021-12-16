@@ -1,6 +1,5 @@
 ﻿using BowieD.MusicPlayer.WPF.Extensions;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace BowieD.MusicPlayer.WPF.Collections
@@ -8,7 +7,7 @@ namespace BowieD.MusicPlayer.WPF.Collections
     /// <summary>
     /// Keeps two instances of queue, one being not shuffled, and one shuffled
     /// </summary>
-    public class ShuffleQueue<T> : ObservableQueue<T>
+    public class ShuffleQueue<T> : ObservableLIFOFIFO<T>
     {
         private bool _isShuffled = false;
         private readonly List<T> _notShuffledState = new();
@@ -131,27 +130,6 @@ namespace BowieD.MusicPlayer.WPF.Collections
                 return _notShuffledState;
 
             return this;
-        }
-    }
-    public class ObservableQueue<T> : ObservableCollection<T>
-    {
-        public void Enqueue(T value)
-        {
-            Add(value);
-        }
-
-        public T Dequeue()
-        {
-            var item = this[0];
-
-            RemoveAt(0);
-
-            return item;
-        }
-
-        public T Peek()
-        {
-            return this[0];
         }
     }
 }

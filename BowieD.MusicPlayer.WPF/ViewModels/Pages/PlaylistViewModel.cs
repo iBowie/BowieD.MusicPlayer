@@ -185,7 +185,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                                 if (song.IsEmpty || !song.IsAvailable)
                                     continue;
 
-                                View.MusicPlayerViewModel.UserSongQueue.Enqueue(song);
+                                View.MusicPlayerViewModel.UserSongQueue.EnqueueFIFO(song);
                             }
                         }
                     }, (songs) =>

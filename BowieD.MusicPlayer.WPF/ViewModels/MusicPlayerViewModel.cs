@@ -92,15 +92,15 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private ELoopMode _loopMode;
         private bool _isShuffleEnabled = false;
         private EPlayOrigin _playOrigin;
-        private readonly ObservableQueue<Song> _userSongQueue = new();
+        private readonly ObservableLIFOFIFO<Song> _userSongQueue = new();
         private readonly ShuffleQueue<Song> _songQueue = new();
-        private readonly ObservableStack<Song> _songHistory = new();
+        private readonly ObservableLIFOFIFO<Song> _songHistory = new();
         private bool _isBigPicture = false;
         private bool _isFullScreen = false;
 
-        public ObservableQueue<Song> UserSongQueue => _userSongQueue;
+        public ObservableLIFOFIFO<Song> UserSongQueue => _userSongQueue;
         public ShuffleQueue<Song> SongQueue => _songQueue;
-        public ObservableStack<Song> SongHistory => _songHistory;
+        public ObservableLIFOFIFO<Song> SongHistory => _songHistory;
         public ELoopMode LoopMode
         {
             get => _loopMode;
@@ -140,13 +140,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get
             {
-                if (UserSongQueue.Count > 0)
-                    return UserSongQueue.Peek();
-
-                if (SongQueue.Count > 0)
-                    return SongQueue.Peek();
-
-                return Song.EMPTY;
+                return PeekNextSong(out _);
             }
         }
         public double Position
@@ -237,7 +231,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 safeSongs.Shuffle();
 
             foreach (var s in safeSongs)
-                _songQueue.Enqueue(s);
+                _songQueue.EnqueueFIFO(s);
         }
         public void PlaySongFromPlaylist(Song song, Playlist playlist, bool shuffle = false)
         {
@@ -248,16 +242,16 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             if (index == -1)
                 return;
 
-            _songQueue.Enqueue(song);
+            _songQueue.EnqueueFIFO(song);
 
             for (int i = index + 1; i < playlist.Songs.Count; i++)
             {
-                _songQueue.Enqueue(playlist.Songs[i]);
+                _songQueue.EnqueueFIFO(playlist.Songs[i]);
             }
 
             for (int i = 0; i < index; i++)
             {
-                _songQueue.Enqueue(playlist.Songs[i]);
+                _songQueue.EnqueueFIFO(playlist.Songs[i]);
             }
         }
 
@@ -282,10 +276,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     if (LoopMode == ELoopMode.QUEUE)
                     {
-                        SongQueue.Enqueue(oldSong);
+                        SongQueue.EnqueueFIFO(oldSong);
                     }
 
-                    SongHistory.Push(oldSong);
+                    SongHistory.PushLIFO(oldSong);
                 }
 
                 CurrentSong = nextSong;
@@ -305,10 +299,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             {
                 if (LoopMode != ELoopMode.NONE)
                 {
-                    SongQueue.Enqueue(cur);
+                    SongQueue.EnqueueFIFO(cur);
                 }
 
-                SongHistory.Push(cur);
+                SongHistory.PushLIFO(cur);
             }
 
             PlayOrigin = newOrigin;
@@ -317,17 +311,19 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         public void PrevTrack()
         {
-            if (SongHistory.Count > 0)
-            {
-                var songFromHistory = SongHistory.Pop();
+            var next = PopPrevSong(out var origin);
 
-                var cur = CurrentSong;
+            if (next.IsEmpty)
+                return;
 
-                if (!cur.IsEmpty)
-                    SongQueue.Insert(0, cur);
+            var cur = CurrentSong;
 
-                CurrentSong = songFromHistory;
-            }
+            if (!cur.IsEmpty)
+                SongQueue.PushLIFO(cur);
+
+            this.PlayOrigin = origin;
+
+            CurrentSong = next;
         }
 
         public Song PeekNextSong(out EPlayOrigin origin)
@@ -335,13 +331,13 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             if (UserSongQueue.Count > 0)
             {
                 origin = EPlayOrigin.USER_QUEUE;
-                return UserSongQueue.Peek();
+                return UserSongQueue.PeekFIFO();
             }
 
             if (SongQueue.Count > 0)
             {
                 origin = EPlayOrigin.SOURCE;
-                return SongQueue.Peek();
+                return SongQueue.PeekFIFO();
             }
 
             origin = EPlayOrigin.NONE;
@@ -353,13 +349,49 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             if (UserSongQueue.Count > 0)
             {
                 origin = EPlayOrigin.USER_QUEUE;
-                return UserSongQueue.Dequeue();
+                return UserSongQueue.DequeueFIFO();
             }
 
             if (SongQueue.Count > 0)
             {
                 origin = EPlayOrigin.SOURCE;
-                return SongQueue.Dequeue();
+                return SongQueue.DequeueFIFO();
+            }
+
+            origin = EPlayOrigin.NONE;
+            return Song.EMPTY;
+        }
+
+        public Song PeekPrevSong(out EPlayOrigin origin)
+        {
+            if (SongHistory.Count > 0)
+            {
+                origin = EPlayOrigin.USER_QUEUE;
+                return SongHistory.PeekLIFO();
+            }
+
+            if (SongQueue.Count > 0)
+            {
+                origin = EPlayOrigin.SOURCE;
+                return SongQueue.PeekLIFO();
+            }
+
+            origin = EPlayOrigin.NONE;
+            return Song.EMPTY;
+        }
+
+        public Song PopPrevSong(out EPlayOrigin origin)
+        {
+            if (SongHistory.Count > 0)
+            {
+                origin = EPlayOrigin.USER_QUEUE;
+                return SongHistory.PopLIFO();
+            }
+
+            if (SongQueue.Count > 0)
+            {
+                origin = EPlayOrigin.SOURCE;
+                return SongQueue.PopLIFO();
             }
 
             origin = EPlayOrigin.NONE;
@@ -455,7 +487,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                         NextTrackManual();
                     }, () =>
                     {
-                        return SongQueue.Count > 0;
+                        return !UpcomingSong.IsEmpty;
                     });
                 }
 
@@ -480,7 +512,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                         }
                     }, () =>
                     {
-                        return (BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING && Position >= 15) || SongHistory.Count > 0;
+                        return (BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING && Position >= 15) || !PeekPrevSong(out _).IsEmpty;
                     });
                 }
 
