@@ -657,6 +657,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         #endregion
 
+        #region Integrations
+
         public void SetupIntegrations()
         {
 #if WINDOWS10_0_19041_0_OR_GREATER
@@ -908,6 +910,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 _discordClient = null;
             }
         }
+        #endregion
+
         #endregion
 
         ~MusicPlayerViewModel()
