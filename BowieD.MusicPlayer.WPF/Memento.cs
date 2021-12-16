@@ -11,7 +11,7 @@ namespace BowieD.MusicPlayer.WPF
     {
         private const string FILE_NAME = "state.dat";
         private const string MAGIC = "BowieD.MusicPlayer.WPF";
-        private const int VERSION = 1;
+        private const int VERSION = 2;
 
         public static void SaveState(MainWindow mainWindow)
         {
@@ -39,6 +39,7 @@ namespace BowieD.MusicPlayer.WPF
 
             bw.Write(mp.Volume);
             bw.Write((byte)mp.LoopMode);
+            bw.Write(mp.IsShuffleEnabled);
 
             bw.Write(mp.UserSongQueue.Count);
             foreach (var usq in mp.UserSongQueue)
@@ -89,6 +90,11 @@ namespace BowieD.MusicPlayer.WPF
 
                     mp.Volume = br.ReadDouble();
                     mp.LoopMode = (ELoopMode)br.ReadByte();
+
+                    if (savedVer >= 2)
+                    {
+                        mp.IsShuffleEnabled = br.ReadBoolean();
+                    }
 
                     mp.UserSongQueue.Clear();
                     mp.SongQueue.Clear();
