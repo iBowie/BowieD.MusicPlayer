@@ -46,7 +46,7 @@ namespace BowieD.MusicPlayer.WPF
                 bw.Write(usq.ID);
 
             bw.Write(mp.SongQueue.Count);
-            foreach (var usq in mp.SongQueue)
+            foreach (var usq in mp.SongQueue.GetUnshuffled())
                 bw.Write(usq.ID);
 
             bw.Write(mp.SongHistory.Count);
@@ -113,6 +113,9 @@ namespace BowieD.MusicPlayer.WPF
                         long songId = br.ReadInt64();
                         mp.SongQueue.Add(SongRepository.Instance.GetSong(songId));
                     }
+
+                    if (mp.IsShuffleEnabled)
+                        mp.SongQueue.IsShuffled = true;
 
                     int shCount = br.ReadInt32();
                     for (int i = 0; i < shCount; i++)

@@ -87,13 +87,13 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private bool _isShuffleEnabled = false;
         private EPlayOrigin _playOrigin;
         private readonly ObservableQueue<Song> _userSongQueue = new();
-        private readonly ObservableQueue<Song> _songQueue = new();
+        private readonly ShuffleQueue<Song> _songQueue = new();
         private readonly ObservableStack<Song> _songHistory = new();
         private bool _isBigPicture = false;
         private bool _isFullScreen = false;
 
         public ObservableQueue<Song> UserSongQueue => _userSongQueue;
-        public ObservableQueue<Song> SongQueue => _songQueue;
+        public ShuffleQueue<Song> SongQueue => _songQueue;
         public ObservableStack<Song> SongHistory => _songHistory;
         public ELoopMode LoopMode
         {
@@ -488,10 +488,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _shuffleCommand = new BaseCommand(() =>
                     {
-                        SongQueue.Shuffle();
-                    }, () =>
-                    {
-                        return SongQueue.Count > 0;
+                        IsShuffleEnabled = !IsShuffleEnabled;
+
+                        SongQueue.IsShuffled = IsShuffleEnabled;
                     });
                 }
 
