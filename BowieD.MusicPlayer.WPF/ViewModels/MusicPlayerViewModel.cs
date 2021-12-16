@@ -70,6 +70,12 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             _fiveSecondTimer.Start();
 
             _songQueue.CollectionChanged += _songQueue_CollectionChanged;
+            _userSongQueue.CollectionChanged += _userSongQueue_CollectionChanged;
+        }
+
+        private void _userSongQueue_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            TriggerPropertyChanged(nameof(IsUserQueueVisible));
         }
 
         private void _songQueue_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -202,6 +208,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get => LoopMode != ELoopMode.CURRENT && SongQueue.Count > 0 && Duration - Position < 20.0;
         }
+        public bool IsUserQueueVisible => UserSongQueue.Count > 0;
 
         public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(double), typeof(MusicPlayerViewModel), new PropertyMetadata(100.0, VolumeChangedCallback));
 

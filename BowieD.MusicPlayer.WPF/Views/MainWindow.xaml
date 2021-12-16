@@ -242,7 +242,7 @@
                                         <TextBlock Text="Now Playing"/>
                                         <ContentControl Content="{Binding CurrentSong}" ContentTemplate="{DynamicResource queueSongTemplate}"/>
                                         
-                                        <Grid>
+                                        <Grid Visibility="{Binding IsUserQueueVisible, Converter={StaticResource boolToVisConverter}}">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition/>
                                                 <ColumnDefinition/>
