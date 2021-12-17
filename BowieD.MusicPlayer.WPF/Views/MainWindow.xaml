@@ -100,6 +100,13 @@
                               DataContext="{Binding DataContext, ElementName=musicPlayer}"
                               d:Visibility="Visible"
                               Visibility="{Binding IsBigPicture, Converter={StaticResource boolToVisConverter}}">
+                            <Grid.BitmapEffect>
+                                <DropShadowBitmapEffect Color="Black"
+                                            Opacity="0.5"
+                                            Direction="90"
+                                            Softness="1"
+                                            ShadowDepth="1"/>
+                            </Grid.BitmapEffect>
                             <Grid.OpacityMask>
                                 <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1">
                                     <GradientStop x:Name="bigPictureGradient1" Color="Black" Offset="1"/>
@@ -130,6 +137,13 @@
             </Grid>
             <Grid Grid.Row="1" Name="musicPlayer" d:DataContext="{d:DesignInstance Type=viewmodels:MusicPlayerViewModel}"
                   Background="{DynamicResource MahApps.Brushes.Gray10}">
+                <Grid.BitmapEffect>
+                    <DropShadowBitmapEffect Color="Black"
+                                            Opacity="0.5"
+                                            Direction="90"
+                                            Softness="1"
+                                            ShadowDepth="1"/>
+                </Grid.BitmapEffect>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" MinWidth="180"/>
                     <ColumnDefinition Width="4*" MaxWidth="722"/>
