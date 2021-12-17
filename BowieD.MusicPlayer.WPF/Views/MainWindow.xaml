@@ -232,70 +232,7 @@
                         </Grid.ColumnDefinitions>
                         <Button Name="queueViewButton"
                             Command="{Binding ViewQueueCommand}"
-                            CommandParameter="{Binding ElementName=queuePopup}"
                             Margin="5" Content="{iconPacks:Material Kind=ViewList}" Style="{DynamicResource ContentOnlyButton}"/>
-                        <Popup Name="queuePopup" MaxHeight="240" Width="400" 
-                               PlacementTarget="{Binding ElementName=queueViewButton}" Placement="Top">
-                            <GroupBox Header="Song Queue" Background="{DynamicResource MahApps.Brushes.Window.Background}">
-                                <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="5">
-                                    <StackPanel>
-                                        <TextBlock Text="Now Playing"/>
-                                        <ContentControl Content="{Binding CurrentSong}" ContentTemplate="{DynamicResource queueSongTemplate}"/>
-                                        
-                                        <Grid Visibility="{Binding IsUserQueueVisible, Converter={StaticResource boolToVisConverter}}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="Up Next from your Queue" VerticalAlignment="Center" HorizontalAlignment="Left"
-                                                       />
-                                            <Button Grid.Column="1" Content="Clear Queue" HorizontalAlignment="Right"
-                                                    Command="{Binding ClearUserQueueCommand}"/>
-                                        </Grid>
-                                        <ListView ItemsSource="{Binding UserSongQueue}"
-                                                  MinHeight="30"
-                                                  ItemTemplate="{DynamicResource queueSongTemplate}"
-                                                  PreviewMouseWheel="ListView_PreviewMouseWheel"
-                                                  gong:DragDrop.IsDropTarget="True"
-                                                  ScrollViewer.CanContentScroll="False"
-                                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                  gong:DragDrop.IsDragSource="True"/>
-                                        
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="Up Next from "/>
-                                            <TextBlock FontWeight="DemiBold" Text="" Grid.Column="1"/>
-                                        </Grid>
-                                        <ListView ItemsSource="{Binding SongQueue}"
-                                                  MinHeight="30"
-                                                  ItemTemplate="{DynamicResource queueSongTemplate}"
-                                                  PreviewMouseWheel="ListView_PreviewMouseWheel"
-                                                  gong:DragDrop.IsDropTarget="True"
-                                                  gong:DragDrop.IsDragSource="True"/>
-                                    </StackPanel>
-                                </ScrollViewer>
-                                <GroupBox.Resources>
-                                    <DataTemplate x:Key="queueSongTemplate" DataType="{x:Type models:Song}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="30"/>
-                                                <ColumnDefinition Width="150"/>
-                                                <ColumnDefinition Width="135"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image Width="20" Height="20" Margin="5" 
-                                                   Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=20|20}"/>
-                                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Title}"/>
-                                            <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Artist}"/>
-                                            <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </GroupBox.Resources>
-                            </GroupBox>
-                        </Popup>
                         <iconPacks:PackIconMaterial Kind="VolumeSource" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Margin="5" Grid.Column="1"/>
                         <Slider Grid.Column="2" Minimum="0" Maximum="100" TickFrequency="1" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" IsSnapToTickEnabled="True"
                         Value="{Binding Volume}" d:Value="50"/>

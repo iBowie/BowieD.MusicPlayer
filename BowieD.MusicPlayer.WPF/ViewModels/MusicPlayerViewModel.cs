@@ -4,6 +4,7 @@ using BowieD.MusicPlayer.WPF.Extensions;
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
+using BowieD.MusicPlayer.WPF.Views.Pages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -663,12 +664,18 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             {
                 if (_viewQueueCommand is null)
                 {
-                    _viewQueueCommand = new GenericCommand<Popup>((p) =>
+                    _viewQueueCommand = new BaseCommand(() =>
                     {
-                        if (p is null)
-                            return;
+                        if (View.navFrame.Content is QueuePage)
+                        {
+                            View.navFrame.Navigate(null);
+                        }
+                        else
+                        {
+                            QueuePage page = new(new(View));
 
-                        p.IsOpen = !p.IsOpen;
+                            View.navFrame.Navigate(page);
+                        }
                     });
                 }
 
