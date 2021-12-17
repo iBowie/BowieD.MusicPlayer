@@ -246,6 +246,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                                         aas.UpdateFromDatabase();
                                     }
                                 }
+
+                                View.MusicPlayerViewModel.SongHistory.RaiseChanged();
+                                View.MusicPlayerViewModel.SongQueue.RaiseChanged();
+                                View.MusicPlayerViewModel.UserSongQueue.RaiseChanged();
                             }
                             catch { }
                         }

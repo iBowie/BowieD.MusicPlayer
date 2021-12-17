@@ -158,6 +158,18 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                             SongRepository.Instance.UpdateSong(resultSong, false);
 
                             Songs[index] = resultSong;
+
+                            foreach (var aas in View.MusicPlayerViewModel.AllActiveSongs)
+                            {
+                                if (aas.ID == resultSong.ID)
+                                {
+                                    aas.UpdateFromDatabase();
+                                }
+                            }
+
+                            View.MusicPlayerViewModel.SongHistory.RaiseChanged();
+                            View.MusicPlayerViewModel.SongQueue.RaiseChanged();
+                            View.MusicPlayerViewModel.UserSongQueue.RaiseChanged();
                         }
 
                         esdv.RestoreState(mp);

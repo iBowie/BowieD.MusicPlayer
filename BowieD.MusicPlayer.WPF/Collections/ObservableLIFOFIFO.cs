@@ -59,5 +59,10 @@ namespace BowieD.MusicPlayer.WPF.Collections
 
             return item;
         }
+
+        public void RaiseChanged()
+        {
+            OnCollectionChanged(new System.Collections.Specialized.NotifyCollectionChangedEventArgs(System.Collections.Specialized.NotifyCollectionChangedAction.Reset));
+        }
     }
 }
