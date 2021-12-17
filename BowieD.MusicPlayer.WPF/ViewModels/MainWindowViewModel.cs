@@ -8,10 +8,12 @@ using BowieD.MusicPlayer.WPF.Views.Pages;
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -39,7 +41,17 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             _fullScreenBackgroundSwitcher.Tick += _fullScreenBackgroundSwitcher_Tick;
 
+            MusicPlayerViewModel.OnTrackChanged += MusicPlayerViewModel_OnTrackChanged;
+
             ObtainPlaylists();
+        }
+
+        private void MusicPlayerViewModel_OnTrackChanged(Song newSong)
+        {
+            if (Backgrounds.Count == 0)
+            {
+                SetBackgroundFromBytes(newSong.FullScreenPictureData);
+            }
         }
 
         private void _fullScreenBackgroundSwitcher_Tick(object? sender, EventArgs? e)
@@ -62,6 +74,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.UriSource = new Uri(fileName);
             bmp.EndInit();
+            bmp.Freeze();
 
             bg2.Source = bmp;
 
@@ -75,10 +88,42 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             prevRandom = fileName;
         }
 
+        private void SetBackgroundFromBytes(byte[] data)
+        {
+            ImageSource? src;
+
+            if (data is null || data.Length == 0)
+            {
+                src = null;
+            }
+            else
+            {
+                using var ms = new MemoryStream(data);
+
+                BitmapImage? bmp = new();
+                bmp.BeginInit();
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
+                bmp.StreamSource = ms;
+                bmp.EndInit();
+                bmp.Freeze();
+
+                src = bmp;
+            }
+
+            bg2.Source = src;
+
+            bg1.BeginAnimation(Image.OpacityProperty, BACKGROUND_FADE_OUT);
+            bg2.BeginAnimation(Image.OpacityProperty, BACKGROUND_FADE_IN);
+
+            var t = bg1;
+            bg1 = bg2;
+            bg2 = t;
+        }
+
         #region Commands
 
         private ICommand? _addSongCommand, _createPlaylistCommand, _selectFullscreenBackgroundCommand,
-            _openLibraryCommand;
+            _openLibraryCommand, _setSongBackgroundCommand;
 
         public ICommand AddSongCommand
         {
@@ -163,6 +208,51 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 }
 
                 return _openLibraryCommand;
+            }
+        }
+        public ICommand SetSongBackgroundImageCommand
+        {
+            get
+            {
+                if (_setSongBackgroundCommand is null)
+                {
+                    _setSongBackgroundCommand = new BaseCommand(() =>
+                    {
+                        if (View.MusicPlayerViewModel.CurrentSong.IsEmpty)
+                            return;
+
+                        OpenFileDialog ofd = new()
+                        {
+                            Filter = ImageTool.FileDialogFilter,
+                            CheckFileExists = true,
+                            Multiselect = false
+                        };
+
+                        if (ofd.ShowDialog() == true)
+                        {
+                            try
+                            {
+                                byte[] raw = File.ReadAllBytes(ofd.FileName);
+                                Backgrounds.Clear();
+                                SetBackgroundFromBytes(raw);
+                                var current = View.MusicPlayerViewModel.CurrentSong;
+                                current.FullScreenPictureData = raw;
+                                SongRepository.Instance.UpdateSong(current, false);
+
+                                foreach (var aas in View.MusicPlayerViewModel.AllActiveSongs)
+                                {
+                                    if (aas.ID == current.ID)
+                                    {
+                                        aas.UpdateFromDatabase();
+                                    }
+                                }
+                            }
+                            catch { }
+                        }
+                    });
+                }
+
+                return _setSongBackgroundCommand;
             }
         }
 

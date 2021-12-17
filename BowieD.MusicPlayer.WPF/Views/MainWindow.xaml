@@ -279,6 +279,8 @@
                     <ContextMenu>
                         <MenuItem Header="Select background..." 
                               Command="{Binding SelectFullscreenBackgroundCommand}"/>
+                        <MenuItem Header="Set song background..." 
+                              Command="{Binding SetSongBackgroundImageCommand}"/>
                         <Separator/>
                         <Grid>
                             <Grid.RowDefinitions>

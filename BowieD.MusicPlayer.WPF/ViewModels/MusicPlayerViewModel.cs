@@ -8,6 +8,7 @@ using BowieD.MusicPlayer.WPF.Views.Pages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -84,7 +85,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             TriggerPropertyChanged(nameof(UpcomingSong));
         }
 
-        public event TrackChanged? OnTrackChanged;
+        public static event TrackChanged? OnTrackChanged;
         public event PlaybackStateChanged? OnPlaybackStateChanged;
 
         private Un4seen.Bass.BASSActive _prevState = Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED;
@@ -102,6 +103,18 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         public ObservableLIFOFIFO<Song> UserSongQueue => _userSongQueue;
         public ShuffleQueue<Song> SongQueue => _songQueue;
         public ObservableLIFOFIFO<Song> SongHistory => _songHistory;
+
+        public IEnumerable<Song> AllActiveSongs
+        {
+            get
+            {
+                yield return CurrentSong;
+
+                foreach (var s in UserSongQueue.Concat(SongQueue).Concat(SongHistory))
+                    yield return s;
+            }
+        }
+
         public ELoopMode LoopMode
         {
             get => _loopMode;

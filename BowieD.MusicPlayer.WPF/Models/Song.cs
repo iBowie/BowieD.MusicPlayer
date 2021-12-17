@@ -15,7 +15,7 @@ namespace BowieD.MusicPlayer.WPF.Models
             IsEmpty = isEmpty;
         }
 
-        public Song(long iD, string title, string artist, string album, uint year, string fileName, byte[] pictureData)
+        public Song(long iD, string title, string artist, string album, uint year, string fileName, byte[] pictureData, byte[] fullScreenPictureData)
         {
             ID = iD;
             Title = title;
@@ -25,15 +25,17 @@ namespace BowieD.MusicPlayer.WPF.Models
             FileName = fileName;
             PictureData = pictureData;
             IsEmpty = false;
+            FullScreenPictureData = fullScreenPictureData;
         }
 
         public long ID { get; internal set; }
-        public string Title { get; }
-        public string Artist { get; }
-        public string Album { get; }
-        public uint Year { get; }
+        public string Title { get; private set; }
+        public string Artist { get; private set; }
+        public string Album { get; private set; }
+        public uint Year { get; private set; }
         public string FileName { get; }
-        public byte[] PictureData { get; }
+        public byte[] PictureData { get; private set; }
+        public byte[] FullScreenPictureData { get; internal set; }
         public bool IsEmpty { get; }
         public bool IsAvailable
         {
@@ -66,6 +68,21 @@ namespace BowieD.MusicPlayer.WPF.Models
         public static bool operator ==(Song a, Song b) => a.ID == b.ID;
 
         public static bool operator !=(Song a, Song b) => a.ID != b.ID;
+
+        public void UpdateFromDatabase()
+        {
+            Song newVersion = SongRepository.Instance.GetSong(ID);
+
+            if (newVersion.IsEmpty)
+                return;
+
+            this.Title = newVersion.Title;
+            this.Artist = newVersion.Artist;
+            this.Album = newVersion.Album;
+            this.PictureData = newVersion.PictureData;
+            this.FullScreenPictureData = newVersion.FullScreenPictureData;
+            this.Year = newVersion.Year;
+        }
     }
 
     public struct PlaylistInfo
