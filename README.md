@@ -2,6 +2,7 @@
 
 This app is supposed to be some kind of test for my UI, SQL and API skills.
 It's not supposed to be usable outside of very narrow scope of use by design.
+This is also my first app to use page functionality in WPF.
 
 ## My Library Page
 
