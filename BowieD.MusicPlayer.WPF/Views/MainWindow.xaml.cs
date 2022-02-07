@@ -1,12 +1,16 @@
-﻿using BowieD.MusicPlayer.WPF.ViewModels;
+﻿using BowieD.MusicPlayer.WPF.Common;
+using BowieD.MusicPlayer.WPF.ViewModels;
+using BowieD.MusicPlayer.WPF.ViewModels.Visualizators;
 using MahApps.Metro.Controls;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 
 namespace BowieD.MusicPlayer.WPF.Views
 {
@@ -44,6 +48,8 @@ namespace BowieD.MusicPlayer.WPF.Views
             Loaded += (sender, e) =>
             {
                 MusicPlayerViewModel.SetupIntegrations();
+
+                SetupVisualizers();
             };
         }
 
@@ -94,5 +100,58 @@ namespace BowieD.MusicPlayer.WPF.Views
             return Windows.Media.SystemMediaTransportControlsInterop.GetForWindow(this.CriticalHandle);
         }
 #endif
+
+        private void SetupVisualizers()
+        {
+            DefaultBackgroundVisualizerViewModel defaultVis = new(ViewModel);
+            MonsterCatVisualizerViewModel monsterVis = new(ViewModel);
+            
+            visualizerGrid_default.DataContext = defaultVis;
+            visualizerGrid_monsterCat.DataContext = monsterVis;
+
+            defaultVis.Setup();
+            monsterVis.Setup();
+
+            _currentVisualizer = defaultVis;
+            defaultVis.Start();
+        }
+
+        private VisualizerViewModelBase? _currentVisualizer;
+
+        private void VisualizerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_currentVisualizer is not null)
+            {
+                _currentVisualizer.Stop();
+                _currentVisualizer = null;
+            }
+
+            switch (visualizerComboBox.SelectedIndex)
+            {
+                case 0: // default
+                    {
+                        visualizerGrid_monsterCat.Visibility = Visibility.Collapsed;
+                        visualizerGrid_default.Visibility = Visibility.Visible;
+                        defaultVisualizerText.Visibility = Visibility.Visible;
+
+                        _currentVisualizer = visualizerGrid_default.DataContext as VisualizerViewModelBase;
+                    }
+                    break;
+                case 1: // monstercat
+                    {
+                        visualizerGrid_default.Visibility = Visibility.Collapsed;
+                        defaultVisualizerText.Visibility = Visibility.Collapsed;
+                        visualizerGrid_monsterCat.Visibility = Visibility.Visible;
+
+                        _currentVisualizer = visualizerGrid_monsterCat.DataContext as VisualizerViewModelBase;
+                    }
+                    break;
+            }
+
+            if (_currentVisualizer is not null)
+            {
+                _currentVisualizer.Start();
+            }
+        }
     }
 }

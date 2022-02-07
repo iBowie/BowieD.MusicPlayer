@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Fonts\gotham-bold.ttf" />
+    <None Remove="Resources\Fonts\gotham-book.ttf" />
     <None Remove="Resources\Images\missing_texture.jpg" />
   </ItemGroup>
 
@@ -26,6 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Fonts\gotham-bold.ttf" />
+    <Resource Include="Resources\Fonts\gotham-book.ttf" />
     <Resource Include="Resources\Images\missing_texture.jpg" />
   </ItemGroup>
 

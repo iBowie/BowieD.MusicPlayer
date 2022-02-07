@@ -33,7 +33,7 @@ namespace BowieD.MusicPlayer.WPF.Common
 
                 if (Init())
                 {
-                    Handle = Bass.BASS_StreamCreateFile(fileName, 0, 0, BASSFlag.BASS_DEFAULT);
+                    Handle = Bass.BASS_StreamCreateFile(fileName, 0, 0, BASSFlag.BASS_DEFAULT | BASSFlag.BASS_SAMPLE_FLOAT);
 
                     if (Handle != 0)
                     {
@@ -115,5 +115,13 @@ namespace BowieD.MusicPlayer.WPF.Common
             ".ogg",
             ".opus"
         };
+
+        public static void GetSpectrum(float[] buffer)
+        {
+            if (!HasInitDefaultDevice || State != BASSActive.BASS_ACTIVE_PLAYING)
+                return;
+
+            Bass.BASS_ChannelGetData(Handle, buffer, (int)BASSData.BASS_DATA_FFT1024);
+        }
     }
 }
