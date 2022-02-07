@@ -320,8 +320,8 @@
 
                     <Grid x:Name="monsterCat_center" Margin="116,116,116,196">
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
                         <UniformGrid Rows="1" x:Name="monsterCat_peaksGrid" Margin="-5" SnapsToDevicePixels="False">
                             <Rectangle/>
@@ -344,7 +344,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" MaxWidth="128" Margin="0,0,24,0" Source="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"
+                            <Image Grid.Column="0" Margin="0,0,24,0" Source="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"
                                    d:Source="/Resources/Images/missing_texture.jpg"/>
                             <Grid Grid.Column="1" VerticalAlignment="Center">
                                 <Grid.RowDefinitions>
