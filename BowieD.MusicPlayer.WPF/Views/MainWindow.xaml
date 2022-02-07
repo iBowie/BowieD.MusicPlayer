@@ -411,11 +411,7 @@
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="Up Next" Margin="10" FontSize="20" VerticalAlignment="Bottom"/>
-                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" VerticalAlignment="Top">
-                                    <TextBlock Text="{Binding Title}" d:Text="This Old Routine" FontWeight="Bold" FontSize="24"/>
-                                    <TextBlock Text=" - " FontWeight="Bold" FontSize="24"/>
-                                    <TextBlock Text="{Binding Artist}" d:Text="First Aid Kit" FontWeight="Bold" FontSize="24"/>
-                                </StackPanel>
+                                <TextBlock Grid.Row="1" Margin="10" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" FontSize="24" FontWeight="Bold"><Run Text="{Binding Title, Mode=OneWay}" d:Text="Title"/> - <Run Text="{Binding Artist, Mode=OneWay}" d:Text="Artist"/></TextBlock>
                             </Grid>
                         </Grid>
                     </Border>
