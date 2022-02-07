@@ -137,14 +137,15 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
                         // var smoothed = newH;
 
                         double smoothed;
+                        const double smoothFactor = 5.0;
 
                         if (curH < newH)
                         {
-                            smoothed = curH + ((newH - curH) / 5.0);
+                            smoothed = curH + ((newH - curH) / smoothFactor);
                         }
                         else if (curH > newH)
                         {
-                            smoothed = curH - ((curH - newH) / 5.0);
+                            smoothed = curH - ((curH - newH) / smoothFactor);
                         }
                         else
                         {
