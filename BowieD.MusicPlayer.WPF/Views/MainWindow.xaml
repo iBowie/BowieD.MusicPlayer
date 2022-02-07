@@ -12,6 +12,10 @@
                   Title="{Binding WindowTitle}"
                   MinHeight="600" MinWidth="800"
                   d:Title="BDMP - BowieD's Music Player" Height="720" Width="1280" d:Height="1440" d:Width="2560" d:Background="{DynamicResource MahApps.Brushes.Window.Background}">
+    <mah:MetroWindow.InputBindings>
+        <KeyBinding Command="{Binding View.MusicPlayerViewModel.ExitFullScreenCommand}" Key="Esc"/>
+        <KeyBinding Command="{Binding View.MusicPlayerViewModel.EnterFullScreenCommand}" Key="F11"/>
+    </mah:MetroWindow.InputBindings>
     <Grid Name="mainGrid">
         <Grid Name="normalViewGrid" d:HorizontalAlignment="Left" d:Width="1280" d:Height="720" d:VerticalAlignment="Top">
             <Grid.RowDefinitions>
