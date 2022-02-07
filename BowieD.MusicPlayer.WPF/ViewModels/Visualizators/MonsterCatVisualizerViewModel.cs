@@ -1,6 +1,7 @@
 ﻿using BowieD.MusicPlayer.WPF.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,14 +13,15 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
     {
         public MonsterCatVisualizerViewModel(MainWindowViewModel mainWindowViewModel) : base(mainWindowViewModel)
         {
-
         }
 
-
+        private float[] peaksData;
         private readonly List<Rectangle> _visibleRectangles = new();
         private Panel monsterCat_peaksGrid;
         private double _frameRate = 60.0;
+        private double _particles;
         private Color _accentColor = Colors.White;
+        private int _barCount;
 
         public double FrameRate
         {
@@ -41,9 +43,42 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
 
                 SolidColorBrush scb = new(value);
 
-                foreach (var rect in _visibleRectangles)
+                for (int i = 0; i < _visibleRectangles.Count; i++)
                 {
+                    Rectangle? rect = _visibleRectangles[i];
                     rect.Fill = scb;
+                }
+            }
+        }
+        public double MaxParticles
+        {
+            get => _particles;
+            set => ChangeProperty(ref _particles, value, nameof(MaxParticles));
+        }
+        public double SpeedRatio { get; private set; } = 1.0;
+        public int BarCount
+        {
+            get => _barCount;
+            set
+            {
+                ChangeProperty(ref _barCount, value, nameof(BarCount));
+
+                SolidColorBrush scb = new(AccentColor);
+
+                peaksData = new float[value];
+
+                _visibleRectangles.Clear();
+                monsterCat_peaksGrid.Children.Clear();
+
+                for (int i = 0; i < value; i++)
+                {
+                    var newRect = new Rectangle()
+                    {
+                        Fill = scb,
+                    };
+
+                    monsterCat_peaksGrid.Children.Add(newRect);
+                    _visibleRectangles.Add(newRect);
                 }
             }
         }
@@ -52,15 +87,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         {
             monsterCat_peaksGrid = MainWindowViewModel.View.monsterCat_peaksGrid;
 
-            monsterCat_peaksGrid.Children.Clear();
-
-            for (int i = 0; i < 64; i++)
-            {
-                var newRect = new Rectangle();
-
-                monsterCat_peaksGrid.Children.Add(newRect);
-                _visibleRectangles.Add(newRect);
-            }
+            BarCount = 64;
+            AccentColor = Colors.White;
         }
 
         private Timer? _visualizerTimer;
@@ -95,6 +123,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
 
                         float yF = y / 255f;
 
+                        peaksData[x] = yF;
+
                         var maxH = monsterCat_peaksGrid.ActualHeight;
                         var curH = _visibleRectangles[x].Height;
                         if (double.IsNaN(curH))
@@ -103,14 +133,34 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
 
                         // var smoothed = curH + (newH - curH) * 0.75;
                         // var smoothed = smoothStep(curH, newH, 0.75);
-                        var smoothed = curH + (newH - curH) * 0.5;
+                        // var smoothed = curH + (newH - curH) * 0.5;
                         // var smoothed = newH;
 
+                        double smoothed;
+
+                        if (curH < newH)
+                        {
+                            smoothed = curH + ((newH - curH) / 5.0);
+                        }
+                        else if (curH > newH)
+                        {
+                            smoothed = curH - ((curH - newH) / 5.0);
+                        }
+                        else
+                        {
+                            smoothed = newH;
+                        }
+
                         _visibleRectangles[x].Height = smoothed;
+
+                        SpeedRatio = peaksData.Average();
+                        TriggerPropertyChanged(nameof(SpeedRatio));
                     }
                 });
             };
             _visualizerTimer.Start();
+
+            MainWindowViewModel.View.monsterCat_particles.Timer = _visualizerTimer;
         }
 
         public override void Stop()
@@ -119,7 +169,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             {
                 _visualizerTimer.Stop();
                 _visualizerTimer.Dispose();
+                _visualizerTimer = null;
             }
+
+            MainWindowViewModel.View.monsterCat_particles.Timer = _visualizerTimer;
         }
     }
 }

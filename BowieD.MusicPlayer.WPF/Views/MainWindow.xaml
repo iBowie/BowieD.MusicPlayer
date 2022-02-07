@@ -6,7 +6,7 @@
                   xmlns:extensions="clr-namespace:BowieD.MusicPlayer.WPF.Extensions"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:models="clr-namespace:BowieD.MusicPlayer.WPF.Models"
-        xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:viewmodels="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels" xmlns:visualizators="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels.Visualizators"
+        xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:viewmodels="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels" xmlns:visualizators="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels.Visualizators" xmlns:controls="clr-namespace:BowieD.MusicPlayer.WPF.Controls"
                   mc:Ignorable="d"
                   d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
                   Title="{Binding WindowTitle}"
@@ -316,6 +316,8 @@
                 </Grid>
                 <!-- monstercat style visualizer -->
                 <Grid x:Name="visualizerGrid_monsterCat" Background="#0C0C0C" d:DataContext="{d:DesignInstance visualizators:MonsterCatVisualizerViewModel}">
+                    <controls:ParticlesControl x:Name="monsterCat_particles" MaxParticles="{Binding MaxParticles}" ParticleSpeedRatio="{Binding SpeedRatio}" ParticleSpeed="2.0"/>
+
                     <Grid x:Name="monsterCat_center" Margin="116,116,116,196">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -366,11 +368,19 @@
                         <ContextMenu>
                             <TextBlock Text="FPS"/>
                             <Slider AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" Width="144" Minimum="1" IsSnapToTickEnabled="True" 
-                                    Ticks="1, 15, 24, 30, 50, 60, 72, 90, 120, 144" TickPlacement="BottomRight"
-                                    SmallChange="1" LargeChange="10" Maximum="144" Value="{Binding FrameRate}"/>
+                                    Ticks="1, 15, 24, 30, 50, 60, 72, 90, 120, 144" TickPlacement="BottomRight" Maximum="144" 
+                                    Value="{Binding FrameRate}"/>
                             <Separator/>
                             <TextBlock Text="Color"/>
                             <mah:ColorPicker SelectedColor="{Binding AccentColor}"/>
+                            <TextBlock Text="Max Particles"/>
+                            <Slider AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" Width="144" Minimum="0"
+                                    Ticks="0, 8, 16, 24, 32, 64, 128, 256" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Maximum="256"
+                                    Value="{Binding MaxParticles}"/>
+                            <TextBlock Text="Bar Count"/>
+                            <Slider AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"
+                                    TickFrequency="1" IsSnapToTickEnabled="True" Minimum="0" Maximum="256"
+                                    Value="{Binding BarCount}"/>
                         </ContextMenu>
                     </Grid.ContextMenu>
                 </Grid>
