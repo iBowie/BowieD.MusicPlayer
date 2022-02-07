@@ -346,21 +346,23 @@
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" Margin="0,0,24,0" Source="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}}"
                                    d:Source="/Resources/Images/missing_texture.jpg"/>
-                            <Grid Grid.Column="1" VerticalAlignment="Center">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock d:Text="TRISTAM &amp; BRAKEN" Foreground="White" FontSize="54"
+                            <Viewbox Grid.Column="1" HorizontalAlignment="Left">
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock d:Text="TRISTAM &amp; BRAKEN" Foreground="White" FontSize="54"
                                            Text="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.Artist}"
                                            TextWrapping="Wrap"
                                            FontFamily="pack://application:,,,/Resources/Fonts/#Gotham Bold"/>
-                                <TextBlock d:Text="FRAME OF MIND" Foreground="White" FontSize="24" 
+                                    <TextBlock d:Text="FRAME OF MIND" Foreground="White" FontSize="24" 
                                            Text="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.Title}"
                                            FontFamily="pack://application:,,,/Resources/Fonts/#Gotham Book"
                                            Typography.Capitals="AllPetiteCaps"
                                            Grid.Row="1" TextWrapping="Wrap"/>
-                            </Grid>
+                                </Grid>
+                            </Viewbox>
                         </Grid>
                     </Grid>
 
