@@ -14,6 +14,7 @@ namespace BowieD.MusicPlayer.WPF.Controls
     public partial class ParticlesControl : UserControl
     {
         private readonly List<Particle> _particles = new();
+        private readonly Stack<Ellipse> _recycleEllipses = new();
         private struct Particle
         {
             public double posX;
@@ -53,6 +54,8 @@ namespace BowieD.MusicPlayer.WPF.Controls
                     if (particle.posX > ActualWidth || particle.posY > ActualHeight ||
                         particle.posX < 0 || particle.posY < 0)
                     {
+                        _recycleEllipses.Push(particle.ellipse);
+
                         mainParticleCanvas.Children.Remove(particle.ellipse);
 
                         _particles.RemoveAt(i);
@@ -77,13 +80,21 @@ namespace BowieD.MusicPlayer.WPF.Controls
             double radius = _random.NextDouble() * 4 + 0.1;
             double opacity = _random.NextDouble() * 0.5 + 0.5;
 
-            Ellipse elps = new()
+            Ellipse elps;
+
+            if (_recycleEllipses.Count > 0)
             {
-                Fill = Brushes.White,
-                Width = radius,
-                Height = radius,
-                Opacity = opacity,
-            };
+                elps = _recycleEllipses.Pop();
+            }
+            else
+            {
+                elps = new();
+            }
+
+            elps.Fill = Brushes.White;
+            elps.Width = radius;
+            elps.Height = radius;
+            elps.Opacity = opacity;
 
             var particle = new Particle(_random.NextDouble() * 5 + 0.5, _random.NextDouble() * 4 - 2, elps);
 
