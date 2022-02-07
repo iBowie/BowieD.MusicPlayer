@@ -321,7 +321,7 @@
                             <RowDefinition/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <UniformGrid Rows="1" x:Name="monsterCat_peaksGrid" Margin="-5">
+                        <UniformGrid Rows="1" x:Name="monsterCat_peaksGrid" Margin="-5" SnapsToDevicePixels="False">
                             <Rectangle/>
                             <Rectangle/>
                             <Rectangle/>
