@@ -366,7 +366,7 @@
                         <ContextMenu>
                             <TextBlock Text="FPS"/>
                             <Slider AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" Width="144" Minimum="1" IsSnapToTickEnabled="True" 
-                                    Ticks="1, 15, 24, 30, 50, 60, 90, 120, 144" TickPlacement="BottomRight"
+                                    Ticks="1, 15, 24, 30, 50, 60, 72, 90, 120, 144" TickPlacement="BottomRight"
                                     SmallChange="1" LargeChange="10" Maximum="144" Value="{Binding FrameRate}"/>
                             <Separator/>
                             <TextBlock Text="Color"/>
