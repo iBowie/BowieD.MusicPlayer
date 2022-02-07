@@ -12,6 +12,7 @@
             <extensions:CustomBooleanToDoubleConverter x:Key="boolToVisHalfTransparentConverter" True="1.0" False="0.5"/>
             <extensions:DoubleToDisplayTimeConverter x:Key="doubleToDisplayTimeConverter"/>
             <extensions:DoubleToReadableDisplayTimeConverter x:Key="doubleToFancyTimeConverter"/>
+            <extensions:StringToUpperConverter x:Key="stringToUpperConverter"/>
 
             <Style x:Key="ContentOnlyButton" TargetType="{x:Type Button}">
                 <Setter Property="Template">

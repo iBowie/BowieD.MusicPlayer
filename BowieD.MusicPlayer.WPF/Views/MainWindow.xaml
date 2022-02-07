@@ -353,13 +353,12 @@
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
                                     <TextBlock d:Text="TRISTAM &amp; BRAKEN" Foreground="White" FontSize="54"
-                                           Text="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.Artist}"
+                                           Text="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.Artist, Converter={StaticResource stringToUpperConverter}}"
                                            TextWrapping="Wrap"
                                            FontFamily="pack://application:,,,/Resources/Fonts/#Gotham Bold"/>
                                     <TextBlock d:Text="FRAME OF MIND" Foreground="White" FontSize="24" 
-                                           Text="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.Title}"
+                                           Text="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.Title, Converter={StaticResource stringToUpperConverter}}"
                                            FontFamily="pack://application:,,,/Resources/Fonts/#Gotham Book"
-                                           Typography.Capitals="AllPetiteCaps"
                                            Grid.Row="1" TextWrapping="Wrap"/>
                                 </Grid>
                             </Viewbox>
