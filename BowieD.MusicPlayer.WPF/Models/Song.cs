@@ -134,7 +134,6 @@ namespace BowieD.MusicPlayer.WPF.Models
             Name = name;
             Songs = songs;
             PictureData = pictureData;
-            CurrentPosition = 0;
         }
 
         public long ID { get; }
@@ -170,7 +169,6 @@ namespace BowieD.MusicPlayer.WPF.Models
 
         public string SourceName => Name;
 
-        public int CurrentPosition { get; set; }
 
         public static implicit operator PlaylistInfo(Playlist playlist)
         {
@@ -185,11 +183,22 @@ namespace BowieD.MusicPlayer.WPF.Models
         public static bool operator !=(Playlist a, PlaylistInfo b) => a.ID != b.ID;
         public static bool operator !=(PlaylistInfo a, Playlist b) => a.ID != b.ID;
 
-        public IReadOnlyCollection<Song> GetSongs()
+        public IReadOnlyCollection<Song> GetSongs(Song currentSong)
         {
-            if (CurrentPosition >= 0)
+            int index = -1;
+
+            for (int i = 0; i < Songs.Count; i++)
             {
-                return new ReadOnlyCollection<Song>(Songs.Take(CurrentPosition).Concat(Songs.Skip(CurrentPosition)).ToList());
+                if (Songs[i].ID == currentSong.ID)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index >= 0)
+            {
+                return new ReadOnlyCollection<Song>(Songs.Skip(index + 1).Concat(Songs.Take(index)).ToList());
             }
 
             return new ReadOnlyCollection<Song>(Songs);

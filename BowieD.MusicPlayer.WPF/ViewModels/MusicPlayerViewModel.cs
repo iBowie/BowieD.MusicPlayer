@@ -204,7 +204,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                     IEnumerable<Song> toAdd;
 
-                    var sSrc = value.GetSongs();
+                    var sSrc = value.GetSongs(CurrentSong);
 
                     if (IsShuffleEnabled)
                         toAdd = sSrc.ShuffleLinq();
@@ -280,8 +280,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             Clean();
 
-            playlist.CurrentPosition = index;
-
+            CurrentSong = song;
             CurrentSongSource = playlist;
 
             if (shuffle)
@@ -568,7 +567,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                             IEnumerable<Song> toAdd;
 
-                            var sSrc = CurrentSongSource.GetSongs();
+                            var sSrc = CurrentSongSource.GetSongs(CurrentSong);
 
                             if (IsShuffleEnabled)
                                 toAdd = sSrc.ShuffleLinq();
