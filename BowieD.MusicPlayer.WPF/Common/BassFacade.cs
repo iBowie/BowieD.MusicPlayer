@@ -136,7 +136,6 @@ namespace BowieD.MusicPlayer.WPF.Common
             GetData(_fftBuffer);
 
             int b0 = 0;
-            int y = 0;
 
             for (int x = 0; x < peaks.Length; x++)
             {
@@ -144,11 +143,7 @@ namespace BowieD.MusicPlayer.WPF.Common
                 
                 int b1 = (int)Math.Pow(2, x * 10.0 / (peaks.Length - 1));
                 
-                if (b1 > 1023) 
-                    b1 = 1023;
-
-                if (b1 <= b0) 
-                    b1 = b0 + 1;
+                b1 = Math.Clamp(b1, b0 + 1, 1023);
                 
                 for (; b0 < b1; b0++)
                 {
@@ -156,12 +151,9 @@ namespace BowieD.MusicPlayer.WPF.Common
                         peak = _fftBuffer[1 + b0];
                 }
 
-                y = (int)(Math.Sqrt(peak) * 3 * 255 - 4);
-                if (y > 255) 
-                    y = 255;
-                
-                if (y < 0) 
-                    y = 0;
+                int y = (int)(Math.Sqrt(peak) * 3 * 255 - 4);
+
+                y = Math.Clamp(y, 0, 255);
 
                 float yF = y / 255f;
 
