@@ -31,7 +31,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             _timer = new DispatcherTimer()
             {
-                Interval = TimeSpan.FromMilliseconds(100)
+                Interval = TimeSpan.FromMilliseconds(1000.0 / 40.0) // 40 times per second should be enough
             };
             _secondTimer = new DispatcherTimer()
             {
