@@ -400,7 +400,8 @@
                                     Value="{Binding FrameRate}"/>
                             <Separator/>
                             <TextBlock Text="Color"/>
-                            <mah:ColorPicker SelectedColor="{Binding AccentColor}"/>
+                            <CheckBox IsChecked="{Binding AutoPickColor}" Content="Pick color from cover"/>
+                            <mah:ColorPicker SelectedColor="{Binding AccentColor}" Visibility="{Binding AutoPickColor, Converter={StaticResource invertedBoolToVisConverter}}"/>
                             <TextBlock Text="Max Particles"/>
                             <Slider AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" Width="144" Minimum="0"
                                     Ticks="0, 8, 16, 24, 32, 64, 128, 256" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Maximum="256"

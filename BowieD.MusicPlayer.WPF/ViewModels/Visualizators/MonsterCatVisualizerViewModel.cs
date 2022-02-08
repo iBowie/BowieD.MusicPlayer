@@ -24,6 +24,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         private double _particles;
         private Color _accentColor = Colors.White;
         private int _barCount;
+        private bool _autoPickColor = false;
 
         public double FrameRate
         {
@@ -81,6 +82,19 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
 
                     monsterCat_peaksGrid.Children.Add(newRect);
                     _visibleRectangles.Add(newRect);
+                }
+            }
+        }
+        public bool AutoPickColor
+        {
+            get => _autoPickColor;
+            set
+            {
+                ChangeProperty(ref _autoPickColor, value, nameof(AutoPickColor));
+
+                if (value)
+                {
+                    MusicPlayerViewModel_OnTrackChanged(MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong);
                 }
             }
         }
@@ -147,10 +161,25 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             _visualizerTimer.Start();
 
             MainWindowViewModel.View.monsterCat_particles.Timer = _visualizerTimer;
+
+            MusicPlayerViewModel.OnTrackChanged += MusicPlayerViewModel_OnTrackChanged;
+            MusicPlayerViewModel_OnTrackChanged(MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong);
+        }
+
+        private void MusicPlayerViewModel_OnTrackChanged(Models.Song newSong)
+        {
+            if (AutoPickColor)
+            {
+                var newAccent = VibrantColor.GetVibrantColor(newSong.PictureData);
+
+                AccentColor = newAccent;
+            }
         }
 
         public override void Stop()
         {
+            MusicPlayerViewModel.OnTrackChanged -= MusicPlayerViewModel_OnTrackChanged;
+
             if (_visualizerTimer is not null)
             {
                 _visualizerTimer.Stop();
