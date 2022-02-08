@@ -25,6 +25,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         private Color _accentColor = Colors.White;
         private int _barCount;
         private bool _autoPickColor = false;
+        private double _smoothFactor = 5.0;
 
         public double FrameRate
         {
@@ -98,6 +99,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
                 }
             }
         }
+        public double SmoothFactor
+        {
+            get => _smoothFactor;
+            set => ChangeProperty(ref _smoothFactor, value, nameof(SmoothFactor));
+        }
 
         public override void Setup()
         {
@@ -136,19 +142,25 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
                         // var smoothed = newH;
 
                         double smoothed;
-                        const double smoothFactor = 5.0;
 
-                        if (curH < newH)
+                        if (SmoothFactor < 1)
                         {
-                            smoothed = curH + ((newH - curH) / smoothFactor);
-                        }
-                        else if (curH > newH)
-                        {
-                            smoothed = curH - ((curH - newH) / smoothFactor);
+                            smoothed = newH;
                         }
                         else
                         {
-                            smoothed = newH;
+                            if (curH < newH)
+                            {
+                                smoothed = curH + ((newH - curH) / SmoothFactor);
+                            }
+                            else if (curH > newH)
+                            {
+                                smoothed = curH - ((curH - newH) / SmoothFactor);
+                            }
+                            else
+                            {
+                                smoothed = newH;
+                            }
                         }
 
                         _visibleRectangles[i].Height = smoothed;

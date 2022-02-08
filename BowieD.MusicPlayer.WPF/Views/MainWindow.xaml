@@ -410,6 +410,9 @@
                             <Slider AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"
                                     TickFrequency="1" IsSnapToTickEnabled="True" Minimum="0" Maximum="256"
                                     Value="{Binding BarCount}"/>
+                            <TextBlock Text="Smooth Factor"/>
+                            <Slider AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="1"
+                                    Minimum="0" Maximum="20" Value="{Binding SmoothFactor}"/>
                         </ContextMenu>
                     </Grid.ContextMenu>
                 </Grid>
