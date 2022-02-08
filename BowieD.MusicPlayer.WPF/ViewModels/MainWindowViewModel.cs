@@ -99,7 +99,27 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 }
                 else
                 {
-                    return $"{song.Artist} - {song.Title} | BDMP";
+                    string displayArtist, displayTitle;
+
+                    if (string.IsNullOrWhiteSpace(song.Artist))
+                    {
+                        displayArtist = "Unknown";
+                    }
+                    else
+                    {
+                        displayArtist = song.Artist;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(song.Title))
+                    {
+                        displayTitle = "Unnamed";
+                    }
+                    else
+                    {
+                        displayTitle = song.Title;
+                    }
+
+                    return $"{displayArtist} - {displayTitle} | BDMP";
                 }
             }
         }
