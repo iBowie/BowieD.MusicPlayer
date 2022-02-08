@@ -3,7 +3,9 @@ using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
+using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -71,6 +73,9 @@ namespace BowieD.MusicPlayer.WPF.Views
         public Song ResultSong { get; private set; }
 
         private ICommand? _saveCommand;
+        private ICommand? _selectCoverCommand, _removeCoverCommand,
+            _copyToClipboardCommand, _pasteFromClipboardCommand,
+            _exportToDiskCommand;
 
         public ICommand SaveCommand
         {
@@ -122,6 +127,100 @@ namespace BowieD.MusicPlayer.WPF.Views
                 }
 
                 return _saveCommand;
+            }
+        }
+        public ICommand SelectCoverCommand
+        {
+            get
+            {
+                return _selectCoverCommand ??= new BaseCommand(() =>
+                {
+                    OpenFileDialog ofd = new()
+                    {
+                        Filter = ImageTool.FileDialogFilter,
+                        Multiselect = false,
+                    };
+
+                    if (ofd.ShowDialog() == true)
+                    {
+                        var old = SongCover;
+
+                        try
+                        {
+                            var newCover = File.ReadAllBytes(ofd.FileName);
+
+                            SongCover = newCover;
+                        }
+                        catch
+                        {
+                            SongCover = old;
+                        }
+                    }
+                });
+            }
+        }
+        public ICommand ExportToDiskCommand
+        {
+            get
+            {
+                return _exportToDiskCommand ??= new BaseCommand(() =>
+                {
+                    SaveFileDialog sfd = new()
+                    {
+                        Filter = ImageTool.FileDialogFilter,
+                    };
+
+                    if (sfd.ShowDialog() == true)
+                    {
+                        try
+                        {
+                            File.WriteAllBytes(sfd.FileName, SongCover);
+                        }
+                        catch { }
+                    }
+                }, () =>
+                {
+                    return SongCover.Length > 0;
+                });
+            }
+        }
+        public ICommand CopyToClipboardCommand
+        {
+            get
+            {
+                return _copyToClipboardCommand ??= new BaseCommand(() =>
+                {
+                    throw new NotImplementedException();
+                }, () =>
+                {
+                    return false;
+                });
+            }
+        }
+        public ICommand PasteFromClipboardCommand
+        {
+            get
+            {
+                return _pasteFromClipboardCommand ??= new BaseCommand(() =>
+                {
+                    throw new NotImplementedException();
+                }, () =>
+                {
+                    return false;
+                });
+            }
+        }
+        public ICommand RemoveCoverCommand
+        {
+            get
+            {
+                return _removeCoverCommand ??= new BaseCommand(() =>
+                {
+                    SongCover = Array.Empty<byte>();
+                }, () =>
+                {
+                    return SongCover.Length > 0;
+                });
             }
         }
 

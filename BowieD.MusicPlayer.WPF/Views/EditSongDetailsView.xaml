@@ -8,18 +8,44 @@
         mc:Ignorable="d"
         Title="EditSongDetailsView" Height="450" Width="800" Background="{DynamicResource MahApps.Brushes.Window.Background}">
     <Grid Name="mainGrid" d:DataContext="{d:DesignInstance Type=local:EditSongDetailsView}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <StackPanel Margin="30">
-            <TextBlock Margin="5" Text="Title" TextAlignment="Center"/>
-            <TextBox Margin="5" Text="{Binding SongTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Margin="5" Text="Artist" TextAlignment="Center"/>
-            <TextBox Margin="5" Text="{Binding SongArtist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Margin="5" Text="Album" TextAlignment="Center"/>
-            <TextBox Margin="5" Text="{Binding SongAlbum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Margin="5" Text="Year" TextAlignment="Center"/>
-            <mah:NumericUpDown Minimum="0" Maximum="10000" ParsingNumberStyle="Integer"
+            <UniformGrid>
+                <TextBlock Margin="5" Text="Title" TextAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                <TextBlock Margin="5" Text="Artist" TextAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                
+                <TextBox Margin="5" Text="{Binding SongTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Margin="5" Text="{Binding SongArtist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </UniformGrid>
+            <UniformGrid>
+                <TextBlock Margin="5" Text="Album" TextAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                <TextBlock Margin="5" Text="Year" TextAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                <TextBox Margin="5" Text="{Binding SongAlbum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <mah:NumericUpDown Minimum="0" Maximum="10000" ParsingNumberStyle="Integer"
                                Margin="5" Value="{Binding SongYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Margin="5" Text="Cover" TextAlignment="Center"/>
-            <Button Content="Save" Margin="5" Command="{Binding SaveCommand}"/>
+            </UniformGrid>
+            <TextBlock Margin="5" Text="Cover" TextAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Viewbox>
+                    <Image Source="{Binding SongCover, Converter={StaticResource binaryToPictureConverter}}"/>
+                </Viewbox>
+                <StackPanel Grid.Column="1">
+                    <Button Margin="5" Content="Select image from disk..." Command="{Binding SelectCoverCommand}"/>
+                    <Button Margin="5" Content="Paste from clipboard" Command="{Binding PasteFromClipboardCommand}"/>
+                    <Button Margin="5" Content="Export to disk" Command="{Binding ExportToDiskCommand}"/>
+                    <Button Margin="5" Content="Copy to clipboard" Command="{Binding CopyToClipboardCommand}"/>
+                    <Button Margin="5" Content="Remove image" Command="{Binding RemoveCoverCommand}"/>
+                </StackPanel>
+            </Grid>
         </StackPanel>
+        <Button Content="Save" Margin="5" Style="{StaticResource MahApps.Styles.Button.MetroSquare}" 
+                Grid.Row="1" Command="{Binding SaveCommand}" HorizontalAlignment="Stretch"/>
     </Grid>
 </mah:MetroWindow>
