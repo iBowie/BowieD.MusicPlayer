@@ -592,6 +592,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                                 SongQueue.EnqueueFIFO(s);
                             }
                         }
+                        else
+                        {
+                            SongQueue.Shuffle();
+                        }
                     });
                 }
 
