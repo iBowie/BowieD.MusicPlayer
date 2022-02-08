@@ -77,24 +77,22 @@
                                     </Grid>
                                 </Button>
                             </StackPanel>
-                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Playlists}"
-                                          SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type models:PlaylistInfo}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition />
-                                                </Grid.ColumnDefinitions>
-                                                <Image Width="20" Height="20" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=20|0}" />
-                                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"
+                            <ListView Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Playlists}"
+                                      SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:PlaylistInfo}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Image Width="20" Height="20" Margin="5" Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=20|0}" />
+                                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding Name}"
                                                            TextTrimming="CharacterEllipsis" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </ScrollViewer>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
                         </Grid>
                         <Grid Grid.Row="1" HorizontalAlignment="Stretch"
                               Name="imgBigPicture"
@@ -269,22 +267,43 @@
             </d:Grid.RenderTransform>
             <!-- visualizers -->
             <Grid Background="Transparent" AllowDrop="False">
-                <d:Grid.RenderTransform>
-                    <TranslateTransform Y="720" />
-                </d:Grid.RenderTransform>
                 <!-- default visualizer -->
-                <Grid Background="Transparent" AllowDrop="True" Drop="fullScreenViewGrid_Drop" x:Name="visualizerGrid_default">
+                <Grid Background="Transparent" AllowDrop="True" Drop="fullScreenViewGrid_Drop" x:Name="visualizerGrid_default" d:DataContext="{d:DesignInstance Type=visualizators:DefaultBackgroundVisualizerViewModel}">
                     <!--background-->
                     <Image Name="fullScreenBackground" Stretch="UniformToFill">
                         <Image.BitmapEffect>
-                            <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian" />
+                            <BlurBitmapEffect Radius="{Binding BlurPower}" KernelType="Gaussian" />
                         </Image.BitmapEffect>
                     </Image>
                     <Image Name="fullScreenBackground2" Opacity="0" Stretch="UniformToFill">
                         <Image.BitmapEffect>
-                            <BlurBitmapEffect Radius="{Binding View.ViewModel.BlurPower}" KernelType="Gaussian" />
+                            <BlurBitmapEffect Radius="{Binding BlurPower}" KernelType="Gaussian" />
                         </Image.BitmapEffect>
                     </Image>
+
+                    <Grid Grid.Row="2" Margin="30,30,30,196" VerticalAlignment="Bottom" DataContext="{Binding MainWindowViewModel.View.MusicPlayerViewModel}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Image Margin="10" d:Width="176" d:Height="176" MaxWidth="176" MaxHeight="176"
+                                   d:Source="/Resources/Images/missing_texture.jpg"
+                                   Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=176|0}"/>
+                            <Grid Margin="10" Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding CurrentSong.Title}" TextWrapping="Wrap" VerticalAlignment="Bottom" d:Text="Your Contract Has Expired" FontSize="48" FontWeight="Bold"/>
+                                <TextBlock Grid.Row="1" VerticalAlignment="Top" Text="{Binding CurrentSong.Artist}" d:Text="Pascal Michael Stiefel" FontSize="24"/>
+                            </Grid>
+
+                            <Grid.BitmapEffect>
+                                <DropShadowBitmapEffect Color="Black" ShadowDepth="5" Softness="0.75"/>
+                            </Grid.BitmapEffect>
+                        </Grid>
+                    </Grid>
 
                     <Grid.ContextMenu>
                         <ContextMenu>
@@ -302,7 +321,7 @@
                                 <Slider Grid.Row="1" Minimum="0" Maximum="50" TickFrequency="1"
                                         AutoToolTipPlacement="BottomRight"
                                         AutoToolTipPrecision="0"
-                                        IsSnapToTickEnabled="True" Value="{Binding View.ViewModel.BlurPower}" />
+                                        IsSnapToTickEnabled="True" Value="{Binding BlurPower}" />
                             </Grid>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -313,13 +332,17 @@
                                 <Slider Grid.Row="1" Minimum="5" Maximum="120" TickFrequency="1"
                                         AutoToolTipPlacement="BottomRight"
                                         AutoToolTipPrecision="0"
-                                        IsSnapToTickEnabled="True" Value="{Binding View.ViewModel.BackgroundSwitchSpeedSeconds}" />
+                                        IsSnapToTickEnabled="True" Value="{Binding BackgroundSwitchSpeedSeconds}" />
                             </Grid>
                         </ContextMenu>
                     </Grid.ContextMenu>
                 </Grid>
                 <!-- monstercat style visualizer -->
                 <Grid x:Name="visualizerGrid_monsterCat" Background="#0C0C0C" d:DataContext="{d:DesignInstance visualizators:MonsterCatVisualizerViewModel}">
+                    <d:Grid.RenderTransform>
+                        <TranslateTransform Y="720" />
+                    </d:Grid.RenderTransform>
+                    
                     <controls:ParticlesControl x:Name="monsterCat_particles" MaxParticles="{Binding MaxParticles}" ParticleSpeedRatio="{Binding SpeedRatio}" ParticleSpeed="2.0"/>
 
                     <Grid x:Name="monsterCat_center" Margin="116,116,116,196">
@@ -431,33 +454,10 @@
                         </Grid>
                     </Border>
                 </Grid>
-                <Grid x:Name="defaultVisualizerText" Grid.Row="2" Margin="30" DataContext="{Binding View.MusicPlayerViewModel}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Image Margin="10" d:Width="176" d:Height="176" MaxWidth="176" MaxHeight="176"
-                           d:Source="/Resources/Images/missing_texture.jpg"
-                           Source="{Binding CurrentSong.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=176|0}"/>
-                        <Grid Margin="10" Grid.Column="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding CurrentSong.Title}" TextWrapping="Wrap" VerticalAlignment="Bottom" d:Text="Your Contract Has Expired" FontSize="48" FontWeight="Bold"/>
-                            <TextBlock Grid.Row="1" VerticalAlignment="Top" Text="{Binding CurrentSong.Artist}" d:Text="Pascal Michael Stiefel" FontSize="24"/>
-                        </Grid>
-
-                        <Grid.BitmapEffect>
-                            <DropShadowBitmapEffect Color="Black" ShadowDepth="5" Softness="0.75"/>
-                        </Grid.BitmapEffect>
-                    </Grid>
-                </Grid>
                 <Grid Grid.Row="3" Name="fullScreenMediaControlGrid"
-                  Background="Transparent"
-                  d:Opacity="1"
-                  Opacity="{Binding IsMouseOver, ElementName=fullScreenMediaControlGrid, Converter={StaticResource boolToVisHiddenConverter}}">
+                      Background="Transparent"
+                      d:Opacity="1"
+                      Opacity="{Binding IsMouseOver, ElementName=fullScreenMediaControlGrid, Converter={StaticResource boolToVisHiddenConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -529,10 +529,8 @@
                             </StackPanel>
                         </Grid>
                         <Grid HorizontalAlignment="Left">
-                            <ComboBox Margin="10" SelectedIndex="0" SelectionChanged="VisualizerComboBox_SelectionChanged" x:Name="visualizerComboBox">
-                                <ComboBoxItem>Image Background</ComboBoxItem>
-                                <ComboBoxItem>Monstercat Visualizer</ComboBoxItem>
-                            </ComboBox>
+                            <ComboBox Margin="10" ItemsSource="{Binding View.ViewModel.Visualizers}" SelectedIndex="0" SelectionChanged="VisualizerComboBox_SelectionChanged" x:Name="visualizerComboBox"
+                                      DisplayMemberPath="VisualizerName" VerticalAlignment="Center"/>
                         </Grid>
                     </Grid>
                 </Grid>

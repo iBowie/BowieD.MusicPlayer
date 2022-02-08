@@ -622,6 +622,12 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _enterFullScreenCommand = new BaseCommand(() =>
                     {
+                        if (View.CurrentVisualizer is not null)
+                        {
+                            View.CurrentVisualizer.BoundPanel.Visibility = Visibility.Visible;
+                            View.CurrentVisualizer.Start();
+                        }
+
                         View.WindowState = WindowState.Maximized;
                         View.WindowStyle = WindowStyle.None;
                         View.ResizeMode = ResizeMode.NoResize;
@@ -651,6 +657,12 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _exitFullScreenCommand = new BaseCommand(() =>
                     {
+                        if (View.CurrentVisualizer is not null)
+                        {
+                            View.CurrentVisualizer.Stop();
+                            View.CurrentVisualizer.BoundPanel.Visibility = Visibility.Collapsed;
+                        }
+
                         View.WindowStyle = WindowStyle.SingleBorderWindow;
                         View.WindowState = WindowState.Normal;
                         View.ResizeMode = ResizeMode.CanResize;

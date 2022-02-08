@@ -11,9 +11,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
 {
     public sealed class MonsterCatVisualizerViewModel : VisualizerViewModelBase
     {
-        public MonsterCatVisualizerViewModel(MainWindowViewModel mainWindowViewModel) : base(mainWindowViewModel)
+        public MonsterCatVisualizerViewModel(Panel boundPanel, MainWindowViewModel mainWindowViewModel) : base(boundPanel, mainWindowViewModel)
         {
         }
+
+        public override string VisualizerName => "Monstercat Classic Visualizer";
 
         private float[] peaksData;
         private readonly List<Rectangle> _visibleRectangles = new();

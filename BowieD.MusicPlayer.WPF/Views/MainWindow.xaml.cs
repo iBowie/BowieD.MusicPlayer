@@ -79,17 +79,20 @@ namespace BowieD.MusicPlayer.WPF.Views
             if (e.Handled)
                 return;
 
-            var obj = e.Data;
-
-            string format = DataFormats.FileDrop;
-
-            if (obj.GetDataPresent(format))
+            if (CurrentVisualizer is DefaultBackgroundVisualizerViewModel dbv)
             {
-                string[] files = (string[])obj.GetData(format);
+                var obj = e.Data;
 
-                if (files.Length > 0)
+                string format = DataFormats.FileDrop;
+
+                if (obj.GetDataPresent(format))
                 {
-                    ViewModel.SetBackground(files.Where(fn => FileTool.CheckFileValid(fn, ImageTool.SupportedImageExtensions)).ToArray());
+                    string[] files = (string[])obj.GetData(format);
+
+                    if (files.Length > 0)
+                    {
+                        dbv.SetBackground(files.Where(fn => FileTool.CheckFileValid(fn, ImageTool.SupportedImageExtensions)).ToArray());
+                    }
                 }
             }
         }
@@ -103,54 +106,40 @@ namespace BowieD.MusicPlayer.WPF.Views
 
         private void SetupVisualizers()
         {
-            DefaultBackgroundVisualizerViewModel defaultVis = new(ViewModel);
-            MonsterCatVisualizerViewModel monsterVis = new(ViewModel);
-            
-            visualizerGrid_default.DataContext = defaultVis;
-            visualizerGrid_monsterCat.DataContext = monsterVis;
+            DefaultBackgroundVisualizerViewModel defaultVis = new(visualizerGrid_default, ViewModel);
+            MonsterCatVisualizerViewModel monsterVis = new(visualizerGrid_monsterCat, ViewModel);
 
-            defaultVis.Setup();
-            monsterVis.Setup();
+            ViewModel.Visualizers.Add(defaultVis);
+            ViewModel.Visualizers.Add(monsterVis);
 
-            _currentVisualizer = defaultVis;
-            defaultVis.Start();
+            foreach (var v in ViewModel.Visualizers)
+            {
+                v.BoundPanel.DataContext = v;
+                v.BoundPanel.Visibility = Visibility.Collapsed;
+
+                v.Setup();
+            }
+
+            CurrentVisualizer = defaultVis;
         }
 
-        private VisualizerViewModelBase? _currentVisualizer;
+        public VisualizerViewModelBase? CurrentVisualizer { get; private set; }
 
         private void VisualizerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_currentVisualizer is not null)
+            if (CurrentVisualizer is not null)
             {
-                _currentVisualizer.Stop();
-                _currentVisualizer = null;
+                CurrentVisualizer.BoundPanel.Visibility = Visibility.Collapsed;
+                CurrentVisualizer.Stop();
+                CurrentVisualizer = null;
             }
 
-            switch (visualizerComboBox.SelectedIndex)
+            CurrentVisualizer = visualizerComboBox.SelectedValue as VisualizerViewModelBase;
+
+            if (CurrentVisualizer is not null)
             {
-                case 0: // default
-                    {
-                        visualizerGrid_monsterCat.Visibility = Visibility.Collapsed;
-                        visualizerGrid_default.Visibility = Visibility.Visible;
-                        defaultVisualizerText.Visibility = Visibility.Visible;
-
-                        _currentVisualizer = visualizerGrid_default.DataContext as VisualizerViewModelBase;
-                    }
-                    break;
-                case 1: // monstercat
-                    {
-                        visualizerGrid_default.Visibility = Visibility.Collapsed;
-                        defaultVisualizerText.Visibility = Visibility.Collapsed;
-                        visualizerGrid_monsterCat.Visibility = Visibility.Visible;
-
-                        _currentVisualizer = visualizerGrid_monsterCat.DataContext as VisualizerViewModelBase;
-                    }
-                    break;
-            }
-
-            if (_currentVisualizer is not null)
-            {
-                _currentVisualizer.Start();
+                CurrentVisualizer.BoundPanel.Visibility = Visibility.Visible;
+                CurrentVisualizer.Start();
             }
         }
     }
