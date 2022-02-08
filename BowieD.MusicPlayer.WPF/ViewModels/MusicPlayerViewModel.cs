@@ -53,7 +53,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 _prevState = newState;
 
-                TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(Duration), nameof(IsUpcomingSongVisible), nameof(IsPauseButton));
+                TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(Duration), nameof(IsUpcomingSongVisible), nameof(IsPauseButton), nameof(UpcomingSongSlider));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
 
                 if (CurrentSong.IsEmpty || newState == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED)
@@ -219,6 +219,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             }
         }
 
+        public const double UPCOMING_SONG_PRETIME = 20.0;
+
         public TaskbarItemProgressState ProgressState
         {
             get
@@ -240,7 +242,18 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
         public bool IsUpcomingSongVisible
         {
-            get => LoopMode != ELoopMode.CURRENT && SongQueue.Count > 0 && Duration - Position < 20.0;
+            get => LoopMode != ELoopMode.CURRENT && SongQueue.Count > 0 && Duration - Position < UPCOMING_SONG_PRETIME;
+        }
+        public double UpcomingSongSlider
+        {
+            get
+            {
+                double curPos = Position;
+                double curDur = Duration;
+                double preTime = UPCOMING_SONG_PRETIME;
+
+                return Math.Clamp(1.0 - ((curDur - curPos) / preTime), 0, 1);
+            }
         }
         public bool IsUserQueueVisible => UserSongQueue.Count > 0;
 
