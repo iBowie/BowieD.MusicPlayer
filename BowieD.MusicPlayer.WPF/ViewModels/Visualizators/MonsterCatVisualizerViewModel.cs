@@ -102,36 +102,19 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             _visualizerTimer.AutoReset = true;
             _visualizerTimer.Elapsed += (sender, e) =>
             {
-                BassFacade.GetSpectrum(_fft);
-
                 MainWindowViewModel.Dispatcher.Invoke(() =>
                 {
-                    int b0 = 0;
-                    int y = 0;
+                    BassFacade.GetSpectrum(peaksData);
 
-                    for (int x = 0; x < _visibleRectangles.Count; x++)
+                    for (int i = 0; i < peaksData.Length; i++)
                     {
-                        float peak = 0;
-                        int b1 = (int)Math.Pow(2, x * 10.0 / (_visibleRectangles.Count - 1));
-                        if (b1 > 1023) b1 = 1023;
-                        if (b1 <= b0) b1 = b0 + 1;
-                        for (; b0 < b1; b0++)
-                        {
-                            if (peak < _fft[1 + b0]) peak = _fft[1 + b0];
-                        }
-                        y = (int)(Math.Sqrt(peak) * 3 * 255 - 4);
-                        if (y > 255) y = 255;
-                        if (y < 0) y = 0;
-
-                        float yF = y / 255f;
-
-                        peaksData[x] = yF;
+                        var yF = peaksData[i];
 
                         var maxH = monsterCat_peaksGrid.ActualHeight;
-                        var curH = _visibleRectangles[x].Height;
+                        var curH = _visibleRectangles[i].Height;
                         if (double.IsNaN(curH))
-                            curH = _visibleRectangles[x].MinHeight;
-                        var newH = Math.Clamp(maxH * yF, _visibleRectangles[x].MinHeight, double.PositiveInfinity);
+                            curH = _visibleRectangles[i].MinHeight;
+                        var newH = Math.Clamp(maxH * yF, _visibleRectangles[i].MinHeight, double.PositiveInfinity);
 
                         // var smoothed = curH + (newH - curH) * 0.75;
                         // var smoothed = smoothStep(curH, newH, 0.75);
@@ -154,7 +137,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
                             smoothed = newH;
                         }
 
-                        _visibleRectangles[x].Height = smoothed;
+                        _visibleRectangles[i].Height = smoothed;
 
                         SpeedRatio = peaksData.Average();
                         TriggerPropertyChanged(nameof(SpeedRatio));

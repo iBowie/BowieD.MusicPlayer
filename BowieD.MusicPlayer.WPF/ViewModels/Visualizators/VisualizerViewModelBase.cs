@@ -5,8 +5,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
 {
     public abstract class VisualizerViewModelBase : BaseViewModel
     {
-        protected static readonly float[] _fft = new float[1024];
-
         public VisualizerViewModelBase(Panel boundPanel, MainWindowViewModel mainWindowViewModel)
         {
             this.MainWindowViewModel = mainWindowViewModel;

@@ -116,12 +116,57 @@ namespace BowieD.MusicPlayer.WPF.Common
             ".opus"
         };
 
-        public static void GetSpectrum(float[] buffer)
+        private static float[] _fftBuffer = new float[1024];
+        /// <summary>
+        /// Updates <paramref name="buffer"/> with current song sample data
+        /// </summary>
+        private static void GetData(float[] buffer)
         {
             if (!HasInitDefaultDevice || State != BASSActive.BASS_ACTIVE_PLAYING)
                 return;
 
             Bass.BASS_ChannelGetData(Handle, buffer, (int)BASSData.BASS_DATA_FFT1024);
+        }
+
+        /// <summary>
+        /// Updates <paramref name="peaks"/> with current song peak values based on sample data
+        /// </summary>
+        public static void GetSpectrum(float[] peaks)
+        {
+            GetData(_fftBuffer);
+
+            int b0 = 0;
+            int y = 0;
+
+            for (int x = 0; x < peaks.Length; x++)
+            {
+                float peak = 0;
+                
+                int b1 = (int)Math.Pow(2, x * 10.0 / (peaks.Length - 1));
+                
+                if (b1 > 1023) 
+                    b1 = 1023;
+
+                if (b1 <= b0) 
+                    b1 = b0 + 1;
+                
+                for (; b0 < b1; b0++)
+                {
+                    if (peak < _fftBuffer[1 + b0]) 
+                        peak = _fftBuffer[1 + b0];
+                }
+
+                y = (int)(Math.Sqrt(peak) * 3 * 255 - 4);
+                if (y > 255) 
+                    y = 255;
+                
+                if (y < 0) 
+                    y = 0;
+
+                float yF = y / 255f;
+
+                peaks[x] = yF;
+            }
         }
     }
 }
