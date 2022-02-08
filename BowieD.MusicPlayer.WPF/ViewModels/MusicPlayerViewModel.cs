@@ -71,8 +71,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             _secondTimer.Start();
             _fiveSecondTimer.Start();
 
-            _songQueue.CollectionChanged += _songQueue_CollectionChanged;
-            _userSongQueue.CollectionChanged += _userSongQueue_CollectionChanged;
+            SongQueue.CollectionChanged += _songQueue_CollectionChanged;
+            UserSongQueue.CollectionChanged += _userSongQueue_CollectionChanged;
         }
 
         private void _userSongQueue_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -94,15 +94,13 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private ELoopMode _loopMode;
         private bool _isShuffleEnabled = false;
         private EPlayOrigin _playOrigin;
-        private readonly ObservableLIFOFIFO<Song> _userSongQueue = new();
-        private readonly ShuffleQueue<Song> _songQueue = new();
-        private readonly ObservableLIFOFIFO<Song> _songHistory = new();
         private bool _isBigPicture = false;
         private bool _isFullScreen = false;
+        private ISongSource? _currentSongSource;
 
-        public ObservableLIFOFIFO<Song> UserSongQueue => _userSongQueue;
-        public ShuffleQueue<Song> SongQueue => _songQueue;
-        public ObservableLIFOFIFO<Song> SongHistory => _songHistory;
+        public ObservableLIFOFIFO<Song> UserSongQueue { get; } = new();
+        public ObservableLIFOFIFO<Song> SongQueue { get; } = new();
+        public ObservableLIFOFIFO<Song> SongHistory { get; } = new();
 
         public IEnumerable<Song> AllActiveSongs
         {
@@ -193,6 +191,34 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
         public bool LockAuto { get; set; } = false;
 
+        public ISongSource? CurrentSongSource
+        {
+            get => _currentSongSource;
+            set
+            {
+                ChangeProperty(ref _currentSongSource, value, nameof(CurrentSongSource));
+
+                if (value is not null)
+                {
+                    SongQueue.Clear();
+
+                    IEnumerable<Song> toAdd;
+
+                    var sSrc = value.GetSongs();
+
+                    if (IsShuffleEnabled)
+                        toAdd = sSrc.ShuffleLinq();
+                    else
+                        toAdd = sSrc;
+
+                    foreach (var s in toAdd)
+                    {
+                        SongQueue.EnqueueFIFO(s);
+                    }
+                }
+            }
+        }
+
         public TaskbarItemProgressState ProgressState
         {
             get
@@ -230,43 +256,36 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         private void Clean()
         {
+            CurrentSongSource = null;
             CurrentSong = Song.EMPTY;
-            _songQueue.Clear();
-            _songHistory.Clear();
+            SongQueue.Clear();
+            SongHistory.Clear();
         }
 
         public void PlayPlaylist(Playlist playlist, bool shuffle = false)
         {
             Clean();
 
-            List<Song> safeSongs = new(playlist.Songs);
-
             if (shuffle)
-                safeSongs.Shuffle();
+                IsShuffleEnabled = true;
 
-            foreach (var s in safeSongs)
-                _songQueue.EnqueueFIFO(s);
+            CurrentSongSource = playlist;
         }
         public void PlaySongFromPlaylist(Song song, Playlist playlist, bool shuffle = false)
         {
-            Clean();
-
             var index = playlist.Songs.IndexOf(song);
 
             if (index == -1)
                 return;
 
-            _songQueue.EnqueueFIFO(song);
+            Clean();
 
-            for (int i = index + 1; i < playlist.Songs.Count; i++)
-            {
-                _songQueue.EnqueueFIFO(playlist.Songs[i]);
-            }
+            playlist.CurrentPosition = index;
 
-            for (int i = 0; i < index; i++)
-            {
-                _songQueue.EnqueueFIFO(playlist.Songs[i]);
-            }
+            CurrentSongSource = playlist;
+
+            if (shuffle)
+                IsShuffleEnabled = true;
         }
 
         public void NextTrackAuto()
@@ -543,7 +562,24 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     {
                         IsShuffleEnabled = !IsShuffleEnabled;
 
-                        SongQueue.IsShuffled = IsShuffleEnabled;
+                        if (CurrentSongSource is not null)
+                        {
+                            SongQueue.Clear();
+
+                            IEnumerable<Song> toAdd;
+
+                            var sSrc = CurrentSongSource.GetSongs();
+
+                            if (IsShuffleEnabled)
+                                toAdd = sSrc.ShuffleLinq();
+                            else
+                                toAdd = sSrc;
+
+                            foreach (var s in toAdd)
+                            {
+                                SongQueue.EnqueueFIFO(s);
+                            }
+                        }
                     });
                 }
 

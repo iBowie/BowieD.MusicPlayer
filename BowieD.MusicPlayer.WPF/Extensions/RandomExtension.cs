@@ -28,7 +28,7 @@ namespace BowieD.MusicPlayer.WPF.Extensions
                 temp.RemoveAt(index);
             }
         }
-        public static IEnumerable<T> ShuffleLinq<T>(this IList<T> list)
+        public static IEnumerable<T> ShuffleLinq<T>(this IReadOnlyCollection<T> list)
         {
             List<T> temp = new(list);
 
