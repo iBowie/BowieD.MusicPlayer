@@ -21,7 +21,7 @@ namespace BowieD.MusicPlayer.WPF.Common
 
         public static System.Windows.Media.Color GetVibrantColor(Bitmap bmp)
         {
-            using Bitmap thumb = new(bmp, new Size(32, 32));
+            using Bitmap thumb = new(bmp, new Size(128, 128));
 
             Dictionary<Color, int> colors = new();
 
