@@ -21,7 +21,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         private readonly List<Rectangle> _visibleRectangles = new();
         private Panel monsterCat_peaksGrid;
         private double _frameRate = 60.0;
-        private double _particles;
+        private double _particles = 64;
         private Color _accentColor = Colors.White;
         private int _barCount;
         private bool _autoPickColor = false;
