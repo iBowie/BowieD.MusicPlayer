@@ -740,6 +740,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 return _exitFullScreenCommand;
             }
         }
+        private object? _prevContentBeforeQueue;
         public ICommand ViewQueueCommand
         {
             get
@@ -750,10 +751,14 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     {
                         if (View.navFrame.Content is QueuePage)
                         {
-                            View.navFrame.Navigate(null);
+                            View.navFrame.Navigate(_prevContentBeforeQueue);
+
+                            _prevContentBeforeQueue = null;
                         }
                         else
                         {
+                            _prevContentBeforeQueue = View.navFrame.Content;
+
                             QueuePage page = new(new(View));
 
                             View.navFrame.Navigate(page);
