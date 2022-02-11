@@ -248,8 +248,12 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get
             {
-                double curPos = Position;
                 double curDur = Duration;
+
+                if (curDur < UPCOMING_SONG_PRETIME)
+                    return Position01;
+
+                double curPos = Position;
                 double preTime = UPCOMING_SONG_PRETIME;
 
                 return Math.Clamp(1.0 - ((curDur - curPos) / preTime), 0, 1);
