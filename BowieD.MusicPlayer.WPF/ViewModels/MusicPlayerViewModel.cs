@@ -275,30 +275,31 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             SongHistory.Clear();
         }
 
-        public void PlayPlaylist(Playlist playlist, bool shuffle = false)
+        public void PlaySource(ISongSource songSource, bool shuffle = false)
         {
             Clean();
 
             if (shuffle)
                 IsShuffleEnabled = true;
 
-            CurrentSongSource = playlist;
+            CurrentSongSource = songSource;
         }
-        public void PlaySongFromPlaylist(Song song, Playlist playlist, bool shuffle = false)
+
+        public void PlaySongFromSource(Song song, ISongSource songSource, bool shuffle = false)
         {
-            var index = playlist.Songs.IndexOf(song);
-
-            if (index == -1)
-                return;
-
             Clean();
+
+            if (shuffle)
+                IsShuffleEnabled = true;
 
             CurrentSong = song;
-            CurrentSongSource = playlist;
-
-            if (shuffle)
-                IsShuffleEnabled = true;
+            CurrentSongSource = songSource;
         }
+
+        [Obsolete]
+        public void PlayPlaylist(Playlist playlist, bool shuffle = false) => PlaySource(playlist, shuffle);
+        [Obsolete]
+        public void PlaySongFromPlaylist(Song song, Playlist playlist, bool shuffle = false) => PlaySongFromSource(song, playlist, shuffle);
 
         public void NextTrackAuto()
         {

@@ -49,6 +49,19 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
                             <StackPanel>
+                                <Button Margin="5" Command="{Binding OpenAllSongsCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Style="{DynamicResource ContentOnlyButton}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <iconPacks:PackIconMaterial Kind="Music" Margin="5" />
+                                        <TextBlock Grid.Column="1" Text="All songs" Margin="5" />
+                                    </Grid>
+                                </Button>
                                 <Button Margin="5" Command="{Binding OpenLibraryCommand}"
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Left"

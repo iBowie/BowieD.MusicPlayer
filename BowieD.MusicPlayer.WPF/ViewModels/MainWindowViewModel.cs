@@ -79,6 +79,24 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 return _openLibraryCommand;
             }
         }
+        private ICommand? _openAllSongsCommand;
+        public ICommand OpenAllSongsCommand
+        {
+            get
+            {
+                if (_openAllSongsCommand is null)
+                {
+                    _openAllSongsCommand = new BaseCommand(() =>
+                    {
+                        AllSongsPage page = new(View);
+
+                        View.navFrame.Navigate(page);
+                    });
+                }
+
+                return _openAllSongsCommand;
+            }
+        }
 
         #endregion
 
