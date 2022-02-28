@@ -11,7 +11,11 @@ namespace BowieD.MusicPlayer.WPF
     {
         private const string FILE_NAME = "state.dat";
         private const string MAGIC = "BowieD.MusicPlayer.WPF";
-        private const int VERSION = 2;
+        private const int VERSION = 3;
+
+        private const int SSOURCE_NONE_ID = -1;
+        private const int SSOURCE_ALLSONGS_ID = 0;
+        private const int SSOURCE_PLAYLIST_ID = 1;
 
         public static void SaveState(MainWindow mainWindow)
         {
@@ -45,13 +49,34 @@ namespace BowieD.MusicPlayer.WPF
             foreach (var usq in mp.UserSongQueue)
                 bw.Write(usq.ID);
 
-            bw.Write(mp.SongQueue.Count);
-            foreach (var usq in mp.SongQueue)
-                bw.Write(usq.ID);
+            switch (mp.CurrentSongSource)
+            {
+                case Playlist pl:
+                    {
+                        bw.Write(SSOURCE_PLAYLIST_ID);
 
-            bw.Write(mp.SongHistory.Count);
-            foreach (var usq in mp.SongHistory)
-                bw.Write(usq.ID);
+                        bw.Write(pl.ID);
+                    }
+                    break;
+                case Views.Pages.AllSongsPage.AllSongsSource alls:
+                    {
+                        bw.Write(SSOURCE_ALLSONGS_ID);
+                    }
+                    break;
+                default:
+                    {
+                        bw.Write(SSOURCE_NONE_ID);
+
+                        bw.Write(mp.SongQueue.Count);
+                        foreach (var usq in mp.SongQueue)
+                            bw.Write(usq.ID);
+
+                        bw.Write(mp.SongHistory.Count);
+                        foreach (var usq in mp.SongHistory)
+                            bw.Write(usq.ID);
+                    }
+                    break;
+            }
         }
 
         public static void RestoreState(MainWindow mainWindow)
@@ -107,18 +132,41 @@ namespace BowieD.MusicPlayer.WPF
                         mp.UserSongQueue.Add(SongRepository.Instance.GetSong(songId));
                     }
 
-                    int sqCount = br.ReadInt32();
-                    for (int i = 0; i < sqCount; i++)
-                    {
-                        long songId = br.ReadInt64();
-                        mp.SongQueue.Add(SongRepository.Instance.GetSong(songId));
-                    }
+                    int sourceId = br.ReadInt32();
 
-                    int shCount = br.ReadInt32();
-                    for (int i = 0; i < shCount; i++)
+                    switch (sourceId)
                     {
-                        long songId = br.ReadInt64();
-                        mp.SongHistory.Add(SongRepository.Instance.GetSong(songId));
+                        case SSOURCE_ALLSONGS_ID:
+                            {
+                                mp.CurrentSongSource = Views.Pages.AllSongsPage.AllSongsSource.Instance;
+                            }
+                            break;
+                        case SSOURCE_PLAYLIST_ID:
+                            {
+                                long plId = br.ReadInt64();
+
+                                mp.CurrentSongSource = (Playlist)PlaylistRepository.Instance.GetPlaylist(plId);
+                            }
+                            break;
+                        case SSOURCE_NONE_ID:
+                            {
+                                int sqCount = br.ReadInt32();
+                                for (int i = 0; i < sqCount; i++)
+                                {
+                                    long songId = br.ReadInt64();
+                                    mp.SongQueue.Add(SongRepository.Instance.GetSong(songId));
+                                }
+
+                                int shCount = br.ReadInt32();
+                                for (int i = 0; i < shCount; i++)
+                                {
+                                    long songId = br.ReadInt64();
+                                    mp.SongHistory.Add(SongRepository.Instance.GetSong(songId));
+                                }
+                            }
+                            break;
+                        default:
+                            throw new InvalidDataException();
                     }
                 }
             }

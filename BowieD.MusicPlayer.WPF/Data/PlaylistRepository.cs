@@ -44,6 +44,36 @@ namespace BowieD.MusicPlayer.WPF.Data
                 $")");
         }
 
+        public PlaylistInfo GetPlaylist(long id)
+        {
+            string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_ID} = @id";
+
+            using var con = CreateConnection();
+
+            con.Open();
+
+            using var com = new SQLiteCommand(sql, con);
+
+            com.Parameters.Add("@id", DbType.Int64).Value = id;
+
+            using var reader = com.ExecuteReader(CommandBehavior.KeyInfo);
+
+            PlaylistInfo result;
+
+            if (reader.HasRows && reader.Read())
+            {
+                result = ReadPlaylist(reader, id);
+            }
+            else
+            {
+                result = PlaylistInfo.EMPTY;
+            }
+
+            con.Close();
+
+            return result;
+        }
+
         public IList<PlaylistInfo> GetAllPlaylists()
         {
             List<PlaylistInfo> result = new();
