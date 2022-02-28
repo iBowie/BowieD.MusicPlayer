@@ -1,0 +1,70 @@
+﻿<Page x:Class="BowieD.MusicPlayer.WPF.Views.Pages.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views.Pages" xmlns:pages="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels.Pages" d:DataContext="{d:DesignInstance Type=pages:SettingsPageViewModel}"
+      mc:Ignorable="d" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" d:DesignWidth="800"
+      Title="SettingsPage">
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Text="General" Style="{DynamicResource TbHeader1}" Margin="5"/>
+            <TextBlock Text="Language" Style="{DynamicResource TbHeader3}" Margin="5"/>
+            <UniformGrid Columns="2" Rows="1">
+                <TextBlock Text="Select a language. Changes will apply after restart." Style="{DynamicResource Tb}" VerticalAlignment="Center" Margin="5"/>
+                <ComboBox SelectedIndex="0" IsEnabled="False" Margin="5">
+                    <ComboBoxItem>English (US)</ComboBoxItem>
+                </ComboBox>
+            </UniformGrid>
+            <TextBlock Text="Theme" Style="{DynamicResource TbHeader3}" Margin="5"/>
+            <UniformGrid Columns="2" Rows="1">
+                <TextBlock Text="Accent color of UI. Changes will apply immediately." Style="{DynamicResource Tb}" VerticalAlignment="Center" Margin="5"/>
+                <ComboBox SelectedIndex="0" IsEnabled="False" Margin="5">
+                    <ComboBoxItem>Steel</ComboBoxItem>
+                </ComboBox>
+            </UniformGrid>
+            <UniformGrid Columns="2" Rows="1">
+                <TextBlock Text="Use dark mode. Recommended option is to use dark mode." Style="{DynamicResource Tb}" VerticalAlignment="Center" Margin="5"/>
+                <mah:ToggleSwitch Margin="5" IsEnabled="False" IsOn="True"/>
+            </UniformGrid>
+            <Separator/>
+            <TextBlock Text="Privacy" Style="{DynamicResource TbHeader1}" Margin="5"/>
+            <TextBlock Text="Discord Rich Presence" Style="{DynamicResource TbHeader3}" Margin="5"/>
+            <Separator/>
+            <TextBlock Text="Advanced" Style="{DynamicResource TbHeader1}" Margin="5"/>
+            <TextBlock Text="Perfomance" Style="{DynamicResource TbHeader3}" Margin="5"/>
+            <UniformGrid Columns="2" Rows="1">
+                <TextBlock Text="Enable hardware acceleration" Style="{DynamicResource Tb}" Margin="5" VerticalAlignment="Center"/>
+                <mah:ToggleSwitch IsOn="True" IsEnabled="False" Margin="5"/>
+            </UniformGrid>
+            <TextBlock Text="Local Cache" Style="{DynamicResource TbHeader3}" Margin="5"/>
+            <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare}" Content="Clear local song cache" Margin="5"/>
+        </StackPanel>
+    </ScrollViewer>
+
+    <Page.Resources>
+        <Style x:Key="Tb" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+        <Style x:Key="TbHeader1" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Tb}">
+            <Setter Property="FontSize" Value="32"/>
+        </Style>
+        <Style x:Key="TbHeader2" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Tb}">
+            <Setter Property="FontSize" Value="24"/>
+        </Style>
+        <Style x:Key="TbHeader3" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Tb}">
+            <Setter Property="FontSize" Value="18.72"/>
+        </Style>
+        <Style x:Key="TbHeader4" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Tb}">
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style x:Key="TbHeader5" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Tb}">
+            <Setter Property="FontSize" Value="13.28"/>
+        </Style>
+        <Style x:Key="TbHeader6" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Tb}">
+            <Setter Property="FontSize" Value="10.72"/>
+        </Style>
+    </Page.Resources>
+</Page>

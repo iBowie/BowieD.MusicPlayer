@@ -75,6 +75,19 @@
                                         <TextBlock Grid.Column="1" Text="My library" Margin="5" />
                                     </Grid>
                                 </Button>
+                                <Button Margin="5" Command="{Binding OpenSettingsCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Style="{DynamicResource ContentOnlyButton}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <iconPacks:PackIconMaterial Kind="Cog" Margin="5" />
+                                        <TextBlock Grid.Column="1" Text="Settings" Margin="5" />
+                                    </Grid>
+                                </Button>
                                 <Separator />
                                 <Button Margin="5" Command="{Binding CreatePlaylistCommand}"
                                         HorizontalAlignment="Stretch"
