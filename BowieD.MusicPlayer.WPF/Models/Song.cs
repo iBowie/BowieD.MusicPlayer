@@ -42,7 +42,7 @@ namespace BowieD.MusicPlayer.WPF.Models
         {
             get
             {
-                return FileTool.CheckFileValid(FileName, BassFacade.SupportedExtensions);
+                return FileTool.CheckFileValid(FileName, BassWrapper.SupportedExtensions);
             }
         }
         public double Duration

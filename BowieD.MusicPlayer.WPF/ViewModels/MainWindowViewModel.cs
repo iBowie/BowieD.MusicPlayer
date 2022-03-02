@@ -129,7 +129,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             {
                 var song = View.MusicPlayerViewModel.CurrentSong;
 
-                if (song.IsEmpty || BassFacade.State != Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING)
+                if (song.IsEmpty || View.MusicPlayerViewModel.BassWrapper.State != Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING)
                 {
                     return "BDMP";
                 }

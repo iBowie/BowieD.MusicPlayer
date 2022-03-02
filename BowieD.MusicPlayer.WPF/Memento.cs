@@ -32,7 +32,7 @@ namespace BowieD.MusicPlayer.WPF
             {
                 bw.Write(true);
 
-                bw.Write(BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING);
+                bw.Write(mp.BassWrapper.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING);
                 bw.Write(mp.CurrentSong.ID);
                 bw.Write(mp.Position01);
             }
@@ -41,7 +41,7 @@ namespace BowieD.MusicPlayer.WPF
                 bw.Write(false);
             }
 
-            bw.Write(mp.Volume);
+            bw.Write((double)mp.BassWrapper.UserVolume);
             bw.Write((byte)mp.LoopMode);
             bw.Write(mp.IsShuffleEnabled);
 
@@ -113,7 +113,7 @@ namespace BowieD.MusicPlayer.WPF
                         mp.SetCurrentSong(Song.EMPTY, false);
                     }
 
-                    mp.Volume = br.ReadDouble();
+                    mp.BassWrapper.UserVolume = (float)br.ReadDouble();
                     mp.LoopMode = (ELoopMode)br.ReadByte();
 
                     if (savedVer >= 2)

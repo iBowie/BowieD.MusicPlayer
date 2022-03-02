@@ -254,7 +254,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                         foreach (var fn in files)
                         {
-                            if (!FileTool.CheckFileValid(fn, BassFacade.SupportedExtensions))
+                            if (!FileTool.CheckFileValid(fn, BassWrapper.SupportedExtensions))
                                 continue;
 
                             var song = SongRepository.Instance.GetOrAddSong(fn);

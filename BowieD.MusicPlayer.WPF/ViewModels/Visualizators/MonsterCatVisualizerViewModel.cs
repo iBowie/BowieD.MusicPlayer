@@ -124,7 +124,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             {
                 MainWindowViewModel.Dispatcher.Invoke(() =>
                 {
-                    BassFacade.GetSpectrum(peaksData);
+                    MainWindowViewModel.View.MusicPlayerViewModel.BassWrapper.GetSpectrum(peaksData);
 
                     for (int i = 0; i < peaksData.Length; i++)
                     {

@@ -27,8 +27,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
     {
         public MusicPlayerViewModel(MainWindow view) : base(view)
         {
-            BassFacade.Init();
-
             _timer = new DispatcherTimer()
             {
                 Interval = TimeSpan.FromMilliseconds(1000.0 / 40.0) // 40 times per second should be enough
@@ -42,9 +40,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 Interval = TimeSpan.FromSeconds(5)
             };
 
+            BassWrapper = new BassWrapper(_timer);
+
             _timer.Tick += (sender, e) =>
             {
-                Un4seen.Bass.BASSActive newState = BassFacade.State;
+                Un4seen.Bass.BASSActive newState = BassWrapper.State;
 
                 if (newState != _prevState)
                 {
@@ -53,7 +53,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 _prevState = newState;
 
-                TriggerPropertyChanged(nameof(Position), nameof(Position01), nameof(Duration), nameof(IsUpcomingSongVisible), nameof(IsPauseButton), nameof(UpcomingSongSlider));
+                TriggerPropertyChanged(nameof(Position01), nameof(IsUpcomingSongVisible), nameof(IsPauseButton), nameof(UpcomingSongSlider));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
 
                 if (CurrentSong.IsEmpty || newState == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED)
@@ -98,6 +98,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private bool _isFullScreen = false;
         private ISongSource? _currentSongSource;
 
+        public BassWrapper BassWrapper { get; }
+
         public ObservableLIFOFIFO<Song> UserSongQueue { get; } = new();
         public ObservableLIFOFIFO<Song> SongQueue { get; } = new();
         public ObservableLIFOFIFO<Song> SongHistory { get; } = new();
@@ -137,14 +139,15 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 if (!value.IsEmpty && value.IsAvailable)
                 {
-                    BassFacade.Play(value.FileName);
+                    BassWrapper.LoadFile(value.FileName);
+
+                    BassWrapper.Play();
 
                     OnTrackChanged?.Invoke(value);
                 }
                 else
                 {
-                    if (!BassFacade.IsStopped)
-                        BassFacade.Stop();
+                    BassWrapper.Stop();
                 }
             }
         }
@@ -155,20 +158,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 return PeekNextSong(out _);
             }
         }
-        public double Position
-        {
-            get => BassFacade.GetStreamPositionInSeconds();
-            set => BassFacade.SetStreamPositionInSeconds(value);
-        }
-        public double Duration
-        {
-            get => BassFacade.GetStreamLengthInSeconds();
-        }
-        public double Volume
-        {
-            get { return (double)GetValue(VolumeProperty); }
-            set { SetValue(VolumeProperty, value); }
-        }
+
         public bool IsBigPicture
         {
             get => _isBigPicture;
@@ -178,7 +168,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get
             {
-                if (BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING)
+                if (BassWrapper.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING)
                     return true;
 
                 return false;
@@ -186,8 +176,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
         public double Position01
         {
-            get => Position / Duration;
-            set => Position = value * Duration;
+            get => BassWrapper.Position / BassWrapper.Duration;
+            set => BassWrapper.Position = value * BassWrapper.Duration;
         }
         public bool LockAuto { get; set; } = false;
 
@@ -225,7 +215,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             get
             {
-                return BassFacade.State switch
+                return BassWrapper.State switch
                 {
                     Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED => TaskbarItemProgressState.None,
                     Un4seen.Bass.BASSActive.BASS_ACTIVE_STALLED => TaskbarItemProgressState.Error,
@@ -242,34 +232,24 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
         public bool IsUpcomingSongVisible
         {
-            get => LoopMode != ELoopMode.CURRENT && SongQueue.Count > 0 && Duration - Position < UPCOMING_SONG_PRETIME;
+            get => LoopMode != ELoopMode.CURRENT && SongQueue.Count > 0 && BassWrapper.Duration - BassWrapper.Position < UPCOMING_SONG_PRETIME;
         }
         public double UpcomingSongSlider
         {
             get
             {
-                double curDur = Duration;
+                double curDur = BassWrapper.Duration;
 
                 if (curDur < UPCOMING_SONG_PRETIME)
                     return Position01;
 
-                double curPos = Position;
+                double curPos = BassWrapper.Position;
                 double preTime = UPCOMING_SONG_PRETIME;
 
                 return Math.Clamp(1.0 - ((curDur - curPos) / preTime), 0, 1);
             }
         }
         public bool IsUserQueueVisible => UserSongQueue.Count > 0;
-
-        public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register("Volume", typeof(double), typeof(MusicPlayerViewModel), new PropertyMetadata(100.0, VolumeChangedCallback));
-
-        private static void VolumeChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (e.NewValue is double newValue)
-            {
-                BassFacade.SetVolume(newValue);
-            }
-        }
 
         private void Clean()
         {
@@ -453,7 +433,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             CurrentSong = song;
 
             if (!autoPlay)
-                BassFacade.Pause();
+                BassWrapper.Pause();
         }
 
 
@@ -503,23 +483,24 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _playPauseCommand = new BaseCommand(() =>
                     {
-                        switch (BassFacade.State)
+                        switch (BassWrapper.State)
                         {
                             case Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING:
-                                BassFacade.Pause();
+                                BassWrapper.Pause();
                                 break;
                             case Un4seen.Bass.BASSActive.BASS_ACTIVE_PAUSED:
-                                BassFacade.Resume();
+                                BassWrapper.Resume();
                                 break;
                             case Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED:
-                                BassFacade.Play(CurrentSong.FileName);
+                                BassWrapper.LoadFile(CurrentSong.FileName);
+                                BassWrapper.Play();
                                 break;
                         }
                     }, () =>
                     {
-                        return BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PAUSED ||
-                               BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING ||
-                               (BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED && !CurrentSong.IsEmpty && CurrentSong.IsAvailable);
+                        return BassWrapper.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PAUSED ||
+                               BassWrapper.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING ||
+                               (BassWrapper.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED && !CurrentSong.IsEmpty && CurrentSong.IsAvailable);
                     });
                 }
 
@@ -552,9 +533,9 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _prevTrackCommand = new BaseCommand(() =>
                     {
-                        if (Position >= 15)
+                        if (BassWrapper.Position >= 15)
                         {
-                            Position = 0;
+                            BassWrapper.Position = 0;
                         }
                         else
                         {
@@ -562,7 +543,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                         }
                     }, () =>
                     {
-                        return (BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING && Position >= 15) || !PeekPrevSong(out _).IsEmpty;
+                        return (BassWrapper.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING && BassWrapper.Position >= 15) || !PeekPrevSong(out _).IsEmpty;
                     });
                 }
 
@@ -865,7 +846,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             OnPlaybackStateChanged += (song, oldState, newState) =>
             {
-                _systemMediaTransportControls.PlaybackStatus = BassFacade.State switch
+                _systemMediaTransportControls.PlaybackStatus = BassWrapper.State switch
                 {
                     Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED => Windows.Media.MediaPlaybackStatus.Stopped,
                     Un4seen.Bass.BASSActive.BASS_ACTIVE_STALLED => Windows.Media.MediaPlaybackStatus.Changing,
@@ -935,10 +916,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             if (!CurrentSong.IsEmpty && CurrentSong.IsAvailable)
             {
                 timeline.StartTime = TimeSpan.FromSeconds(0);
-                timeline.EndTime = TimeSpan.FromSeconds(Duration);
+                timeline.EndTime = TimeSpan.FromSeconds(BassWrapper.Duration);
                 timeline.MinSeekTime = TimeSpan.FromSeconds(0);
-                timeline.MaxSeekTime = TimeSpan.FromSeconds(Duration);
-                timeline.Position = TimeSpan.FromSeconds(Position);
+                timeline.MaxSeekTime = TimeSpan.FromSeconds(BassWrapper.Duration);
+                timeline.Position = TimeSpan.FromSeconds(BassWrapper.Position);
             }
             else
             {
@@ -994,7 +975,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 presence.Assets = new DiscordRPC.Assets();
 
-                switch (BassFacade.State)
+                switch (BassWrapper.State)
                 {
                     case Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING:
                         {
@@ -1002,8 +983,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                             presence.Timestamps = new DiscordRPC.Timestamps()
                             {
-                                Start = utc.Subtract(TimeSpan.FromSeconds(Position)),
-                                End = utc.Add(TimeSpan.FromSeconds(Duration - Position))
+                                Start = utc.Subtract(TimeSpan.FromSeconds(BassWrapper.Position)),
+                                End = utc.Add(TimeSpan.FromSeconds(BassWrapper.Duration - BassWrapper.Position))
                             };
 
                             presence.Assets.SmallImageText = "Playing";

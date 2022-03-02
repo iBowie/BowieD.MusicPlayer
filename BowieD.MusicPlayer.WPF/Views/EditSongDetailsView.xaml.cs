@@ -52,10 +52,10 @@ namespace BowieD.MusicPlayer.WPF.Views
             {
                 savedSong = musicPlayer.CurrentSong;
                 savedPos = musicPlayer.Position01;
-                autoPlay = BassFacade.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING;
+                autoPlay = musicPlayer.BassWrapper.State == Un4seen.Bass.BASSActive.BASS_ACTIVE_PLAYING;
                 restoreState = true;
 
-                BassFacade.Stop();
+                musicPlayer.BassWrapper.Stop();
             }
         }
 
