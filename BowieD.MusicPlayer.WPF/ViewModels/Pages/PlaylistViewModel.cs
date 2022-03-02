@@ -45,6 +45,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
             PlaylistRepository.Instance.UpdatePlaylist(PlaylistInfo);
 
             _playlist = (Playlist)_playlistInfo;
+
+            View.ViewModel.ObtainPlaylists();
         }
 
         public PlaylistInfo PlaylistInfo
