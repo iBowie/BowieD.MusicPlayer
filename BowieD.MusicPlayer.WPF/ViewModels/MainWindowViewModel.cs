@@ -22,7 +22,38 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         #region Commands
 
         private ICommand? _addSongCommand, _createPlaylistCommand, _openLibraryCommand;
+        private ICommand? _showWindowCommand, _hideWindowCommand, _exitCommand;
 
+        public ICommand ShowWindowCommand
+        {
+            get
+            {
+                return _showWindowCommand ??= new BaseCommand(() =>
+                {
+                    View.Show();
+                });
+            }
+        }
+        public ICommand HideWindowCommand
+        {
+            get
+            {
+                return _hideWindowCommand ??= new BaseCommand(() =>
+                {
+                    View.Hide();
+                });
+            }
+        }
+        public ICommand ExitCommand
+        {
+            get
+            {
+                return _exitCommand ??= new BaseCommand(() =>
+                {
+                    View.CloseCompletely();
+                });
+            }
+        }
         public ICommand AddSongCommand
         {
             get

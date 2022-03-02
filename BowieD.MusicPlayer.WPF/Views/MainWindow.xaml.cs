@@ -42,7 +42,18 @@ namespace BowieD.MusicPlayer.WPF.Views
 
             Closing += (sender, e) =>
             {
-                Memento.SaveState(this);
+                if (_allowExit)
+                {
+                    e.Cancel = false;
+
+                    Memento.SaveState(this);
+                }
+                else
+                {
+                    e.Cancel = true;
+
+                    Hide();
+                }
             };
 
             Loaded += (sender, e) =>
@@ -55,6 +66,8 @@ namespace BowieD.MusicPlayer.WPF.Views
 
         public MainWindowViewModel ViewModel { get; }
         public MusicPlayerViewModel MusicPlayerViewModel { get; }
+
+        private bool _allowExit = false;
 
         private void ListView_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
@@ -141,6 +154,13 @@ namespace BowieD.MusicPlayer.WPF.Views
                 CurrentVisualizer.BoundPanel.Visibility = Visibility.Visible;
                 CurrentVisualizer.Start();
             }
+        }
+
+        public void CloseCompletely()
+        {
+            _allowExit = true;
+
+            Close();
         }
     }
 }
