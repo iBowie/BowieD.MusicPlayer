@@ -577,7 +577,7 @@
         </Grid>
 
         <tb:TaskbarIcon ToolTipText="{Binding WindowTitle}" Visibility="Visible" DoubleClickCommand="{Binding ShowWindowCommand}"
-                        PopupActivation="RightClick"
+                        PopupActivation="RightClick" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                         IconSource="/Resources/Images/missing_texture.ico">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
