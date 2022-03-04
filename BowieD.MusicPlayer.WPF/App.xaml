@@ -13,6 +13,7 @@
             <extensions:DoubleToDisplayTimeConverter x:Key="doubleToDisplayTimeConverter"/>
             <extensions:DoubleToReadableDisplayTimeConverter x:Key="doubleToFancyTimeConverter"/>
             <extensions:StringToUpperConverter x:Key="stringToUpperConverter"/>
+            <extensions:InverseBooleanConverter x:Key="InverseBoolConverter"/>
 
             <Style x:Key="ContentOnlyButton" TargetType="{x:Type Button}">
                 <Setter Property="Template">
@@ -71,6 +72,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Steel.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/Dictionaries/Animations.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

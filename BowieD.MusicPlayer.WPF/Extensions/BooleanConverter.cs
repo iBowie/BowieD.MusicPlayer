@@ -6,6 +6,24 @@ using System.Windows.Data;
 
 namespace BowieD.MusicPlayer.WPF.Extensions
 {
+    public class InverseBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool vb)
+                return !vb;
+
+            throw new InvalidCastException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool vb)
+                return !vb;
+
+            throw new InvalidCastException();
+        }
+    }
     public class BooleanConverter<T> : IValueConverter
     {
         public BooleanConverter(T trueValue, T falseValue)
