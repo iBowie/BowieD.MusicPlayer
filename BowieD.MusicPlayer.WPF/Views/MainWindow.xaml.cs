@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
@@ -61,6 +62,17 @@ namespace BowieD.MusicPlayer.WPF.Views
                 MusicPlayerViewModel.SetupIntegrations();
 
                 SetupVisualizers();
+            };
+
+            Color themeColor = VibrantColor.GetVibrantColor(MusicPlayerViewModel.CurrentSong.PictureData);
+
+            AccentColorer.SetAccentColor(themeColor);
+
+            MusicPlayerViewModel.OnTrackChanged += (newTrack) =>
+            {
+                Color themeColor = VibrantColor.GetVibrantColor(newTrack.PictureData);
+
+                AccentColorer.SetAccentColor(themeColor);
             };
         }
 
