@@ -7,7 +7,7 @@
       xmlns:gong="urn:gong-wpf-dragdrop"
       xmlns:models="clr-namespace:BowieD.MusicPlayer.WPF.Models"
       xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views.Pages" xmlns:viewmodels="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels.Pages"
-      mc:Ignorable="d"
+      mc:Ignorable="d" xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
       d:DesignHeight="595.4" d:DesignWidth="886"
       Title="PlaylistPage"
       d:DataContext="{d:DesignInstance Type=viewmodels:PlaylistViewModel}">
@@ -27,7 +27,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Image Width="232" Height="232" Margin="32,32,8,32" 
+                    <Image Width="232" Height="232" Margin="32,32,8,32" xf:Animations.Primary="{StaticResource SlideFromLeft}"
                                            d:Source="/Resources/Images/missing_texture.jpg"
                                            Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|232}"/>
                     <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="8,32,32,32">
@@ -76,6 +76,7 @@
                             <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
                                 <Setter Property="ContextMenu" Value="{DynamicResource ItemContextMenu}"/>
                                 <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                                <Setter Property="xf:Animations.Primary" Value="{DynamicResource SlideFromRight}"/>
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.Resources>

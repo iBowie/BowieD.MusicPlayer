@@ -7,7 +7,7 @@
       xmlns:pages="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels.Pages" 
       xmlns:models="clr-namespace:BowieD.MusicPlayer.WPF.Models"
       d:DataContext="{d:DesignInstance Type=pages:QueuePageViewModel}"
-      mc:Ignorable="d" 
+      mc:Ignorable="d" xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="QueuePage">
     <Grid>
@@ -18,7 +18,8 @@
                         <TextBlock Text="Playing now" Margin="5"
                                    FontWeight="Bold" FontSize="24"/>
                         <ContentControl Content="{Binding View.MusicPlayerViewModel.CurrentSong}" 
-                                        ContentTemplate="{DynamicResource queueSongTemplate}"/>
+                                        ContentTemplate="{DynamicResource queueSongTemplate}"
+                                        xf:Animations.Primary="{StaticResource SlideFromRight}"/>
                         <TextBlock Text="Up next from your queue" Margin="5"
                                    FontWeight="Bold" FontSize="24"/>
                         <ListView ItemsSource="{Binding UserSongQueue}"
@@ -52,7 +53,7 @@
 
     <Page.Resources>
         <DataTemplate x:Key="queueSongTemplate" DataType="{x:Type models:Song}">
-            <Grid>
+            <Grid xf:Animations.Primary="{StaticResource SlideFromRight}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="10*"/>
