@@ -12,160 +12,148 @@
       Title="PlaylistPage"
       d:DataContext="{d:DesignInstance Type=viewmodels:PlaylistViewModel}">
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" Name="playlistScrollViewerContent" ScrollChanged="playlistScrollViewerContent_ScrollChanged">
-            <StackPanel VerticalAlignment="Top">
-                <StackPanel.Background>
-                    <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,1400">
-                        <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0"/>
-                        <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0.2"/>
-                        <GradientStop Color="{DynamicResource MahApps.Colors.ThemeBackground}" Offset="0.25"/>
-                    </LinearGradientBrush>
-                </StackPanel.Background>
-                <!--HEADER-->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Image Width="232" Height="232" Margin="32,32,8,32" xf:Animations.Primary="{StaticResource SlideFromLeft}"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel VerticalAlignment="Top">
+            <StackPanel.Background>
+                <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,900">
+                    <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0"/>
+                    <GradientStop Color="{DynamicResource MahApps.Colors.AccentBase}" Offset="0.2"/>
+                    <GradientStop Color="{DynamicResource MahApps.Colors.ThemeBackground}" Offset="0.25"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
+            <!--HEADER-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Image Width="150" Height="150" Margin="16,16,5,16" xf:Animations.Primary="{StaticResource SlideFromLeft}"
                                            d:Source="/Resources/Images/missing_texture.jpg"
                                            Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|232}"/>
-                    <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="8,32,32,32">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" VerticalAlignment="Bottom" Margin="3.5" Text="PLAYLIST"
+                <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="5,16,16,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" VerticalAlignment="Bottom" Margin="3.5" Text="PLAYLIST"
                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                        <TextBlock Grid.Row="1" FontWeight="Bold" Text="{Binding PlaylistInfo.Name}" FontSize="36" 
-                                   VerticalAlignment="Center" Margin="3.5" d:Text="PLAYLIST NAME THAT IS REALLY LONG AND SHOULD BE CONTAINED IN THREE LINES YOO"
+                    <TextBlock Grid.Row="1" FontWeight="Bold" Text="{Binding PlaylistInfo.Name}" FontSize="36" 
+                                   VerticalAlignment="Center" Margin="3.5" d:Text="PLAYLIST NAME THAT IS REALLY LONG AND SHOULD BE CONTAINED IN TWO LINES YOO"
                                    TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
-                                   MaxHeight="150"
+                                   MaxHeight="100"
                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                        <TextBlock Grid.Row="2" Text="{Binding Playlist.DisplayToolTip}" VerticalAlignment="Top" 
+                    <TextBlock Grid.Row="2" Text="{Binding Playlist.DisplayToolTip}" VerticalAlignment="Top" 
                                    Margin="3.5" d:Text="173 трека, 11 ч. 28 мин."
                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                    </Grid>
                 </Grid>
-                <!--CONTROLS-->
-                <Grid Margin="32,0,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Content="{iconPacks:Material Kind=Play}" Margin="0,5,5,5"
-                                    Command="{Binding PlayCommand}"
-                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                                    Background="{DynamicResource MahApps.Brushes.AccentBase}"
-                                    Style="{DynamicResource RoundButton}" Width="34" Height="34"/>
-                    <Button Grid.Column="1" Content="{iconPacks:Material Kind=More}" Margin="5"
-                                    Style="{DynamicResource ContentOnlyButton}"
-                                    Command="{Binding EditDetailsCommand}"/>
-                </Grid>
-                <!--CONTENT-->
-                <Grid Margin="32,8,0,0">
-                    <ListView MinHeight="128"
-                              Name="playlistSongsListView"
-                              gong:DragDrop.IsDragSource="True"
-                              gong:DragDrop.IsDropTarget="True"
-                              gong:DragDrop.DropHandler="{Binding DropHandler}"
-                              Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" PreviewKeyDown="playlistSongsListView_PreviewKeyDown" PreviewMouseWheel="ListView_PreviewMouseWheel">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                                <Setter Property="ContextMenu" Value="{DynamicResource ItemContextMenu}"/>
-                                <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
-                                <Setter Property="xf:Animations.Primary" Value="{DynamicResource SlideFromRight}"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.Resources>
-                            <ContextMenu x:Key="ItemContextMenu">
-                                <MenuItem Header="Add To Queue"
-                                          DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
-                                          Command="{Binding DataContext.AddSongsToQueueCommand}"
-                                          CommandParameter="{Binding SelectedItems}"/>
-                                <Separator/>
-                                <MenuItem Header="Edit Details"
-                                          DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
-                                          Command="{Binding DataContext.EditSongDetailsCommand}"
-                                          CommandParameter="{Binding SelectedItem}"/>
-                            </ContextMenu>
-                        </ListView.Resources>
-                        <ListView.View>
-                            <GridView>
-                                <GridView.ColumnHeaderContainerStyle>
-                                    <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource MahApps.Styles.GridViewColumnHeader}">
-                                        <Setter Property="FontSize" Value="14"/>
-                                    </Style>
-                                </GridView.ColumnHeaderContainerStyle>
-                                <GridView.Columns>
-                                    <GridViewColumn Header="Name">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="{x:Type models:Song}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="50"/>
-                                                        <ColumnDefinition/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|40}"
-                                                                           Width="40" Height="40" Margin="5"/>
-                                                    <Grid Margin="5" Grid.Column="1">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition/>
-                                                            <RowDefinition/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0" FontWeight="Bold" VerticalAlignment="Bottom" FontSize="16"
-                                                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                                                                   Text="{Binding Title}"/>
-                                                        <TextBlock Grid.Row="1" VerticalAlignment="Top" FontSize="14" 
-                                                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                                                                   Text="{Binding Artist, Converter={StaticResource ArtistDisplayConverter}}"/>
-                                                    </Grid>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Album">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="{x:Type models:Song}">
-                                                <TextBlock FontSize="14" Text="{Binding Album}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Year">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="{x:Type models:Song}">
-                                                <TextBlock FontSize="14" Text="{Binding DisplayYear}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Duration">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="{x:Type models:Song}">
-                                                <TextBlock FontSize="14" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView.Columns>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-            </StackPanel>
-        </ScrollViewer>
-        <Grid Name="playlistScrollViewerHeaderWhenScrolled" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.Gray10}"
-                          Visibility="Collapsed" d:Visibility="Visible">
-            <StackPanel Orientation="Horizontal">
-                <Button Style="{DynamicResource RoundButton}"
-                                    Background="{DynamicResource MahApps.Brushes.Accent}"
-                                    Width="40" Height="40"
-                                    Content="{iconPacks:Material Kind=Play}"
-                                    Command="{Binding PlayCommand}"
-                                    Margin="5"/>
-                <TextBlock Text="{Binding PlaylistInfo.Name}" FontSize="20" VerticalAlignment="Center" Margin="5"
-                           Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-            </StackPanel>
-        </Grid>
+            </Grid>
+            <!--CONTROLS-->
+            <Grid Margin="16,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="{iconPacks:Material Kind=Play}" Margin="0,5,5,5"
+                        Command="{Binding PlayCommand}"
+                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.AccentBase}"
+                        Style="{DynamicResource RoundButton}" Width="34" Height="34"/>
+                <Button Grid.Column="1" Content="{iconPacks:Material Kind=More}" Margin="5"
+                        Style="{DynamicResource ContentOnlyButton}"
+                        Command="{Binding EditDetailsCommand}"/>
+            </Grid>
+        </StackPanel>
+        
+        <ListView Grid.Row="1" Style="{StaticResource MahApps.Styles.ListView.Virtualized}"
+                  Name="playlistSongsListView" Margin="5"
+                  gong:DragDrop.IsDragSource="True"
+                  gong:DragDrop.IsDropTarget="True"
+                  gong:DragDrop.DropHandler="{Binding DropHandler}"
+                  Background="Transparent" Foreground="Transparent" ItemsSource="{Binding Songs}" AllowDrop="True" 
+                  PreviewKeyDown="playlistSongsListView_PreviewKeyDown">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                    <Setter Property="ContextMenu" Value="{DynamicResource ItemContextMenu}"/>
+                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.Resources>
+                <ContextMenu x:Key="ItemContextMenu">
+                    <MenuItem Header="Add To Queue"
+                              DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                              Command="{Binding DataContext.AddSongsToQueueCommand}"
+                              CommandParameter="{Binding SelectedItems}"/>
+                    <Separator/>
+                    <MenuItem Header="Edit Details"
+                              DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                              Command="{Binding DataContext.EditSongDetailsCommand}"
+                              CommandParameter="{Binding SelectedItem}"/>
+                </ContextMenu>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridView.ColumnHeaderContainerStyle>
+                        <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource MahApps.Styles.GridViewColumnHeader}">
+                            <Setter Property="FontSize" Value="14"/>
+                        </Style>
+                    </GridView.ColumnHeaderContainerStyle>
+                    <GridView.Columns>
+                        <GridViewColumn Header="Name">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type models:Song}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|40}"
+                                               Width="40" Height="40" Margin="5"/>
+                                        <Grid Margin="5" Grid.Column="1">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" FontWeight="Bold" VerticalAlignment="Bottom" FontSize="16"
+                                                       Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                                       Text="{Binding Title}"/>
+                                            <TextBlock Grid.Row="1" VerticalAlignment="Top" FontSize="14" 
+                                                       Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                                       Text="{Binding Artist, Converter={StaticResource ArtistDisplayConverter}}"/>
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Album">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type models:Song}">
+                                    <TextBlock FontSize="14" Text="{Binding Album}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Year">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type models:Song}">
+                                    <TextBlock FontSize="14" Text="{Binding DisplayYear}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Duration">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type models:Song}">
+                                    <TextBlock FontSize="14" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Page>
