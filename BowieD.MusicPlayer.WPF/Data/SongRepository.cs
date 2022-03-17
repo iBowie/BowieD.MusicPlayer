@@ -64,7 +64,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
         public Song GetSong(long id)
         {
-            string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_ID} = @id";
+            string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_ID} = @id LIMIT 1";
 
             using var con = CreateConnection();
 
@@ -86,7 +86,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
         public Song GetOrAddSong(string fileName)
         {
-            string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_FILE_NAME} = @fileName";
+            string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_FILE_NAME} = @fileName LIMIT 1";
 
             using var con = CreateConnection();
             con.Open();
