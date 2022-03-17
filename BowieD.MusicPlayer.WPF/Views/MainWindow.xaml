@@ -380,7 +380,7 @@
                             <UniformGrid.Resources>
                                 <Style x:Key="{x:Type Rectangle}" TargetType="{x:Type Rectangle}">
                                     <!--<Setter Property="Fill" Value="#F51B00"/>-->
-                                    <d:Setter Property="Fill" Value="#FFFFFF"/>
+                                    <Setter Property="Fill" Value="{DynamicResource MahApps.Brushes.AccentBase}"/>
                                     <Setter Property="VerticalAlignment" Value="Bottom"/>
                                     <Setter Property="MinHeight" Value="8"/>
                                     <Setter Property="Margin" Value="5"/>
@@ -421,9 +421,6 @@
                                     Ticks="1, 15, 24, 30, 50, 60, 72, 90, 120, 144" TickPlacement="BottomRight" Maximum="144" 
                                     Value="{Binding FrameRate}"/>
                             <Separator/>
-                            <TextBlock Text="Color"/>
-                            <CheckBox IsChecked="{Binding AutoPickColor}" Content="Pick color from cover"/>
-                            <mah:ColorPicker SelectedColor="{Binding AccentColor}" Visibility="{Binding AutoPickColor, Converter={StaticResource invertedBoolToVisConverter}}"/>
                             <TextBlock Text="Max Particles"/>
                             <Slider AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" Width="144" Minimum="0"
                                     Ticks="0, 8, 16, 24, 32, 64, 128, 256" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Maximum="256"
