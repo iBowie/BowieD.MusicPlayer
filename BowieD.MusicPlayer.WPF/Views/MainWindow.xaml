@@ -553,6 +553,18 @@
                         </Grid>
                         <Grid HorizontalAlignment="Right">
                             <StackPanel Orientation="Horizontal">
+                                <ToggleButton Name="fullScreenQueueViewButton"
+                                              Margin="5" Content="{iconPacks:Material Kind=ViewList}" 
+                                              Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Base}" />
+                                <Popup IsOpen="{Binding IsChecked, ElementName=fullScreenQueueViewButton}">
+                                    <GroupBox Header="Song Queue" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+                                        <StackPanel>
+                                            <TextBlock Text="Currently Playing"/>
+                                            <TextBlock Text="Your Queue"/>
+                                            <TextBlock><Run>Up next from</Run> '<Run Text="{Binding CurrentSongSource.SourceName, Mode=OneWay}"/>'</TextBlock>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Popup>
                                 <iconPacks:PackIconMaterial Kind="VolumeSource" Margin="10" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
                                 <Slider Value="{Binding BassWrapper.UserVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="1" Width="128" Margin="10" d:Value="0.5" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"/>
                                 <Button Command="{Binding ExitFullScreenCommand}"

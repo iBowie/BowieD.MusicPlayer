@@ -665,6 +665,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                             View.CurrentVisualizer.BoundPanel.Visibility = Visibility.Collapsed;
                         }
 
+                        View.fullScreenQueueViewButton.IsChecked = false;
+
                         View.WindowStyle = WindowStyle.SingleBorderWindow;
                         View.WindowState = WindowState.Normal;
                         View.ResizeMode = ResizeMode.CanResize;
