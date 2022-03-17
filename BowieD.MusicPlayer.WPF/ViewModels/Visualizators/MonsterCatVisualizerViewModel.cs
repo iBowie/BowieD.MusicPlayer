@@ -23,8 +23,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         private double _frameRate = 60.0;
         private double _particles = 64;
         private int _barCount;
-        private bool _autoPickColor = false;
         private double _smoothFactor = 5.0;
+        private int _hideBarsFromRight = 8;
 
         public double FrameRate
         {
@@ -55,9 +55,18 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
                 _visibleRectangles.Clear();
                 monsterCat_peaksGrid.Children.Clear();
 
-                for (int i = 0; i < value; i++)
+                for (int i = 0, j = value - 1; i < value; i++, j--)
                 {
                     var newRect = new Rectangle();
+
+                    if (j > HideBarsFromRight)
+                    {
+                        newRect.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else
+                    {
+                        newRect.Visibility = System.Windows.Visibility.Collapsed;
+                    }
 
                     monsterCat_peaksGrid.Children.Add(newRect);
                     _visibleRectangles.Add(newRect);
@@ -68,6 +77,28 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         {
             get => _smoothFactor;
             set => ChangeProperty(ref _smoothFactor, value, nameof(SmoothFactor));
+        }
+        public int HideBarsFromRight
+        {
+            get => _hideBarsFromRight;
+            set
+            {
+                ChangeProperty(ref _hideBarsFromRight, value, nameof(HideBarsFromRight));
+
+                for (int i = 0, j = BarCount - 1; i < BarCount; i++, j--)
+                {
+                    var bar = monsterCat_peaksGrid.Children[i];
+
+                    if (j > value)
+                    {
+                        bar.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else
+                    {
+                        bar.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                }
+            }
         }
 
         public override void Setup()
