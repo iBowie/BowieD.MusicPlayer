@@ -28,7 +28,7 @@ namespace BowieD.MusicPlayer.WPF.Models
         public string Artist { get; private set; }
         public string Album { get; private set; }
         public uint Year { get; private set; }
-        public string FileName { get; }
+        public string FileName { get; private set; }
         public byte[] PictureData { get; private set; }
         public byte[] FullScreenPictureData { get; internal set; }
         public bool IsEmpty { get; }
@@ -77,6 +77,11 @@ namespace BowieD.MusicPlayer.WPF.Models
             this.PictureData = newVersion.PictureData;
             this.FullScreenPictureData = newVersion.FullScreenPictureData;
             this.Year = newVersion.Year;
+        }
+
+        public void UpdateFileName(string newFileName)
+        {
+            this.FileName = newFileName;
         }
     }
 }

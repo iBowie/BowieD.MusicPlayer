@@ -28,8 +28,14 @@ namespace BowieD.MusicPlayer.WPF
         {
             MediaInfo.MediaInfoWrapper miw = new(fileName);
 
-
             return miw.Duration / 1000.0;
+        }
+
+        public static string CreateFileDialogFilter(IEnumerable<string> supportedExtensions)
+        {
+            string v = string.Join(';', supportedExtensions.Select(d => "*" + d));
+
+            return $"Supported formats|{v}";
         }
     }
     public static class ImageTool

@@ -40,9 +40,9 @@
             <TextBlock Text="Actions" Style="{DynamicResource TbHeader3}" Margin="5"/>
             <WrapPanel Orientation="Horizontal">
                 <Button Content="Locate all missing files" Style="{StaticResource MahApps.Styles.Button.MetroSquare}"
-                        Margin="5"/>
+                        Margin="5" Command="{Binding LocateMissingFilesCommand}"/>
                 <Button Content="Re-read all songs tags" Style="{StaticResource MahApps.Styles.Button.MetroSquare}"
-                        Margin="5"/>
+                        Margin="5" Command="{Binding ReReadTagsCommand}"/>
             </WrapPanel>
             <TextBlock Text="Local Data" Style="{DynamicResource TbHeader3}" Margin="5"/>
             <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare}" Content="Erase song data in app" Margin="5"
