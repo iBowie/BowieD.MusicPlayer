@@ -211,7 +211,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             com.ExecuteNonQuery();
         }
 
-        public const string ARTIST_SEPARATOR = ";";
+        public static readonly string[] ARTIST_SEPARATORS = new string[2] { ";", "/" };
 
         public IList<Artist> GetAllArtists()
         {
@@ -237,7 +237,7 @@ namespace BowieD.MusicPlayer.WPF.Data
                         if (string.IsNullOrWhiteSpace(artistNamesRaw))
                             continue;
 
-                        string[] artistNames = artistNamesRaw.Split(ARTIST_SEPARATOR, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        string[] artistNames = artistNamesRaw.Split(ARTIST_SEPARATORS, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                         if (artistNames.Length == 0)
                             continue;
