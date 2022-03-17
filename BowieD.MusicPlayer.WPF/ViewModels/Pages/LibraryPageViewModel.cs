@@ -19,15 +19,26 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
             {
                 Playlists.Add(p);
             }
+
+            var artists = SongRepository.Instance.GetAllArtists();
+
+            foreach (var a in artists)
+            {
+                Artists.Add(a);
+            }
+
+            var albums = SongRepository.Instance.GetAllAlbums();
+
+            foreach (var a in albums)
+            {
+                Albums.Add(a);
+            }
         }
 
         public LibraryPage Page { get; }
 
-        private readonly ObservableCollection<PlaylistInfo> _playlists = new();
-
-        public ObservableCollection<PlaylistInfo> Playlists
-        {
-            get => _playlists;
-        }
+        public ObservableCollection<PlaylistInfo> Playlists { get; } = new();
+        public ObservableCollection<Artist> Artists { get; } = new();
+        public ObservableCollection<Album> Albums { get; } = new();
     }
 }

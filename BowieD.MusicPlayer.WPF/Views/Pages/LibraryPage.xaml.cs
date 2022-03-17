@@ -29,6 +29,26 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
             }
         }
 
+        private void b1_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement frameworkElement && frameworkElement.DataContext is Artist aInfo)
+            {
+                ArtistPage aPage = new(aInfo, ViewModel.View);
+
+                ViewModel.View.navFrame.Navigate(aPage);
+            }
+        }
+
+        private void b2_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement frameworkElement && frameworkElement.DataContext is Album aInfo)
+            {
+                AlbumPage aPage = new(aInfo, ViewModel.View);
+
+                ViewModel.View.navFrame.Navigate(aPage);
+            }
+        }
+
 #if NET6_0_OR_GREATER
         public record struct LibraryPageExtraData(MainWindow MainWindow);
 #elif NET5_0_OR_GREATER

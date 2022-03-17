@@ -211,6 +211,112 @@ namespace BowieD.MusicPlayer.WPF.Data
             com.ExecuteNonQuery();
         }
 
+        public const string ARTIST_SEPARATOR = ";";
+
+        public IList<Artist> GetAllArtists()
+        {
+            Dictionary<string, List<long>> data = new();
+
+            {
+                string sql = $"SELECT {COL_ID},{COL_ARTIST} FROM {TABLE_NAME}";
+
+                using var con = CreateConnection();
+
+                con.Open();
+
+                using var com = new SQLiteCommand(sql, con);
+
+                using var reader = com.ExecuteReader(System.Data.CommandBehavior.KeyInfo);
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var artistNamesRaw = reader.GetString(COL_ARTIST);
+
+                        if (string.IsNullOrWhiteSpace(artistNamesRaw))
+                            continue;
+
+                        string[] artistNames = artistNamesRaw.Split(ARTIST_SEPARATOR, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                        if (artistNames.Length == 0)
+                            continue;
+
+                        var songId = reader.GetInt64(COL_ID);
+
+                        foreach (var artist in artistNames)
+                        {
+                            if (!data.ContainsKey(artist))
+                                data.Add(artist, new List<long>());
+
+                            data[artist].Add(songId);
+                        }
+                    }
+                }
+
+                con.Close();
+            }
+
+            List<Artist> res = new();
+
+            foreach (var kv in data)
+            {
+                Artist a = new(kv.Key, kv.Value);
+
+                res.Add(a);
+            }
+
+            return res;
+        }
+
+        public IList<Album> GetAllAlbums()
+        {
+            Dictionary<string, List<long>> data = new();
+
+            {
+                string sql = $"SELECT {COL_ID},{COL_ALBUM} FROM {TABLE_NAME}";
+
+                using var con = CreateConnection();
+
+                con.Open();
+
+                using var com = new SQLiteCommand(sql, con);
+
+                using var reader = com.ExecuteReader(System.Data.CommandBehavior.KeyInfo);
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var albumName = reader.GetString(COL_ALBUM);
+
+                        if (string.IsNullOrWhiteSpace(albumName))
+                            continue;
+
+                        var songId = reader.GetInt64(COL_ID);
+
+                        if (!data.ContainsKey(albumName))
+                            data.Add(albumName, new List<long>());
+
+                        data[albumName].Add(songId);
+                    }
+                }
+
+                con.Close();
+            }
+
+            List<Album> res = new();
+
+            foreach (var kv in data)
+            {
+                Album a = new(kv.Key, kv.Value);
+
+                res.Add(a);
+            }
+
+            return res;
+        }
+
         private Song AddNewSong(string fileName)
         {
             Song meta = GetSongMetadata(fileName);

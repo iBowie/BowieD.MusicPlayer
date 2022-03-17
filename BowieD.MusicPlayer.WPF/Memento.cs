@@ -4,6 +4,7 @@ using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.ViewModels;
 using BowieD.MusicPlayer.WPF.Views;
 using System.IO;
+using System.Linq;
 
 namespace BowieD.MusicPlayer.WPF
 {
@@ -16,6 +17,8 @@ namespace BowieD.MusicPlayer.WPF
         private const int SSOURCE_NONE_ID = -1;
         private const int SSOURCE_ALLSONGS_ID = 0;
         private const int SSOURCE_PLAYLIST_ID = 1;
+        private const int SSOURCE_ALBUM_ID = 2;
+        private const int SSOURCE_ARTIST_ID = 3;
 
         public static void SaveState(MainWindow mainWindow)
         {
@@ -61,6 +64,20 @@ namespace BowieD.MusicPlayer.WPF
                 case Views.Pages.AllSongsPage.AllSongsSource alls:
                     {
                         bw.Write(SSOURCE_ALLSONGS_ID);
+                    }
+                    break;
+                case Album album:
+                    {
+                        bw.Write(SSOURCE_ALBUM_ID);
+
+                        bw.Write(album.Name);
+                    }
+                    break;
+                case Artist artist:
+                    {
+                        bw.Write(SSOURCE_ARTIST_ID);
+
+                        bw.Write(artist.Name);
                     }
                     break;
                 default:
@@ -146,6 +163,40 @@ namespace BowieD.MusicPlayer.WPF
                                 long plId = br.ReadInt64();
 
                                 mp.CurrentSongSource = (Playlist)PlaylistRepository.Instance.GetPlaylist(plId);
+                            }
+                            break;
+                        case SSOURCE_ARTIST_ID:
+                            {
+                                string artistName = br.ReadString();
+
+                                if (string.IsNullOrWhiteSpace(artistName))
+                                    return;
+
+                                var artists = SongRepository.Instance.GetAllArtists();
+
+                                var artist = artists.SingleOrDefault(d => d.Name == artistName);
+
+                                if (artist is null)
+                                    return;
+
+                                mp.CurrentSongSource = artist;
+                            }
+                            break;
+                        case SSOURCE_ALBUM_ID:
+                            {
+                                string albumName = br.ReadString();
+
+                                if (string.IsNullOrWhiteSpace(albumName))
+                                    return;
+
+                                var albums = SongRepository.Instance.GetAllAlbums();
+
+                                var album = albums.SingleOrDefault(d => d.Name == albumName);
+
+                                if (album is null)
+                                    return;
+
+                                mp.CurrentSongSource = album;
                             }
                             break;
                         case SSOURCE_NONE_ID:
