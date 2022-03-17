@@ -1,5 +1,4 @@
-﻿using BowieD.MusicPlayer.WPF.Common;
-using BowieD.MusicPlayer.WPF.Models;
+﻿using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
@@ -81,7 +80,7 @@ namespace BowieD.MusicPlayer.WPF.Views
         {
             get
             {
-                if (_saveCommand is null) 
+                if (_saveCommand is null)
                 {
                     _saveCommand = new BaseCommand(() =>
                     {

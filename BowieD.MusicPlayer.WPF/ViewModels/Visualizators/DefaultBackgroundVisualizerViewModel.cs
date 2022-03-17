@@ -35,7 +35,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             };
 
             _fullScreenBackgroundSwitcher.Tick += _fullScreenBackgroundSwitcher_Tick;
-            
+
             _fullScreenBackgroundSwitcher.Stop();
         }
 

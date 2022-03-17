@@ -2,16 +2,12 @@
 using BowieD.MusicPlayer.WPF.ViewModels;
 using BowieD.MusicPlayer.WPF.ViewModels.Visualizators;
 using MahApps.Metro.Controls;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 
 namespace BowieD.MusicPlayer.WPF.Views
 {

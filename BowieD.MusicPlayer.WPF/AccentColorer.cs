@@ -56,7 +56,7 @@ namespace BowieD.MusicPlayer.WPF
 
             LinearGradientBrush lgb = new()
             {
-                StartPoint = new(1.002,0.5),
+                StartPoint = new(1.002, 0.5),
                 EndPoint = new(0.001, 0.5),
             };
 

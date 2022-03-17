@@ -52,7 +52,7 @@ namespace BowieD.MusicPlayer.WPF.Data
                 $")");
 
             var version = (long)ExecuteScalar("PRAGMA user_version");
-            
+
             if (version < 1)
             {
                 ExecuteNonQuery($"ALTER TABLE {TABLE_NAME} ADD {COL_COVER_FULLSCREEN} BLOB");
@@ -201,7 +201,7 @@ namespace BowieD.MusicPlayer.WPF.Data
                 $"WHERE {COL_ID} = @id";
 
             using var con = CreateConnection();
-            
+
             con.Open();
 
             using var com = new SQLiteCommand(sql, con);

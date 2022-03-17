@@ -10,11 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shell;
 using System.Windows.Threading;
 
@@ -758,7 +754,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         }
 
         #region System Media Transport Controls
-        #if WINDOWS10_0_19041_0_OR_GREATER
+#if WINDOWS10_0_19041_0_OR_GREATER
         private Windows.Media.SystemMediaTransportControls? _systemMediaTransportControls;
 
         private void SetupMediaTransport()
@@ -907,7 +903,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private void SetupDiscordRichPresence()
         {
             _discordClient = new DiscordRPC.DiscordRpcClient("919242231037169684", autoEvents: true);
-            
+
             if (_discordClient.Initialize())
             {
                 OnPlaybackStateChanged += DiscordRichPresence_OnPlaybackStateChanged;

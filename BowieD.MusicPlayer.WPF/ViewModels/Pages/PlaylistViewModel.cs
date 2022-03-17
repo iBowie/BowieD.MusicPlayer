@@ -8,11 +8,8 @@ using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
@@ -156,7 +153,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                         if (esdv.ShowDialog() == true)
                         {
                             Song resultSong = esdv.ResultSong;
-                            
+
                             SongRepository.Instance.UpdateSong(resultSong, false);
 
                             Songs[index] = resultSong;
@@ -228,7 +225,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
             var dataObject = dropInfo.Data as IDataObject;
 
-            if (dataObject is not null && 
+            if (dataObject is not null &&
                 (dataObject.GetDataPresent(DataFormats.FileDrop) || dataObject.GetDataPresent(DataFormats.Text)))
             {
                 dropInfo.Effects = DragDropEffects.Copy;

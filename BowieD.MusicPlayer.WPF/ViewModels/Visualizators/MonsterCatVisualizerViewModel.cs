@@ -1,10 +1,8 @@
-﻿using BowieD.MusicPlayer.WPF.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators

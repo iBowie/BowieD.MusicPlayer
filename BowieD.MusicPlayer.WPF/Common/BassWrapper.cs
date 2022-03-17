@@ -12,7 +12,7 @@ namespace BowieD.MusicPlayer.WPF.Common
 
         public const int FREQ_HZ = 44100;
 
-        public BassWrapper(System.Windows.Threading.DispatcherTimer propUpdateTimer) 
+        public BassWrapper(System.Windows.Threading.DispatcherTimer propUpdateTimer)
         {
             propUpdateTimer.Tick += (sender, e) =>
             {

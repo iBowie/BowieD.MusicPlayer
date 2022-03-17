@@ -1,5 +1,4 @@
-﻿using BowieD.MusicPlayer.WPF.Common;
-using BowieD.MusicPlayer.WPF.Data;
+﻿using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.ViewModels;
 using BowieD.MusicPlayer.WPF.Views;

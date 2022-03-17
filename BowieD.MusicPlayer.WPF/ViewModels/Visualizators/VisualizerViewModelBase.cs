@@ -12,7 +12,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         }
 
         public MainWindowViewModel MainWindowViewModel { get; }
-        
+
         public abstract string VisualizerName { get; }
         public Panel BoundPanel { get; }
 
