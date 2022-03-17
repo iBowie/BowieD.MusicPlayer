@@ -69,7 +69,7 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Title}"
                                FontWeight="Bold"/>
-                    <TextBlock Grid.Row="1" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Artist}"/>
+                    <TextBlock Grid.Row="1" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Artist, Converter={StaticResource ArtistDisplayConverter}}"/>
                 </Grid>
                 <TextBlock Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Album}"/>
                 <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis" Text="{Binding Duration, Converter={StaticResource doubleToDisplayTimeConverter}}"/>

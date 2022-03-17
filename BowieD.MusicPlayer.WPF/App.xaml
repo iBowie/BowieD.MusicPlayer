@@ -14,6 +14,7 @@
             <extensions:DoubleToReadableDisplayTimeConverter x:Key="doubleToFancyTimeConverter"/>
             <extensions:StringToUpperConverter x:Key="stringToUpperConverter"/>
             <extensions:InverseBooleanConverter x:Key="InverseBoolConverter"/>
+            <extensions:ArtistDisplayConverter x:Key="ArtistDisplayConverter"/>
 
             <Style x:Key="ContentOnlyButton" TargetType="{x:Type Button}">
                 <Setter Property="Template">

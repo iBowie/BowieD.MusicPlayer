@@ -204,7 +204,7 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="{Binding CurrentSong.Title}" d:Text="His World" Margin="3.5" VerticalAlignment="Bottom" FontSize="14" FontWeight="Bold" />
-                        <TextBlock Grid.Row="1" Text="{Binding CurrentSong.Artist}" d:Text="Ali Tabatabaee Matty Lewis from Zebrahead" Margin="3.5" VerticalAlignment="Top" FontSize="11" />
+                        <TextBlock Grid.Row="1" Text="{Binding CurrentSong.Artist ,Converter={StaticResource ArtistDisplayConverter}}" d:Text="Ali Tabatabaee Matty Lewis from Zebrahead" Margin="3.5" VerticalAlignment="Top" FontSize="11" />
                     </Grid>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" Margin="0,15,0,22" Grid.Column="1">
@@ -318,7 +318,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="{Binding CurrentSong.Title}" TextWrapping="Wrap" VerticalAlignment="Bottom" d:Text="Your Contract Has Expired" FontSize="48" FontWeight="Bold"/>
-                                <TextBlock Grid.Row="1" VerticalAlignment="Top" Text="{Binding CurrentSong.Artist}" d:Text="Pascal Michael Stiefel" FontSize="24"/>
+                                <TextBlock Grid.Row="1" VerticalAlignment="Top" Text="{Binding CurrentSong.Artist, Converter={StaticResource ArtistDisplayConverter}}" d:Text="Pascal Michael Stiefel" FontSize="24"/>
                             </Grid>
 
                             <Grid.BitmapEffect>
@@ -402,7 +402,7 @@
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
                                     <TextBlock d:Text="TRISTAM &amp; BRAKEN" Foreground="White" FontSize="54"
-                                           Text="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.Artist, Converter={StaticResource stringToUpperConverter}}"
+                                           Text="{Binding MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.Artist, Converter={StaticResource ArtistDisplayConverter}, ConverterParameter={StaticResource stringToUpperConverter}}"
                                            TextWrapping="Wrap"
                                            FontFamily="pack://application:,,,/Resources/Fonts/#Gotham Bold"/>
                                     <TextBlock d:Text="FRAME OF MIND" Foreground="White" FontSize="24" 
@@ -478,7 +478,7 @@
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Text="Up Next" Margin="10" FontSize="20" VerticalAlignment="Bottom"/>
-                                    <TextBlock Grid.Row="1" Margin="10" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" FontSize="24" FontWeight="Bold"><Run Text="{Binding Title, Mode=OneWay}" d:Text="Title"/> - <Run Text="{Binding Artist, Mode=OneWay}" d:Text="Artist"/></TextBlock>
+                                    <TextBlock Grid.Row="1" Margin="10" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" FontSize="24" FontWeight="Bold"><Run Text="{Binding Title, Mode=OneWay}" d:Text="Title"/> - <Run Text="{Binding Artist, Converter={StaticResource ArtistDisplayConverter}, Mode=OneWay}" d:Text="Artist"/></TextBlock>
                                 </Grid>
                             </Grid>
                             <ProgressBar Grid.Row="1" Value="{Binding View.MusicPlayerViewModel.UpcomingSongSlider, Mode=OneWay}" Minimum="0" Maximum="1"
