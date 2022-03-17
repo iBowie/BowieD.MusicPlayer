@@ -37,8 +37,16 @@
                 <TextBlock Text="Enable hardware acceleration" Style="{DynamicResource Tb}" Margin="5" VerticalAlignment="Center"/>
                 <mah:ToggleSwitch IsOn="True" IsEnabled="False" Margin="5"/>
             </UniformGrid>
-            <TextBlock Text="Local Cache" Style="{DynamicResource TbHeader3}" Margin="5"/>
-            <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare}" Content="Clear local song cache" Margin="5"/>
+            <TextBlock Text="Actions" Style="{DynamicResource TbHeader3}" Margin="5"/>
+            <WrapPanel Orientation="Horizontal">
+                <Button Content="Locate all missing files" Style="{StaticResource MahApps.Styles.Button.MetroSquare}"
+                        Margin="5"/>
+                <Button Content="Re-read all songs tags" Style="{StaticResource MahApps.Styles.Button.MetroSquare}"
+                        Margin="5"/>
+            </WrapPanel>
+            <TextBlock Text="Local Data" Style="{DynamicResource TbHeader3}" Margin="5"/>
+            <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare}" Content="Erase song data in app" Margin="5"
+                    ToolTip="Does not remove songs physically, clears database inside of the app"/>
         </StackPanel>
     </ScrollViewer>
 
