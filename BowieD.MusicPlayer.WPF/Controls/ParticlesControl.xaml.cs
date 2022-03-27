@@ -36,6 +36,30 @@ namespace BowieD.MusicPlayer.WPF.Controls
             InitializeComponent();
 
             mainParticleCanvas.DataContext = this;
+
+            mainParticleCanvas.SizeChanged += MainParticleCanvas_SizeChanged;
+        }
+
+        private void MainParticleCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var prevSize = e.PreviousSize;
+            var newSize = e.NewSize;
+
+            if (prevSize.IsEmpty || newSize.IsEmpty)
+                return;
+
+            double xMult = newSize.Width / prevSize.Width;
+            double yMult = newSize.Height / prevSize.Height;
+
+            for (int i = 0; i < _particles.Count; i++)
+            {
+                Particle p = _particles[i];
+
+                p.posX *= xMult;
+                p.posY *= yMult;
+
+                _particles[i] = p;
+            }
         }
 
         private void OnRender(object sender, EventArgs e)
