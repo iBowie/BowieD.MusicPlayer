@@ -1,6 +1,6 @@
-﻿using BowieD.MusicPlayer.WPF.Common;
+﻿using BowieD.MusicPlayer.WPF.Api;
+using BowieD.MusicPlayer.WPF.Common;
 using BowieD.MusicPlayer.WPF.ViewModels;
-using BowieD.MusicPlayer.WPF.ViewModels.Visualizators;
 using MahApps.Metro.Controls;
 using System.Globalization;
 using System.Linq;
@@ -56,8 +56,6 @@ namespace BowieD.MusicPlayer.WPF.Views
             Loaded += (sender, e) =>
             {
                 MusicPlayerViewModel.SetupIntegrations();
-
-                SetupVisualizers();
             };
 
             Color themeColor = VibrantColor.GetVibrantColor(MusicPlayerViewModel.CurrentSong.PictureData);
@@ -92,77 +90,12 @@ namespace BowieD.MusicPlayer.WPF.Views
             }
         }
 
-        private void fullScreenViewGrid_Drop(object sender, DragEventArgs e)
-        {
-            if (!MusicPlayerViewModel.IsFullScreen)
-                return;
-
-            if (e.Handled)
-                return;
-
-            if (CurrentVisualizer is DefaultBackgroundVisualizerViewModel dbv)
-            {
-                var obj = e.Data;
-
-                string format = DataFormats.FileDrop;
-
-                if (obj.GetDataPresent(format))
-                {
-                    string[] files = (string[])obj.GetData(format);
-
-                    if (files.Length > 0)
-                    {
-                        dbv.SetBackground(files.Where(fn => FileTool.CheckFileValid(fn, ImageTool.SupportedImageExtensions)).ToArray());
-                    }
-                }
-            }
-        }
-
 #if WINDOWS10_0_19041_0_OR_GREATER
         internal Windows.Media.SystemMediaTransportControls GetSystemMediaTransportControls()
         {
             return Windows.Media.SystemMediaTransportControlsInterop.GetForWindow(this.CriticalHandle);
         }
 #endif
-
-        private void SetupVisualizers()
-        {
-            DefaultBackgroundVisualizerViewModel defaultVis = new(visualizerGrid_default, ViewModel);
-            MonsterCatVisualizerViewModel monsterVis = new(visualizerGrid_monsterCat, ViewModel);
-
-            ViewModel.Visualizers.Add(defaultVis);
-            ViewModel.Visualizers.Add(monsterVis);
-
-            foreach (var v in ViewModel.Visualizers)
-            {
-                v.BoundPanel.DataContext = v;
-                v.BoundPanel.Visibility = Visibility.Collapsed;
-
-                v.Setup();
-            }
-
-            CurrentVisualizer = defaultVis;
-        }
-
-        public VisualizerViewModelBase? CurrentVisualizer { get; private set; }
-
-        private void VisualizerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CurrentVisualizer is not null)
-            {
-                CurrentVisualizer.BoundPanel.Visibility = Visibility.Collapsed;
-                CurrentVisualizer.Stop();
-                CurrentVisualizer = null;
-            }
-
-            CurrentVisualizer = visualizerComboBox.SelectedValue as VisualizerViewModelBase;
-
-            if (CurrentVisualizer is not null)
-            {
-                CurrentVisualizer.BoundPanel.Visibility = Visibility.Visible;
-                CurrentVisualizer.Start();
-            }
-        }
 
         public void CloseCompletely()
         {
