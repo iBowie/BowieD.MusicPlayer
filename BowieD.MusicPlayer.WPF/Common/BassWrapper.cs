@@ -1,6 +1,7 @@
 ﻿using BowieD.MusicPlayer.WPF.MVVM;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Un4seen.Bass;
 
 namespace BowieD.MusicPlayer.WPF.Common
@@ -42,7 +43,45 @@ namespace BowieD.MusicPlayer.WPF.Common
 
             _handle = Bass.BASS_StreamCreateFile(fileName, 0, 0, BASSFlag.BASS_DEFAULT | BASSFlag.BASS_SAMPLE_FLOAT);
 
-            Bass.BASS_ChannelSetAttribute(_handle, BASSAttribute.BASS_ATTRIB_VOL, UserVolume);
+            try
+            {
+                using var tags = TagLib.File.Create(fileName);
+
+                if (!TrySetReplayGain(tags.Tag.ReplayGainAlbumGain, tags.Tag.ReplayGainAlbumPeak))
+                {
+                    if (!TrySetReplayGain(tags.Tag.ReplayGainTrackGain, tags.Tag.ReplayGainTrackPeak))
+                    {
+                        ReplayGainVolume = 1f;
+                    }
+                }
+            }
+            catch
+            {
+                ReplayGainVolume = 1f;
+            }
+
+            UpdateVolume();
+        }
+
+        private bool TrySetReplayGain(double gain, double peak)
+        {
+            if (double.IsNaN(gain))
+                return false;
+
+            peak = double.IsNaN(peak) ? 1.0 : peak;
+
+            double res = Math.Pow(10, gain / 20.0);
+
+            if (double.IsFinite(res))
+            {
+                ReplayGainVolume = (float)res;
+                return true;
+            }
+            else
+            {
+                ReplayGainVolume = 1f;
+                return false;
+            }
         }
 
         public bool Play()
@@ -67,7 +106,13 @@ namespace BowieD.MusicPlayer.WPF.Common
 
         public BASSActive State => Bass.BASS_ChannelIsActive(_handle);
 
+        private void UpdateVolume()
+        {
+            Bass.BASS_ChannelSetAttribute(_handle, BASSAttribute.BASS_ATTRIB_VOL, TotalVolume);
+        }
+
         private float _userVolume = 1f;
+        private float _replayGainVolume = 1f;
         public float UserVolume
         {
             get => _userVolume;
@@ -75,9 +120,29 @@ namespace BowieD.MusicPlayer.WPF.Common
             {
                 _userVolume = value;
 
-                Bass.BASS_ChannelSetAttribute(_handle, BASSAttribute.BASS_ATTRIB_VOL, value);
+                TriggerPropertyChanged(nameof(UserVolume), nameof(TotalVolume));
 
-                TriggerPropertyChanged(nameof(UserVolume));
+                UpdateVolume();
+            }
+        }
+        public float ReplayGainVolume
+        {
+            get => _replayGainVolume;
+            set
+            {
+                _replayGainVolume = value;
+
+                TriggerPropertyChanged(nameof(ReplayGainVolume), nameof(TotalVolume));
+
+                UpdateVolume();
+            }
+        }
+
+        public float TotalVolume
+        {
+            get
+            {
+                return UserVolume * ReplayGainVolume;
             }
         }
 
