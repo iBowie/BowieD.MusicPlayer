@@ -1,7 +1,10 @@
-﻿using BowieD.MusicPlayer.WPF.Data;
+﻿using BowieD.MusicPlayer.WPF.Api.Visualizers.Impl;
+using BowieD.MusicPlayer.WPF.Api.Visualizers.Views;
+using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.Extensions;
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
+using BowieD.MusicPlayer.WPF.ViewModels;
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
@@ -15,9 +18,9 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
+namespace BowieD.MusicPlayer.WPF.Api.Visualizers.ViewModels
 {
-    public sealed class DefaultBackgroundVisualizerViewModel : VisualizerViewModelBase
+    public sealed class DefaultImageBackgroundViewModel : VisualizerViewModelBase<DefaultImageBackgroundPage, DefaultImageBackgroundVisualizer>
     {
         private static readonly Duration BACKGROUND_FADE_SPEED = new(TimeSpan.FromSeconds(1));
         private static readonly DoubleAnimation BACKGROUND_FADE_OUT = new(1.0, 0.0, BACKGROUND_FADE_SPEED);
@@ -27,8 +30,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         private double _blurPower = 20.0;
         private string? prevRandom;
 
-        public DefaultBackgroundVisualizerViewModel(Panel boundPanel, MainWindowViewModel mainWindowViewModel) : base(boundPanel, mainWindowViewModel)
+        public DefaultImageBackgroundViewModel(DefaultImageBackgroundPage page, DefaultImageBackgroundVisualizer visualizer, MainWindowViewModel mainWindowViewModel, MusicPlayerViewModel musicPlayerViewModel) : base(page, visualizer, mainWindowViewModel, musicPlayerViewModel)
         {
+            bg1 = Page.fullScreenBackground;
+            bg2 = Page.fullScreenBackground2;
+
             _fullScreenBackgroundSwitcher = new()
             {
                 Interval = TimeSpan.FromSeconds(60),
@@ -49,8 +55,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             }
         }
 
-        public override string VisualizerName => "Image Background";
-
         public ObservableCollection<string> Backgrounds { get; } = new();
         public double BlurPower
         {
@@ -61,12 +65,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
         {
             get => _fullScreenBackgroundSwitcher.Interval.TotalSeconds;
             set => _fullScreenBackgroundSwitcher.Interval = TimeSpan.FromSeconds(value);
-        }
-
-        public override void Setup()
-        {
-            bg1 = MainWindowViewModel.View.fullScreenBackground;
-            bg2 = MainWindowViewModel.View.fullScreenBackground2;
         }
 
         public override void Start()
@@ -152,7 +150,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             {
                 _fullScreenBackgroundSwitcher.Stop();
 
-                MainWindowViewModel.View.fullScreenBackground.Source = null;
+                //Page.fullScreenBackground.Source = null;
             }
             else if (fileNames.Length == 1)
             {

@@ -1,0 +1,166 @@
+﻿<mah:MetroWindow x:Class="BowieD.MusicPlayer.WPF.Views.VisualizerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BowieD.MusicPlayer.WPF.Views" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d" xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF" xmlns:models="clr-namespace:BowieD.MusicPlayer.WPF.Models"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:viewmodels="clr-namespace:BowieD.MusicPlayer.WPF.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:VisualizerWindowViewModel}"
+                 Title="VisualizerWindow" Height="450" Width="800" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+    <Grid Name="fullScreenViewGrid">
+        <!-- visualizers -->
+        <Frame x:Name="visualizerFrame" NavigationUIVisibility="Hidden"
+                   JournalOwnership="OwnsJournal"/>
+        <Grid>
+            <!--controls-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!--maybe something more-->
+                <RowDefinition/>
+                <!--blank-->
+                <RowDefinition Height="Auto"/>
+                <!--media info-->
+                <RowDefinition Height="Auto"/>
+                <!--slider and media control-->
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1" Visibility="{Binding CurrentVisualizer.HideDefaultUpcomingSong, Converter={StaticResource invertedBoolToVisConverter}}">
+                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Border.NonActive}" BorderThickness="1" 
+                        HorizontalAlignment="Right" Margin="30" 
+                        MaxWidth="512"
+                        Visibility="{Binding View.MusicPlayerViewModel.IsUpcomingSongVisible, Converter={StaticResource boolToVisConverter}}"
+                        Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
+                        xf:Animations.Primary="{xf:Animate BasedOn={StaticResource SlideFromRight}, Event=Visibility}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid d:DataContext="{d:DesignInstance Type=models:Song}" DataContext="{Binding View.MusicPlayerViewModel.UpcomingSong}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Image Margin="5" 
+                                       d:Source="/Resources/Images/missing_texture.jpg"
+                                       Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|96}"/>
+                                <Grid Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Up Next" Margin="10" FontSize="20" VerticalAlignment="Bottom"/>
+                                    <TextBlock Grid.Row="1" Margin="10" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" FontSize="24" FontWeight="Bold"><Run Text="{Binding Title, Mode=OneWay}" d:Text="Title"/> - <Run Text="{Binding Artist, Converter={StaticResource ArtistDisplayConverter}, Mode=OneWay}" d:Text="Artist"/></TextBlock>
+                                </Grid>
+                            </Grid>
+                            <ProgressBar Grid.Row="1" Value="{Binding View.MusicPlayerViewModel.UpcomingSongSlider, Mode=OneWay}" Minimum="0" Maximum="1"
+                                         d:Value="0.5"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="3" Name="fullScreenMediaControlGrid"
+                  Visibility="{Binding CurrentVisualizer.HideDefaultControls, Converter={StaticResource invertedBoolToVisConverter}}"
+                  Background="Transparent"
+                  d:Opacity="1"
+                  Opacity="{Binding IsMouseOver, ElementName=fullScreenMediaControlGrid, Converter={StaticResource boolToVisHiddenConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="30,30,30,15" DataContext="{Binding View.MusicPlayerViewModel}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" d:Text="00:00" Text="{Binding BassWrapper.Position, Converter={StaticResource doubleToDisplayTimeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Value="{Binding BassWrapper.Position}" Maximum="{Binding BassWrapper.Duration}"/>
+                    <TextBlock Grid.Column="2" d:Text="59:59:59" Text="{Binding BassWrapper.Duration, Converter={StaticResource doubleToDisplayTimeConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Grid.Row="1" Margin="30,0,30,30">
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="{iconPacks:Material Kind=Shuffle}" 
+                            Margin="10" Width="30" Height="30" Visibility="{Binding View.MusicPlayerViewModel.IsShuffleEnabled, Converter={StaticResource boolToVisConverter}}"
+                            Command="{Binding View.MusicPlayerViewModel.ShuffleCommand}" Foreground="{DynamicResource MahApps.Brushes.Accent}"
+                            Style="{DynamicResource ContentOnlyButton}"/>
+                        <Button Grid.Column="0" Content="{iconPacks:Material Kind=Shuffle}" 
+                            Margin="10" Width="30" Height="30" Visibility="{Binding View.MusicPlayerViewModel.IsShuffleEnabled, Converter={StaticResource invertedBoolToVisConverter}}"
+                            Command="{Binding View.MusicPlayerViewModel.ShuffleCommand}"
+                            Style="{DynamicResource ContentOnlyButton}"/>
+                        <Button Grid.Column="1" Content="{iconPacks:Material Kind=SkipPrevious}" 
+                            Margin="10" Width="30" Height="30" 
+                            Command="{Binding View.MusicPlayerViewModel.PrevTrackCommand}"
+                            Style="{DynamicResource ContentOnlyButton}"/>
+                        <Button Grid.Column="2" Content="{iconPacks:Material Kind=Play}" 
+                            Command="{Binding View.MusicPlayerViewModel.PlayPauseCommand}"
+                            Visibility="{Binding View.MusicPlayerViewModel.IsPauseButton, Converter={StaticResource invertedBoolToVisConverter}}"
+                            Foreground="{DynamicResource MahApps.Brushes.Window.Background}"
+                            Margin="5" Width="48" Height="48" 
+                            Style="{DynamicResource RoundButton}"/>
+                        <Button Grid.Column="2" Content="{iconPacks:Material Kind=Pause}" 
+                            Command="{Binding View.MusicPlayerViewModel.PlayPauseCommand}"
+                            Visibility="{Binding View.MusicPlayerViewModel.IsPauseButton, Converter={StaticResource boolToVisConverter}}"
+                            Foreground="{DynamicResource MahApps.Brushes.Window.Background}"
+                            Margin="5" Width="48" Height="48" 
+                            Style="{DynamicResource RoundButton}"/>
+                        <Button Grid.Column="3" Content="{iconPacks:Material Kind=SkipNext}" 
+                            Margin="10" Width="30" Height="30" 
+                            Command="{Binding View.MusicPlayerViewModel.NextTrackCommand}"
+                            Style="{DynamicResource ContentOnlyButton}"/>
+                        <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=Repeat}" Style="{DynamicResource ContentOnlyButton}"
+                            Visibility="{Binding View.MusicPlayerViewModel.LoopNoneVisible, Converter={StaticResource boolToVisConverter}}"
+                            Command="{Binding View.MusicPlayerViewModel.LoopCommand}"/>
+                        <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=RepeatOnce}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
+                            Visibility="{Binding View.MusicPlayerViewModel.LoopCurrentVisible, Converter={StaticResource boolToVisConverter}}"
+                            Command="{Binding View.MusicPlayerViewModel.LoopCommand}"/>
+                        <Button Grid.Column="4" Margin="10" Content="{iconPacks:Material Kind=Repeat}" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource ContentOnlyButton}"
+                            Visibility="{Binding View.MusicPlayerViewModel.LoopQueueVisible, Converter={StaticResource boolToVisConverter}}"
+                            Command="{Binding View.MusicPlayerViewModel.LoopCommand}"/>
+                    </Grid>
+                    <Grid HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleButton Name="fullScreenQueueViewButton"
+                                              Margin="5" Content="{iconPacks:Material Kind=ViewList}" 
+                                              Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Base}" />
+                            <Popup IsOpen="{Binding IsChecked, ElementName=fullScreenQueueViewButton}">
+                                <GroupBox Header="Song Queue" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+                                    <StackPanel>
+                                        <TextBlock Text="Currently Playing"/>
+                                        <TextBlock Text="Your Queue"/>
+                                        <TextBlock><Run>Up next from</Run> '<Run Text="{Binding View.MusicPlayerViewModel.CurrentSongSource.SourceName, Mode=OneWay}"/>'</TextBlock>
+                                    </StackPanel>
+                                </GroupBox>
+                            </Popup>
+                            <iconPacks:PackIconMaterial Kind="VolumeSource" Margin="10" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                            <Slider Value="{Binding View.MusicPlayerViewModel.BassWrapper.UserVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="1" Width="128" Margin="10" d:Value="0.5" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"/>
+                            <Button Command="{Binding EnterFullScreenCommand}"
+                                    Visibility="{Binding IsFullScreen, Converter={StaticResource invertedBoolToVisConverter}}"
+                                Content="{iconPacks:Material Kind=Fullscreen}"
+                                Style="{DynamicResource ContentOnlyButton}" Margin="10"/>
+                            <Button Command="{Binding ExitFullScreenCommand}"
+                                    Visibility="{Binding IsFullScreen, Converter={StaticResource boolToVisConverter}}"
+                                Content="{iconPacks:Material Kind=FullscreenExit}"
+                                Style="{DynamicResource ContentOnlyButton}" Margin="10"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid HorizontalAlignment="Left">
+                        <ComboBox Margin="10" ItemsSource="{Binding Visualizers}" SelectedIndex="0" x:Name="visualizerComboBox"
+                                  SelectedValue="{Binding CurrentVisualizer, Mode=TwoWay}" DisplayMemberPath="DisplayName" VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</mah:MetroWindow>

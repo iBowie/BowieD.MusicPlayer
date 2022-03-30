@@ -1,21 +1,25 @@
-﻿using System;
+﻿using BowieD.MusicPlayer.WPF.Api.Visualizers.Impl;
+using BowieD.MusicPlayer.WPF.Api.Visualizers.Views;
+using BowieD.MusicPlayer.WPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
-namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
+namespace BowieD.MusicPlayer.WPF.Api.Visualizers.ViewModels
 {
-    public sealed class MonsterCatVisualizerViewModel : VisualizerViewModelBase
+    public sealed class MonsterCatViewModel : VisualizerViewModelBase<MonsterCatPage, MonsterCatVisualizer>
     {
-        public MonsterCatVisualizerViewModel(Panel boundPanel, MainWindowViewModel mainWindowViewModel) : base(boundPanel, mainWindowViewModel)
+        public MonsterCatViewModel(MonsterCatPage page, MonsterCatVisualizer visualizer, MainWindowViewModel mainWindowViewModel, MusicPlayerViewModel musicPlayerViewModel) : base(page, visualizer, mainWindowViewModel, musicPlayerViewModel)
         {
+            monsterCat_peaksGrid = page.monsterCat_peaksGrid;
+
+            BarCount = 64;
         }
 
-        public override string VisualizerName => "Monstercat Classic Visualizer";
-
-        private float[] peaksData;
+        private float[] peaksData = Array.Empty<float>();
         private readonly List<Rectangle> _visibleRectangles = new();
         private Panel monsterCat_peaksGrid;
         private double _frameRate = 60.0;
@@ -99,13 +103,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             }
         }
 
-        public override void Setup()
-        {
-            monsterCat_peaksGrid = MainWindowViewModel.View.monsterCat_peaksGrid;
-
-            BarCount = 64;
-        }
-
         private Timer? _visualizerTimer;
 
         public override void Start()
@@ -165,7 +162,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
             };
             _visualizerTimer.Start();
 
-            MainWindowViewModel.View.monsterCat_particles.Timer = _visualizerTimer;
+            Page.monsterCat_particles.Timer = _visualizerTimer;
         }
 
         public override void Stop()
@@ -177,7 +174,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Visualizators
                 _visualizerTimer = null;
             }
 
-            MainWindowViewModel.View.monsterCat_particles.Timer = _visualizerTimer;
+            Page.monsterCat_particles.Timer = _visualizerTimer;
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shell;
 using System.Windows.Threading;
@@ -91,7 +92,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         private bool _isShuffleEnabled = false;
         private EPlayOrigin _playOrigin;
         private bool _isBigPicture = false;
-        private bool _isFullScreen = false;
         private ISongSource? _currentSongSource;
 
         public BassWrapper BassWrapper { get; }
@@ -220,11 +220,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                     _ => throw new Exception(),
                 };
             }
-        }
-        public bool IsFullScreen
-        {
-            get => _isFullScreen;
-            set => ChangeProperty(ref _isFullScreen, value, nameof(IsFullScreen));
         }
         public bool IsUpcomingSongVisible
         {
@@ -441,8 +436,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             _prevTrackCommand,
             _showBigPictureCommand,
             _collapseBigPictureCommand,
-            _enterFullScreenCommand,
-            _exitFullScreenCommand,
             _viewQueueCommand,
             _playPauseCommand,
             _clearUserQueueCommand;
@@ -610,77 +603,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 }
 
                 return _collapseBigPictureCommand;
-            }
-        }
-        public ICommand EnterFullScreenCommand
-        {
-            get
-            {
-                if (_enterFullScreenCommand is null)
-                {
-                    _enterFullScreenCommand = new BaseCommand(() =>
-                    {
-                        if (View.CurrentVisualizer is not null)
-                        {
-                            View.CurrentVisualizer.BoundPanel.Visibility = Visibility.Visible;
-                            View.CurrentVisualizer.Start();
-                        }
-
-                        View.WindowState = WindowState.Maximized;
-                        View.WindowStyle = WindowStyle.None;
-                        View.ResizeMode = ResizeMode.NoResize;
-                        View.UseNoneWindowStyle = true;
-                        View.IgnoreTaskbarOnMaximize = true;
-
-                        View.fullScreenViewGrid.Visibility = Visibility.Visible;
-                        View.normalViewGrid.Visibility = Visibility.Collapsed;
-
-                        View.Activate();
-
-                        IsFullScreen = true;
-                    }, () =>
-                    {
-                        return !IsFullScreen;
-                    });
-                }
-
-                return _enterFullScreenCommand;
-            }
-        }
-        public ICommand ExitFullScreenCommand
-        {
-            get
-            {
-                if (_exitFullScreenCommand is null)
-                {
-                    _exitFullScreenCommand = new BaseCommand(() =>
-                    {
-                        if (View.CurrentVisualizer is not null)
-                        {
-                            View.CurrentVisualizer.Stop();
-                            View.CurrentVisualizer.BoundPanel.Visibility = Visibility.Collapsed;
-                        }
-
-                        View.fullScreenQueueViewButton.IsChecked = false;
-
-                        View.WindowStyle = WindowStyle.SingleBorderWindow;
-                        View.WindowState = WindowState.Normal;
-                        View.ResizeMode = ResizeMode.CanResize;
-                        View.UseNoneWindowStyle = false;
-                        View.ShowTitleBar = true;
-                        View.IgnoreTaskbarOnMaximize = false;
-
-                        View.fullScreenViewGrid.Visibility = Visibility.Collapsed;
-                        View.normalViewGrid.Visibility = Visibility.Visible;
-
-                        IsFullScreen = false;
-                    }, () =>
-                    {
-                        return IsFullScreen;
-                    });
-                }
-
-                return _exitFullScreenCommand;
             }
         }
         private object? _prevContentBeforeQueue;

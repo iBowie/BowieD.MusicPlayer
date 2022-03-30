@@ -22,7 +22,30 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         private ICommand? _addSongCommand, _createPlaylistCommand, _openLibraryCommand;
         private ICommand? _showWindowCommand, _hideWindowCommand, _exitCommand;
+        private ICommand? _openVisualizerCommand;
 
+        private VisualizerWindow? _visualizerWindow;
+
+        public ICommand OpenVisualizerCommand
+        {
+            get
+            {
+                return _openVisualizerCommand ??= new BaseCommand(() =>
+                {
+                    _visualizerWindow = new VisualizerWindow(View.MusicPlayerViewModel);
+
+                    _visualizerWindow.Show();
+
+                    _visualizerWindow.Closed += (sender, e) =>
+                    {
+                        _visualizerWindow = null;
+                    };
+                }, () =>
+                {
+                    return _visualizerWindow is null;
+                });
+            }
+        }
         public ICommand ShowWindowCommand
         {
             get
@@ -149,8 +172,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         #endregion
 
         #region Properties
-        public ObservableCollection<Visualizators.VisualizerViewModelBase> Visualizers { get; } = new();
-
         public ObservableCollection<PlaylistInfo> Playlists { get; } = new();
 
         public string WindowTitle
