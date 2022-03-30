@@ -28,43 +28,46 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Border BorderBrush="{DynamicResource MahApps.Brushes.Border.NonActive}" BorderThickness="1" 
-                            Grid.Column="1" HorizontalAlignment="Right" Margin="30" 
-                            MaxWidth="512"
-                            Visibility="{Binding View.MusicPlayerViewModel.IsUpcomingSongVisible, Converter={StaticResource boolToVisConverter}}"
-                            Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
-                            xf:Animations.Primary="{xf:Animate BasedOn={StaticResource SlideFromRight}, Event=Visibility}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Grid d:DataContext="{d:DesignInstance Type=models:Song}" DataContext="{Binding View.MusicPlayerViewModel.UpcomingSong}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Image Margin="5" 
+                <Grid Grid.Column="1" Visibility="{Binding CurrentVisualizer.HideDefaultUpcomingSong, Converter={StaticResource invertedBoolToVisConverter}}">
+                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Border.NonActive}" BorderThickness="1" 
+                        HorizontalAlignment="Right" Margin="30" 
+                        MaxWidth="512"
+                        Visibility="{Binding View.MusicPlayerViewModel.IsUpcomingSongVisible, Converter={StaticResource boolToVisConverter}}"
+                        Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
+                        xf:Animations.Primary="{xf:Animate BasedOn={StaticResource SlideFromRight}, Event=Visibility}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid d:DataContext="{d:DesignInstance Type=models:Song}" DataContext="{Binding View.MusicPlayerViewModel.UpcomingSong}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Image Margin="5" 
                                        d:Source="/Resources/Images/missing_texture.jpg"
                                        Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|96}"/>
-                            <Grid Grid.Column="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Text="Up Next" Margin="10" FontSize="20" VerticalAlignment="Bottom"/>
-                                <TextBlock Grid.Row="1" Margin="10" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" FontSize="24" FontWeight="Bold"><Run Text="{Binding Title, Mode=OneWay}" d:Text="Title"/> - <Run Text="{Binding Artist, Converter={StaticResource ArtistDisplayConverter}, Mode=OneWay}" d:Text="Artist"/></TextBlock>
+                                <Grid Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Up Next" Margin="10" FontSize="20" VerticalAlignment="Bottom"/>
+                                    <TextBlock Grid.Row="1" Margin="10" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" FontSize="24" FontWeight="Bold"><Run Text="{Binding Title, Mode=OneWay}" d:Text="Title"/> - <Run Text="{Binding Artist, Converter={StaticResource ArtistDisplayConverter}, Mode=OneWay}" d:Text="Artist"/></TextBlock>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <ProgressBar Grid.Row="1" Value="{Binding View.MusicPlayerViewModel.UpcomingSongSlider, Mode=OneWay}" Minimum="0" Maximum="1"
+                            <ProgressBar Grid.Row="1" Value="{Binding View.MusicPlayerViewModel.UpcomingSongSlider, Mode=OneWay}" Minimum="0" Maximum="1"
                                          d:Value="0.5"/>
-                    </Grid>
-                </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
             </Grid>
             <Grid Grid.Row="3" Name="fullScreenMediaControlGrid"
-                      Background="Transparent"
-                      d:Opacity="1"
-                      Opacity="{Binding IsMouseOver, ElementName=fullScreenMediaControlGrid, Converter={StaticResource boolToVisHiddenConverter}}">
+                  Visibility="{Binding CurrentVisualizer.HideDefaultControls, Converter={StaticResource invertedBoolToVisConverter}}"
+                  Background="Transparent"
+                  d:Opacity="1"
+                  Opacity="{Binding IsMouseOver, ElementName=fullScreenMediaControlGrid, Converter={StaticResource boolToVisHiddenConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
