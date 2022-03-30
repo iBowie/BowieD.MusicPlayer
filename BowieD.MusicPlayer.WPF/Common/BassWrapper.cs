@@ -1,6 +1,9 @@
 ﻿using BowieD.MusicPlayer.WPF.MVVM;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Un4seen.Bass;
 
 namespace BowieD.MusicPlayer.WPF.Common
@@ -42,22 +45,83 @@ namespace BowieD.MusicPlayer.WPF.Common
 
             _handle = Bass.BASS_StreamCreateFile(fileName, 0, 0, BASSFlag.BASS_DEFAULT | BASSFlag.BASS_SAMPLE_FLOAT);
 
-            Bass.BASS_ChannelSetAttribute(_handle, BASSAttribute.BASS_ATTRIB_VOL, UserVolume);
+            try
+            {
+                using var tags = TagLib.File.Create(fileName);
+
+                if (!TrySetReplayGain(tags.Tag.ReplayGainAlbumGain, tags.Tag.ReplayGainAlbumPeak))
+                {
+                    if (!TrySetReplayGain(tags.Tag.ReplayGainTrackGain, tags.Tag.ReplayGainTrackPeak))
+                    {
+                        ReplayGainVolume = 1f;
+                    }
+                }
+            }
+            catch
+            {
+                ReplayGainVolume = 1f;
+            }
+
+            UpdateVolume();
+        }
+
+        private bool TrySetReplayGain(double gain, double peak)
+        {
+            if (double.IsNaN(gain))
+                return false;
+
+            peak = double.IsNaN(peak) ? 1.0 : peak;
+
+            double res = Math.Pow(10, gain / 20.0);
+
+            if (double.IsFinite(res))
+            {
+                ReplayGainVolume = (float)res;
+                return true;
+            }
+            else
+            {
+                ReplayGainVolume = 1f;
+                return false;
+            }
         }
 
         public bool Play()
         {
-            return Bass.BASS_ChannelPlay(_handle, true);
+            AnimateVolume = 0f;
+
+            if (Bass.BASS_ChannelPlay(_handle, true))
+            {
+                BeginAnimateVolumeUp();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        public bool Pause()
+        public void Pause()
         {
-            return Bass.BASS_ChannelPause(_handle);
+            BeginAnimateVolumeDown(() =>
+            {
+                Bass.BASS_ChannelPause(_handle);
+            });
         }
 
         public bool Resume()
         {
-            return Bass.BASS_ChannelPlay(_handle, false);
+            if (Bass.BASS_ChannelPlay(_handle, false))
+            {
+                BeginAnimateVolumeUp();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool Stop()
@@ -67,7 +131,113 @@ namespace BowieD.MusicPlayer.WPF.Common
 
         public BASSActive State => Bass.BASS_ChannelIsActive(_handle);
 
+        private void UpdateVolume()
+        {
+            Bass.BASS_ChannelSetAttribute(_handle, BASSAttribute.BASS_ATTRIB_VOL, TotalVolume);
+        }
+
+        private async Task AnimateVolumeDown(CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+                return;
+
+            Stopwatch sw = new();
+
+            sw.Start();
+
+            while (sw.Elapsed.TotalSeconds < FadeDuration)
+            {
+                AnimateVolume = 1f - (float)(sw.Elapsed.TotalSeconds / FadeDuration);
+
+                await Task.Delay(20);
+
+                if (token.IsCancellationRequested)
+                    return;
+            }
+
+            if (token.IsCancellationRequested)
+                return;
+
+            AnimateVolume = 0f;
+        }
+        private async Task AnimateVolumeUp(CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+                return;
+
+            Stopwatch sw = new();
+
+            sw.Start();
+
+            while (sw.Elapsed.TotalSeconds < FadeDuration)
+            {
+                AnimateVolume = (float)(sw.Elapsed.TotalSeconds / FadeDuration);
+
+                await Task.Delay(20);
+
+                if (token.IsCancellationRequested)
+                    return;
+            }
+
+            if (token.IsCancellationRequested)
+                return;
+
+            AnimateVolume = 1f;
+        }
+
+        private Task? _currentAnimation;
+        private CancellationTokenSource? _cts;
+        private void CancelCurrentAnimation()
+        {
+            if (_currentAnimation is not null && _cts is not null)
+            {
+                _cts.Cancel();
+                _currentAnimation = null;
+                _cts = null;
+            }
+        }
+        private void BeginAnimateVolumeDown(Action? onZero = null)
+        {
+            CancelCurrentAnimation();
+
+            if (FadeDuration <= 0)
+            {
+                AnimateVolume = 0f;
+                onZero?.Invoke();
+            }
+            else
+            {
+                _cts = new();
+
+                _currentAnimation = AnimateVolumeDown(_cts.Token).ContinueWith((t) =>
+                {
+                    onZero?.Invoke();
+                });
+            }
+        }
+        private void BeginAnimateVolumeUp(Action? onMax = null)
+        {
+            CancelCurrentAnimation();
+
+            if (FadeDuration <= 0)
+            {
+                AnimateVolume = 1f;
+                onMax?.Invoke();
+            }
+            else
+            {
+                _cts = new();
+
+                _currentAnimation = AnimateVolumeUp(_cts.Token).ContinueWith((t) =>
+                {
+                    onMax?.Invoke();
+                });
+            }
+        }
+
         private float _userVolume = 1f;
+        private float _replayGainVolume = 1f;
+        private float _animateVolume = 1f;
         public float UserVolume
         {
             get => _userVolume;
@@ -75,10 +245,49 @@ namespace BowieD.MusicPlayer.WPF.Common
             {
                 _userVolume = value;
 
-                Bass.BASS_ChannelSetAttribute(_handle, BASSAttribute.BASS_ATTRIB_VOL, value);
+                TriggerPropertyChanged(nameof(UserVolume), nameof(TotalVolume));
 
-                TriggerPropertyChanged(nameof(UserVolume));
+                UpdateVolume();
             }
+        }
+        public float ReplayGainVolume
+        {
+            get => _replayGainVolume;
+            set
+            {
+                _replayGainVolume = value;
+
+                TriggerPropertyChanged(nameof(ReplayGainVolume), nameof(TotalVolume));
+
+                UpdateVolume();
+            }
+        }
+        public float AnimateVolume
+        {
+            get => _animateVolume;
+            set
+            {
+                _animateVolume = value;
+
+                TriggerPropertyChanged(nameof(AnimateVolume), nameof(TotalVolume));
+
+                UpdateVolume();
+            }
+        }
+
+        public float TotalVolume
+        {
+            get
+            {
+                return UserVolume * ReplayGainVolume * AnimateVolume;
+            }
+        }
+
+        private double _fadeDuration = 0.5;
+        public double FadeDuration
+        {
+            get => _fadeDuration;
+            set => ChangeProperty(ref _fadeDuration, value, nameof(FadeDuration));
         }
 
         public double Position
