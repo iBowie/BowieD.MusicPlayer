@@ -7,9 +7,9 @@ namespace BowieD.MusicPlayer.WPF.Common
 {
     public static class VibrantColor
     {
-        public static System.Windows.Media.Color GetVibrantColor(byte[] pictureData)
+        public static System.Windows.Media.Color GetVibrantColor(byte[]? pictureData)
         {
-            if (pictureData.Length == 0)
+            if (pictureData is null || pictureData.Length == 0)
                 return System.Windows.Media.Colors.White;
 
             using MemoryStream ms = new(pictureData);
