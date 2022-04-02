@@ -32,7 +32,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             COL_COVER = "cover",
             COL_SONGS = "songs";
 
-        public PlaylistRepository() : base(Path.Combine(DataFolder.DataDirectory, "playlists.db")) { }
+        public PlaylistRepository() : base(Path.Combine(DataFolder.DataDirectory, "user_playlists.db")) { }
 
         protected override void OnPrepare()
         {
@@ -121,7 +121,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
                 com.Parameters.Add("@name", DbType.String).Value = playlistInfo.Name;
                 com.Parameters.Add("@cover", DbType.Binary).Value = playlistInfo.PictureData;
-                com.Parameters.Add("@songs", DbType.String).Value = System.Text.Json.JsonSerializer.Serialize(playlistInfo.SongIDs);
+                com.Parameters.Add("@songs", DbType.String).Value = System.Text.Json.JsonSerializer.Serialize(playlistInfo.SongFileNames);
 
                 com.ExecuteNonQuery();
 
@@ -147,7 +147,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             com.Parameters.Add("@id", DbType.Int64).Value = playlistInfo.ID;
             com.Parameters.Add("@name", DbType.String).Value = playlistInfo.Name;
             com.Parameters.Add("@cover", DbType.Binary).Value = playlistInfo.PictureData;
-            com.Parameters.Add("@songs", DbType.String).Value = System.Text.Json.JsonSerializer.Serialize(playlistInfo.SongIDs);
+            com.Parameters.Add("@songs", DbType.String).Value = System.Text.Json.JsonSerializer.Serialize(playlistInfo.SongFileNames);
 
             com.ExecuteNonQuery();
         }
@@ -173,7 +173,7 @@ namespace BowieD.MusicPlayer.WPF.Data
         {
             long plId = id ?? reader.GetInt64(COL_ID);
             string name = reader.GetString(COL_NAME);
-            var songs = (System.Text.Json.JsonSerializer.Deserialize<long[]>(reader.GetString(COL_SONGS)) ?? Array.Empty<long>()).ToList();
+            var songs = (System.Text.Json.JsonSerializer.Deserialize<string[]>(reader.GetString(COL_SONGS)) ?? Array.Empty<string>()).ToList();
 
             byte[] picture;
 

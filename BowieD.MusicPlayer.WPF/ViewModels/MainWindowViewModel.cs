@@ -104,7 +104,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _createPlaylistCommand = new BaseCommand(() =>
                     {
-                        PlaylistInfo newPlaylist = new(0, "Playlist 1", Array.Empty<long>(), Array.Empty<byte>());
+                        PlaylistInfo newPlaylist = new(0, "Playlist 1", Array.Empty<string>(), Array.Empty<byte>());
 
                         PlaylistRepository.Instance.AddNewPlaylist(ref newPlaylist);
 

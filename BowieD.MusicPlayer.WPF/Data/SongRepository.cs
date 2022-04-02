@@ -1,10 +1,12 @@
-﻿using BowieD.MusicPlayer.WPF.Extensions;
+﻿using BowieD.MusicPlayer.WPF.Common;
+using BowieD.MusicPlayer.WPF.Extensions;
 using BowieD.MusicPlayer.WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace BowieD.MusicPlayer.WPF.Data
 {
@@ -27,17 +29,16 @@ namespace BowieD.MusicPlayer.WPF.Data
 
         private const long CURRENT_VERSION = 1;
         private const string
-            TABLE_NAME = "songs",
+            TABLE_NAME = "songs_cache",
             COL_ID = "id",
             COL_TITLE = "title",
             COL_ALBUM = "album",
             COL_ARTIST = "artist",
             COL_YEAR = "year",
             COL_COVER = "cover",
-            COL_FILE_NAME = "fileName",
-            COL_COVER_FULLSCREEN = "coverFullscreen";
+            COL_FILE_NAME = "fileName";
 
-        public SongRepository() : base(Path.Combine(DataFolder.DataDirectory, "songs.db")) { }
+        public SongRepository() : base(Path.Combine(DataFolder.DataDirectory, "library.db")) { }
 
         protected override void OnPrepare()
         {
@@ -53,10 +54,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
             var version = (long)ExecuteScalar("PRAGMA user_version");
 
-            if (version < 1)
-            {
-                ExecuteNonQuery($"ALTER TABLE {TABLE_NAME} ADD {COL_COVER_FULLSCREEN} BLOB");
-            }
+            // migrations here
 
             ExecuteNonQuery($"PRAGMA user_version = {CURRENT_VERSION}");
         }
@@ -111,13 +109,13 @@ namespace BowieD.MusicPlayer.WPF.Data
             }
         }
 
-        public IList<Song> GetSongs(IEnumerable<long> songIDs)
+        public IList<Song> GetSongs(IEnumerable<string> songFileNames)
         {
             List<Song> result = new();
 
-            foreach (var songId in songIDs)
+            foreach (var songFn in songFileNames)
             {
-                result.Add(GetSong(songId));
+                result.Add(GetOrAddSong(songFn));
             }
 
             return result;
@@ -166,14 +164,12 @@ namespace BowieD.MusicPlayer.WPF.Data
                 PARAM_ALBUM = "@album",
                 PARAM_YEAR = "@year",
                 PARAM_COVER = "@cover",
-                PARAM_FILE_NAME = "@fileName",
-                PARAM_FULLSCREEN_COVER = "@coverFullScreen";
+                PARAM_FILE_NAME = "@fileName";
 
             string sql = $"UPDATE {TABLE_NAME} " +
                 $"SET {COL_TITLE} = {PARAM_TITLE}, {COL_ARTIST} = {PARAM_ARTIST}, " +
                 $"{COL_ALBUM} = {PARAM_ALBUM}, {COL_YEAR} = {PARAM_YEAR}, " +
-                $"{COL_COVER} = {PARAM_COVER}, {COL_FILE_NAME} = {PARAM_FILE_NAME}, " +
-                $"{COL_COVER_FULLSCREEN} = {PARAM_FULLSCREEN_COVER} " +
+                $"{COL_COVER} = {PARAM_COVER}, {COL_FILE_NAME} = {PARAM_FILE_NAME} " +
                 $"WHERE {COL_ID} = {PARAM_ID}";
 
             using var con = CreateConnection();
@@ -189,8 +185,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             com.Parameters.Add(PARAM_YEAR, DbType.UInt32).Value = meta.Year > 0 ? meta.Year : DBNull.Value;
             com.Parameters.Add(PARAM_COVER, DbType.Binary).Value = meta.PictureData;
             com.Parameters.Add(PARAM_FILE_NAME, DbType.String).Value = meta.FileName;
-            com.Parameters.Add(PARAM_FULLSCREEN_COVER, DbType.Binary).Value = meta.FullScreenPictureData;
-
+            
             com.ExecuteNonQuery();
         }
 
@@ -215,10 +210,10 @@ namespace BowieD.MusicPlayer.WPF.Data
 
         public IList<Artist> GetAllArtists()
         {
-            Dictionary<string, List<long>> data = new();
+            Dictionary<string, List<string>> data = new();
 
             {
-                string sql = $"SELECT {COL_ID},{COL_ARTIST} FROM {TABLE_NAME}";
+                string sql = $"SELECT {COL_FILE_NAME},{COL_ARTIST} FROM {TABLE_NAME}";
 
                 using var con = CreateConnection();
 
@@ -226,7 +221,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
                 using var com = new SQLiteCommand(sql, con);
 
-                using var reader = com.ExecuteReader(System.Data.CommandBehavior.KeyInfo);
+                using var reader = com.ExecuteReader();
 
                 if (reader.HasRows)
                 {
@@ -242,14 +237,14 @@ namespace BowieD.MusicPlayer.WPF.Data
                         if (artistNames.Length == 0)
                             continue;
 
-                        var songId = reader.GetInt64(COL_ID);
+                        var songFn = reader.GetString(COL_FILE_NAME);
 
                         foreach (var artist in artistNames)
                         {
                             if (!data.ContainsKey(artist))
-                                data.Add(artist, new List<long>());
+                                data.Add(artist, new List<string>());
 
-                            data[artist].Add(songId);
+                            data[artist].Add(songFn);
                         }
                     }
                 }
@@ -271,10 +266,10 @@ namespace BowieD.MusicPlayer.WPF.Data
 
         public IList<Album> GetAllAlbums()
         {
-            Dictionary<string, List<long>> data = new();
+            Dictionary<string, List<string>> data = new();
 
             {
-                string sql = $"SELECT {COL_ID},{COL_ALBUM} FROM {TABLE_NAME}";
+                string sql = $"SELECT {COL_FILE_NAME},{COL_ALBUM} FROM {TABLE_NAME}";
 
                 using var con = CreateConnection();
 
@@ -282,7 +277,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
                 using var com = new SQLiteCommand(sql, con);
 
-                using var reader = com.ExecuteReader(System.Data.CommandBehavior.KeyInfo);
+                using var reader = com.ExecuteReader();
 
                 if (reader.HasRows)
                 {
@@ -293,12 +288,12 @@ namespace BowieD.MusicPlayer.WPF.Data
                         if (string.IsNullOrWhiteSpace(albumName))
                             continue;
 
-                        var songId = reader.GetInt64(COL_ID);
+                        var songFn = reader.GetString(COL_FILE_NAME);
 
                         if (!data.ContainsKey(albumName))
-                            data.Add(albumName, new List<long>());
+                            data.Add(albumName, new List<string>());
 
-                        data[albumName].Add(songId);
+                        data[albumName].Add(songFn);
                     }
                 }
 
@@ -317,6 +312,35 @@ namespace BowieD.MusicPlayer.WPF.Data
             return res;
         }
 
+        public async Task SearchForMusicAsync()
+        {
+            string src = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+
+            if (!Directory.Exists(src))
+                return;
+
+            var files = Directory.GetFiles(src, "*.*", SearchOption.AllDirectories);
+
+            int i = 0;
+
+            foreach (var file in files)
+            {
+                if (FileTool.CheckFileValid(file, BassWrapper.SupportedExtensions))
+                {
+                    try
+                    {
+                        var song = GetOrAddSong(file);
+                    }
+                    catch { }
+                }
+
+                if (i++ % 50 == 0)
+                    await Task.Delay(1);
+                else
+                    await Task.Yield();
+            }
+        }
+
         private Song AddNewSong(string fileName)
         {
             Song meta = GetSongMetadata(fileName);
@@ -327,12 +351,11 @@ namespace BowieD.MusicPlayer.WPF.Data
                 PARAM_ALBUM = "@album",
                 PARAM_YEAR = "@year",
                 PARAM_COVER = "@cover",
-                PARAM_FILE_NAME = "@fileName",
-                PARAM_FULLSCREEN_COVER = "@coverFullScreen";
+                PARAM_FILE_NAME = "@fileName";
 
             string sql = $"INSERT INTO {TABLE_NAME} " +
-                $"({COL_TITLE}, {COL_ARTIST}, {COL_ALBUM}, {COL_YEAR}, {COL_COVER}, {COL_FILE_NAME}, {COL_COVER_FULLSCREEN}) " +
-                $"values({PARAM_TITLE}, {PARAM_ARTIST}, {PARAM_ALBUM}, {PARAM_YEAR}, {PARAM_COVER}, {PARAM_FILE_NAME}, {PARAM_FULLSCREEN_COVER})";
+                $"({COL_TITLE}, {COL_ARTIST}, {COL_ALBUM}, {COL_YEAR}, {COL_COVER}, {COL_FILE_NAME}) " +
+                $"values({PARAM_TITLE}, {PARAM_ARTIST}, {PARAM_ALBUM}, {PARAM_YEAR}, {PARAM_COVER}, {PARAM_FILE_NAME})";
 
             using var con = CreateConnection();
 
@@ -346,7 +369,6 @@ namespace BowieD.MusicPlayer.WPF.Data
             com.Parameters.Add(PARAM_YEAR, DbType.UInt32).Value = meta.Year > 0 ? meta.Year : DBNull.Value;
             com.Parameters.Add(PARAM_COVER, DbType.Binary).Value = meta.PictureData;
             com.Parameters.Add(PARAM_FILE_NAME, DbType.String).Value = meta.FileName;
-            com.Parameters.Add(PARAM_FULLSCREEN_COVER, DbType.Binary).Value = meta.FullScreenPictureData;
 
             com.ExecuteNonQuery();
 
@@ -420,7 +442,7 @@ namespace BowieD.MusicPlayer.WPF.Data
                 picture = ImageTool.ResizeInByteArray(picture, 700, 700);
             }
 
-            return new Song(0, title, artist, album, year, fileName, picture ?? Array.Empty<byte>(), Array.Empty<byte>());
+            return new Song(0, title, artist, album, year, fileName, picture ?? Array.Empty<byte>());
         }
 
         private static Song ReadSong(SQLiteDataReader reader, long? id = null)
@@ -442,25 +464,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
             reader.GetBytes(COL_COVER, 0, picture, 0, picture.Length);
 
-            byte[] fullScreenPicture;
-
-            if (reader.IsDBNull(COL_COVER_FULLSCREEN))
-            {
-                fullScreenPicture = Array.Empty<byte>();
-            }
-            else
-            {
-                using (var blob = reader.GetBlob(COL_COVER_FULLSCREEN, true))
-                {
-                    int picLength = blob.GetCount();
-
-                    fullScreenPicture = new byte[picLength];
-                }
-
-                reader.GetBytes(COL_COVER_FULLSCREEN, 0, fullScreenPicture, 0, fullScreenPicture.Length);
-            }
-
-            return new Song(songId, title, artist, album, year, fileName, picture, fullScreenPicture);
+            return new Song(songId, title, artist, album, year, fileName, picture);
         }
     }
 }

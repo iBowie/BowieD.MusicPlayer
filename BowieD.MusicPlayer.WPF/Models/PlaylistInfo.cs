@@ -6,11 +6,11 @@ namespace BowieD.MusicPlayer.WPF.Models
 {
     public struct PlaylistInfo
     {
-        public PlaylistInfo(long iD, string name, IList<long> songIDs, byte[] pictureData)
+        public PlaylistInfo(long iD, string name, IList<string> songFileNames, byte[] pictureData)
         {
             ID = iD;
             Name = name;
-            SongIDs = songIDs;
+            SongFileNames = songFileNames;
             PictureData = pictureData;
 
             IsEmpty = false;
@@ -20,7 +20,7 @@ namespace BowieD.MusicPlayer.WPF.Models
         {
             ID = 0;
             Name = string.Empty;
-            SongIDs = Array.Empty<long>();
+            SongFileNames = Array.Empty<string>();
             PictureData = Array.Empty<byte>();
 
             this.IsEmpty = empty;
@@ -28,13 +28,13 @@ namespace BowieD.MusicPlayer.WPF.Models
 
         public long ID { get; internal set; }
         public string Name { get; }
-        public IList<long> SongIDs { get; }
+        public IList<string> SongFileNames { get; }
         public byte[] PictureData { get; }
         public bool IsEmpty { get; }
 
         public static explicit operator Playlist(PlaylistInfo info)
         {
-            return new Playlist(info.ID, info.Name, SongRepository.Instance.GetSongs(info.SongIDs), info.PictureData);
+            return new Playlist(info.ID, info.Name, SongRepository.Instance.GetSongs(info.SongFileNames), info.PictureData);
         }
 
         public static readonly PlaylistInfo EMPTY = new(true);

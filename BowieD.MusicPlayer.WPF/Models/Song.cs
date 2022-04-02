@@ -10,7 +10,7 @@ namespace BowieD.MusicPlayer.WPF.Models
             IsEmpty = isEmpty;
         }
 
-        public Song(long iD, string title, string artist, string album, uint year, string fileName, byte[] pictureData, byte[] fullScreenPictureData)
+        public Song(long iD, string title, string artist, string album, uint year, string fileName, byte[] pictureData)
         {
             ID = iD;
             Title = title;
@@ -20,7 +20,6 @@ namespace BowieD.MusicPlayer.WPF.Models
             FileName = fileName;
             PictureData = pictureData;
             IsEmpty = false;
-            FullScreenPictureData = fullScreenPictureData;
         }
 
         public long ID { get; internal set; }
@@ -30,7 +29,6 @@ namespace BowieD.MusicPlayer.WPF.Models
         public uint Year { get; private set; }
         public string FileName { get; private set; }
         public byte[] PictureData { get; private set; }
-        public byte[] FullScreenPictureData { get; internal set; }
         public bool IsEmpty { get; }
         public bool IsAvailable
         {
@@ -75,7 +73,6 @@ namespace BowieD.MusicPlayer.WPF.Models
             this.Artist = newVersion.Artist;
             this.Album = newVersion.Album;
             this.PictureData = newVersion.PictureData;
-            this.FullScreenPictureData = newVersion.FullScreenPictureData;
             this.Year = newVersion.Year;
         }
 

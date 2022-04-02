@@ -54,7 +54,7 @@ namespace BowieD.MusicPlayer.WPF.Views
                 {
                     _saveCommand = new BaseCommand(() =>
                     {
-                        ResultInfo = new PlaylistInfo(ResultInfo.ID, PlaylistName, ResultInfo.SongIDs, PlaylistPictureData);
+                        ResultInfo = new PlaylistInfo(ResultInfo.ID, PlaylistName, ResultInfo.SongFileNames, PlaylistPictureData);
 
                         DialogResult = true;
                         Close();

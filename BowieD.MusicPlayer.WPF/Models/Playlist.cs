@@ -53,7 +53,7 @@ namespace BowieD.MusicPlayer.WPF.Models
 
         public static implicit operator PlaylistInfo(Playlist playlist)
         {
-            return new PlaylistInfo(playlist.ID, playlist.Name, playlist.Songs.Select(d => d.ID).ToList(), playlist.PictureData);
+            return new PlaylistInfo(playlist.ID, playlist.Name, playlist.Songs.Select(d => d.FileName).ToList(), playlist.PictureData);
         }
 
         public static bool operator ==(Playlist a, Playlist b) => a.ID == b.ID;

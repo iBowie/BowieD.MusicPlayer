@@ -1,5 +1,6 @@
 ﻿using BowieD.MusicPlayer.WPF.Api;
 using BowieD.MusicPlayer.WPF.Common;
+using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
 using System.Globalization;
@@ -55,6 +56,8 @@ namespace BowieD.MusicPlayer.WPF.Views
 
             Loaded += (sender, e) =>
             {
+                SongRepository.Instance.SearchForMusicAsync();
+
                 MusicPlayerViewModel.SetupIntegrations();
             };
 

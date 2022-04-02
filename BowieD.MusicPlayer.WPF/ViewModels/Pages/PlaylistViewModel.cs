@@ -34,10 +34,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
         private void _songs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            PlaylistInfo.SongIDs.Clear();
+            PlaylistInfo.SongFileNames.Clear();
 
             foreach (var s in _songs)
-                PlaylistInfo.SongIDs.Add(s.ID);
+                PlaylistInfo.SongFileNames.Add(s.FileName);
 
             PlaylistRepository.Instance.UpdatePlaylist(PlaylistInfo);
 
@@ -258,7 +258,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                             var song = SongRepository.Instance.GetOrAddSong(fn);
 
-                            info.SongIDs.Insert(insertIndex++, song.ID);
+                            info.SongFileNames.Insert(insertIndex++, song.FileName);
                         }
 
                         PlaylistRepository.Instance.UpdatePlaylist(info);
@@ -325,7 +325,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                                     var info = viewModel.PlaylistInfo;
 
-                                    info.SongIDs.Insert(dropInfo.InsertIndex, song.ID);
+                                    info.SongFileNames.Insert(dropInfo.InsertIndex, song.FileName);
 
                                     PlaylistRepository.Instance.UpdatePlaylist(info);
 
