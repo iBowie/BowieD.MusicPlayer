@@ -56,7 +56,8 @@ namespace BowieD.MusicPlayer.WPF.Views
 
             Loaded += (sender, e) =>
             {
-                SongRepository.Instance.SearchForMusicAsync();
+                ScanLibraryWindow slw = new();
+                slw.ShowDialog();
 
                 MusicPlayerViewModel.SetupIntegrations();
             };

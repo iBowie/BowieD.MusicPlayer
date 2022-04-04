@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BowieD.MusicPlayer.WPF.Data
@@ -146,6 +147,35 @@ namespace BowieD.MusicPlayer.WPF.Data
             con.Close();
 
             return result;
+        }
+
+        public async Task<IList<string>> GetAllSongFileNamesAsync(CancellationToken cancellationToken)
+        {
+            string sql = $"SELECT {COL_FILE_NAME} FROM {TABLE_NAME}";
+
+            using var con = CreateConnection();
+
+            con.Open();
+
+            using var com = con.CreateCommand();
+            com.CommandText = sql;
+
+            using var reader = await com.ExecuteReaderAsync(cancellationToken);
+
+            List<string> lst = new();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                        break;
+
+                    lst.Add(reader.GetString(COL_FILE_NAME));
+                }
+            }
+
+            return lst;
         }
 
         public void UpdateSong(Song song, bool updateFromMeta = true)
@@ -312,30 +342,44 @@ namespace BowieD.MusicPlayer.WPF.Data
             return res;
         }
 
-        public async Task SearchForMusicAsync()
+        public async Task SearchForMusicAsync(IProgress<double> progress, CancellationToken cancellationToken)
         {
             string src = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
 
             if (!Directory.Exists(src))
                 return;
 
+            progress.Report(double.NaN);
+
             var files = Directory.GetFiles(src, "*.*", SearchOption.AllDirectories);
+            var libraryFiles = await GetAllSongFileNamesAsync(cancellationToken);
+
+            progress.Report(0.0);
 
             int i = 0;
+            int total = files.Length;
 
             foreach (var file in files)
             {
-                if (FileTool.CheckFileValid(file, BassWrapper.SupportedExtensions))
+                if (cancellationToken.IsCancellationRequested)
+                    break;
+
+                if (!libraryFiles.Remove(file))
                 {
-                    try
+                    if (FileTool.CheckFileValid(file, BassWrapper.SupportedExtensions))
                     {
-                        var song = GetOrAddSong(file);
+                        try
+                        {
+                            var song = GetOrAddSong(file);
+                        }
+                        catch { }
                     }
-                    catch { }
                 }
 
-                if (i++ % 50 == 0)
-                    await Task.Delay(1);
+                progress.Report(i++ / (double)total);
+
+                if (i % 50 == 0)
+                    await Task.Delay(10, cancellationToken);
                 else
                     await Task.Yield();
             }
