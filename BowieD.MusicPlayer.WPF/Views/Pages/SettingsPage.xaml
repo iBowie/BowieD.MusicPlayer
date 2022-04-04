@@ -39,6 +39,10 @@
             </UniformGrid>
             <TextBlock Text="Actions" Style="{DynamicResource TbHeader3}" Margin="5"/>
             <WrapPanel Orientation="Horizontal">
+                <Button Content="Scan music library" Style="{StaticResource MahApps.Styles.Button.MetroSquare}"
+                        Margin="5" Command="{Binding ScanLibraryCommand}"/>
+                <Button Content="Remove deleted songs" Style="{StaticResource MahApps.Styles.Button.MetroSquare}"
+                        Margin="5" Command="{Binding RemoveDeletedSongsCommand}"/>
                 <Button Content="Locate all missing files" Style="{StaticResource MahApps.Styles.Button.MetroSquare}"
                         Margin="5" Command="{Binding LocateMissingFilesCommand}"/>
                 <Button Content="Re-read all songs tags" Style="{StaticResource MahApps.Styles.Button.MetroSquare}"

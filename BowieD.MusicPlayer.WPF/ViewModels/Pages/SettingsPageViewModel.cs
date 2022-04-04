@@ -19,7 +19,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
         public SettingsPage Page { get; }
 
         private ICommand? _locateMissingFilesCommand,
-            _reReadTagsCommand;
+            _reReadTagsCommand, _scanLibraryCommand,
+            _removeDeletedSongsCommand;
 
         public ICommand LocateMissingFilesCommand
         {
@@ -123,6 +124,72 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                         s.UpdateFromDatabase();
 
                     MessageBox.Show($"Tags re-read complete!\n{cnt} songs affected");
+                });
+            }
+        }
+        public ICommand ScanLibraryCommand
+        {
+            get
+            {
+                return _scanLibraryCommand ??= new BaseCommand(() =>
+                {
+                    ScanLibraryWindow slw = new();
+                    slw.ShowDialog();
+                });
+            }
+        }
+        public ICommand RemoveDeletedSongsCommand
+        {
+            get
+            {
+                return _removeDeletedSongsCommand ??= new BaseCommand(() =>
+                {
+                    var res = MessageBox.Show($"Are you sure you want to remove deleted songs?", "Remove deleted songs", MessageBoxButton.YesNo);
+
+                    if (res != MessageBoxResult.Yes)
+                        return;
+
+                    var mp = View.MusicPlayerViewModel;
+
+                    mp.CurrentSongSource = null;
+                    mp.UserSongQueue.Clear();
+                    mp.SongQueue.Clear();
+                    mp.SongHistory.Clear();
+                    mp.SetCurrentSong(Models.Song.EMPTY, false);
+
+                    var allSongs = SongRepository.Instance.GetAllSongs();
+
+                    for (int i = allSongs.Count - 1; i >= 0; i--)
+                    {
+                        var song = allSongs[i];
+
+                        if (!File.Exists(song.FileName))
+                        {
+                            SongRepository.Instance.RemoveSong(song);
+                        }
+                    }
+
+                    var pls = PlaylistRepository.Instance.GetAllPlaylists();
+
+                    foreach (var pl in pls)
+                    {
+                        var songs = pl.SongFileNames;
+                        bool needsUpdate = false;
+
+                        for (int i = songs.Count - 1; i >= 0; i--)
+                        {
+                            var song = songs[i];
+
+                            if (!File.Exists(song))
+                            {
+                                songs.RemoveAt(i);
+                                needsUpdate = true;
+                            }
+                        }
+
+                        if (needsUpdate)
+                            PlaylistRepository.Instance.UpdatePlaylist(pl);
+                    }
                 });
             }
         }
