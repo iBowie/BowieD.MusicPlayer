@@ -1,4 +1,5 @@
-﻿using BowieD.MusicPlayer.WPF.MVVM;
+﻿using BowieD.MusicPlayer.WPF.Configuration;
+using BowieD.MusicPlayer.WPF.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,16 @@ namespace BowieD.MusicPlayer.WPF.Common
                 TriggerPropertyChanged(nameof(Position));
                 TriggerPropertyChanged(nameof(Duration));
             };
+
+            AppSettings.Instance.StartTrackingSetting((settings) =>
+            {
+                UpdateVolume();
+            }, nameof(AppSettings.EnableReplayGain));
+
+            AppSettings.Instance.StartTrackingSetting((settings) =>
+            {
+                FadeDuration = settings.SmoothFadeDuration;
+            }, nameof(AppSettings.SmoothFadeDuration));
         }
 
         public bool Init()
@@ -200,7 +211,7 @@ namespace BowieD.MusicPlayer.WPF.Common
         {
             CancelCurrentAnimation();
 
-            if (FadeDuration <= 0)
+            if (!AppSettings.Instance.SmoothPlayPause || FadeDuration <= 0)
             {
                 AnimateVolume = 0f;
                 onZero?.Invoke();
@@ -219,7 +230,7 @@ namespace BowieD.MusicPlayer.WPF.Common
         {
             CancelCurrentAnimation();
 
-            if (FadeDuration <= 0)
+            if (!AppSettings.Instance.SmoothPlayPause || FadeDuration <= 0)
             {
                 AnimateVolume = 1f;
                 onMax?.Invoke();
@@ -279,7 +290,14 @@ namespace BowieD.MusicPlayer.WPF.Common
         {
             get
             {
-                return UserVolume * ReplayGainVolume * AnimateVolume;
+                float total = UserVolume;
+
+                if (AppSettings.Instance.EnableReplayGain)
+                    total *= ReplayGainVolume;
+
+                total *= AnimateVolume;
+
+                return total;
             }
         }
 

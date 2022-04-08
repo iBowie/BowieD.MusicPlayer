@@ -342,13 +342,8 @@ namespace BowieD.MusicPlayer.WPF.Data
             return res;
         }
 
-        public async Task SearchForMusicAsync(IProgress<double> progress, CancellationToken cancellationToken)
+        public async Task SearchForMusicAsync(string src, IProgress<double> progress, CancellationToken cancellationToken)
         {
-            string src = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-
-            if (!Directory.Exists(src))
-                return;
-
             progress.Report(double.NaN);
 
             var files = Directory.GetFiles(src, "*.*", SearchOption.AllDirectories);

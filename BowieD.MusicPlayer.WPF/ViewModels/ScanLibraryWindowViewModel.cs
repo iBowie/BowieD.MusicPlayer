@@ -1,7 +1,9 @@
-﻿using BowieD.MusicPlayer.WPF.Data;
+﻿using BowieD.MusicPlayer.WPF.Configuration;
+using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -52,7 +54,27 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             Task.Run(async () =>
             {
-                await SongRepository.Instance.SearchForMusicAsync(prog, _cts.Token);
+                if (AppSettings.Instance.LibraryScanMyMusicFolder)
+                {
+                    string myMusicFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+
+                    if (Directory.Exists(myMusicFolder))
+                        await SongRepository.Instance.SearchForMusicAsync(myMusicFolder, prog, _cts.Token);
+                }
+
+                if (AppSettings.Instance.LibraryScanCommonMusicFolder)
+                {
+                    string commonMusicFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonMusic);
+
+                    if (Directory.Exists(commonMusicFolder))
+                        await SongRepository.Instance.SearchForMusicAsync(commonMusicFolder, prog, _cts.Token);
+                }
+
+                foreach (var customSrc in AppSettings.Instance.CustomLibraryFolders)
+                {
+                    if (Directory.Exists(customSrc))
+                        await SongRepository.Instance.SearchForMusicAsync(customSrc, prog, _cts.Token);
+                }
 
                 Dispatcher.Invoke(OnEndScan);
             }, _cts.Token);
