@@ -433,7 +433,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             CurrentSong = song;
 
             if (!autoPlay)
-                BassWrapper.Pause();
+                BassWrapper.Pause(true);
         }
 
         #region Commands

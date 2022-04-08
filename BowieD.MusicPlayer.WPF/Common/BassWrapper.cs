@@ -152,12 +152,19 @@ namespace BowieD.MusicPlayer.WPF.Common
             }
         }
 
-        public void Pause()
+        public void Pause(bool immediate = false)
         {
-            BeginAnimateVolumeDown(() =>
+            if (immediate)
             {
                 Bass.BASS_ChannelPause(_handle);
-            });
+            }
+            else
+            {
+                BeginAnimateVolumeDown(() =>
+                {
+                    Bass.BASS_ChannelPause(_handle);
+                });
+            }
         }
 
         public bool Resume()

@@ -119,10 +119,12 @@ namespace BowieD.MusicPlayer.WPF
                     {
                         bool autoPlay = br.ReadBoolean();
                         long songId = br.ReadInt64();
+                        double pos01 = br.ReadDouble();
 
+                        mp.BassWrapper.UserVolume = 0f;
                         mp.SetCurrentSong(SongRepository.Instance.GetSong(songId), autoPlay);
 
-                        mp.Position01 = br.ReadDouble();
+                        mp.Position01 = pos01;
                     }
                     else
                     {
