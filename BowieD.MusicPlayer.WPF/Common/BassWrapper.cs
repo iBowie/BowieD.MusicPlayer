@@ -13,11 +13,16 @@ namespace BowieD.MusicPlayer.WPF.Common
     {
         private int _handle;
         private bool _hasInitDefaultDevice;
+        private readonly SynchronizationContext? _syncContext;
 
         public const int FREQ_HZ = 44100;
 
+        public System.EventHandler? SongEnded;
+
         public BassWrapper(System.Windows.Threading.DispatcherTimer propUpdateTimer)
         {
+            _syncContext = SynchronizationContext.Current;
+
             propUpdateTimer.Tick += (sender, e) =>
             {
                 TriggerPropertyChanged(nameof(Position));
@@ -56,6 +61,18 @@ namespace BowieD.MusicPlayer.WPF.Common
 
             _handle = Bass.BASS_StreamCreateFile(fileName, 0, 0, BASSFlag.BASS_DEFAULT | BASSFlag.BASS_SAMPLE_FLOAT);
 
+            Bass.BASS_ChannelSetSync(_handle, BASSSync.BASS_SYNC_END, 0, _syncEndProc = GetSyncProc(() =>
+            {
+                try
+                {
+                    SongEnded?.Invoke(this, EventArgs.Empty);
+                }
+                finally
+                {
+                    TriggerPropertyChanged(nameof(State));
+                }
+            }), default);
+
             try
             {
                 using var tags = TagLib.File.Create(fileName);
@@ -74,6 +91,28 @@ namespace BowieD.MusicPlayer.WPF.Common
             }
 
             UpdateVolume();
+        }
+
+        private SYNCPROC? _syncEndProc;
+        private SYNCPROC GetSyncProc(Action action)
+        {
+            return (handle, channel, data, usr) =>
+            {
+                if (action is not null)
+                {
+                    if (_syncContext is null)
+                    {
+                        action();
+                    }
+                    else
+                    {
+                        _syncContext.Post((state) =>
+                        {
+                            action();
+                        }, null);
+                    }
+                }
+            };
         }
 
         private bool TrySetReplayGain(double gain, double peak)

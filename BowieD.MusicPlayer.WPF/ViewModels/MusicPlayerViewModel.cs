@@ -40,6 +40,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             BassWrapper = new BassWrapper(_timer);
 
+            BassWrapper.SongEnded += (sender, e) =>
+            {
+                NextTrackAuto();
+            };
+
             _timer.Tick += (sender, e) =>
             {
                 Un4seen.Bass.BASSActive newState = BassWrapper.State;
@@ -53,11 +58,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 TriggerPropertyChanged(nameof(Position01), nameof(IsUpcomingSongVisible), nameof(IsPauseButton), nameof(UpcomingSongSlider));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
-
-                if (CurrentSong.IsEmpty || newState == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED)
-                {
-                    NextTrackAuto();
-                }
             };
 
             OnPlaybackStateChanged += (song, oldState, newState) =>
