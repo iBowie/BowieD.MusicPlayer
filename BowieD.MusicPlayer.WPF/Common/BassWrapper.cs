@@ -285,9 +285,12 @@ namespace BowieD.MusicPlayer.WPF.Common
             }
         }
 
-        private float _userVolume = 1f;
+        private float _userVolume = 100f;
         private float _replayGainVolume = 1f;
         private float _animateVolume = 1f;
+        /// <summary>
+        /// Range [0..100]
+        /// </summary>
         public float UserVolume
         {
             get => _userVolume;
@@ -329,7 +332,7 @@ namespace BowieD.MusicPlayer.WPF.Common
         {
             get
             {
-                float total = UserVolume;
+                float total = UserVolume / 100f;
 
                 if (AppSettings.Instance.EnableReplayGain)
                     total *= ReplayGainVolume;

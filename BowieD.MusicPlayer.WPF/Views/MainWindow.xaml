@@ -281,8 +281,8 @@
                                 Command="{Binding ViewQueueCommand}"
                                 Margin="5" Content="{iconPacks:Material Kind=ViewList}" Style="{DynamicResource ContentOnlyButton}" />
                         <iconPacks:PackIconMaterial Kind="VolumeSource" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Margin="5" Grid.Column="1" />
-                        <Slider Grid.Column="2" Minimum="0" Maximum="1" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"
-                                Value="{Binding BassWrapper.UserVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" d:Value="0.5" />
+                        <Slider Grid.Column="2" Minimum="0" Maximum="100" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"
+                                Value="{Binding BassWrapper.UserVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" d:Value="50" />
                     </Grid>
                 </Grid>
             </Grid>

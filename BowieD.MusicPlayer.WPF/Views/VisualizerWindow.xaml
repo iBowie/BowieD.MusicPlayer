@@ -144,7 +144,7 @@
                                 </GroupBox>
                             </Popup>
                             <iconPacks:PackIconMaterial Kind="VolumeSource" Margin="10" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                            <Slider Value="{Binding View.MusicPlayerViewModel.BassWrapper.UserVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="1" Width="128" Margin="10" d:Value="0.5" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"/>
+                            <Slider Value="{Binding View.MusicPlayerViewModel.BassWrapper.UserVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="100" Width="128" Margin="10" d:Value="50" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0"/>
                             <Button Command="{Binding EnterFullScreenCommand}"
                                     Visibility="{Binding IsFullScreen, Converter={StaticResource invertedBoolToVisConverter}}"
                                 Content="{iconPacks:Material Kind=Fullscreen}"
