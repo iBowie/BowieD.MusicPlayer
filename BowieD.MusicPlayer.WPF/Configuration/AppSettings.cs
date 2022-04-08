@@ -23,6 +23,8 @@ namespace BowieD.MusicPlayer.WPF.Configuration
         private bool _libraryScanCommonMusicFolder;
         private bool _libraryScanMyMusicFolder;
         private double _smoothFadeDuration;
+        private bool _smoothAccentColorSwitch;
+        private double _smoothAccentColorSwitchDuration;
 
         public AppSettings()
         {
@@ -88,6 +90,18 @@ namespace BowieD.MusicPlayer.WPF.Configuration
             get => _libraryScanMyMusicFolder;
             set => ChangeProperty(ref _libraryScanMyMusicFolder, value, nameof(LibraryScanMyMusicFolder));
         }
+        [JsonProperty]
+        public bool SmoothAccentColorSwitch
+        {
+            get => _smoothAccentColorSwitch;
+            set => ChangeProperty(ref _smoothAccentColorSwitch, value, nameof(SmoothAccentColorSwitch));
+        }
+        [JsonProperty]
+        public double SmoothAccentColorSwitchDuration
+        {
+            get => _smoothAccentColorSwitchDuration;
+            set => ChangeProperty(ref _smoothAccentColorSwitchDuration, value, nameof(SmoothAccentColorSwitchDuration));
+        }
 
         [JsonProperty]
         public ObservableCollection<string> CustomLibraryFolders { get; } = new();
@@ -121,6 +135,8 @@ namespace BowieD.MusicPlayer.WPF.Configuration
         public void LoadDefaults()
         {
             AutoAccentColor = false;
+            SmoothAccentColorSwitch = true;
+            SmoothAccentColorSwitchDuration = 0.5;
             EnableDiscordRichPresence = true;
             UseDarkMode = true;
             EnableHardwareAcceleration = true;
