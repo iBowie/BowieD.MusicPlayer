@@ -19,7 +19,7 @@
                 <ScrollViewer>
                     <ItemsControl ItemsSource="{Binding Playlists}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type models:PlaylistInfo}">
+                            <DataTemplate DataType="{x:Type models:Playlist}">
                                 <Border Margin="0,0,24,24" Height="281" Width="202" x:Name="b" MouseDown="b_MouseDown"
                                         CornerRadius="2" Background="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background.Inactive}">
                                     <Grid>

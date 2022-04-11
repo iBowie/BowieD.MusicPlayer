@@ -104,7 +104,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
                 {
                     _createPlaylistCommand = new BaseCommand(() =>
                     {
-                        PlaylistInfo newPlaylist = new(0, "Playlist 1", Array.Empty<string>(), Array.Empty<byte>());
+                        Playlist newPlaylist = new(0, "Playlist 1", Array.Empty<string>(), Array.Empty<byte>());
 
                         PlaylistRepository.Instance.AddNewPlaylist(ref newPlaylist);
 
@@ -172,7 +172,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         #endregion
 
         #region Properties
-        public ObservableCollection<PlaylistInfo> Playlists { get; } = new();
+        public ObservableCollection<Playlist> Playlists { get; } = new();
 
         public string WindowTitle
         {
@@ -211,17 +211,17 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             }
         }
 
-        public PlaylistInfo SelectedPlaylist
+        public Playlist SelectedPlaylist
         {
-            get { return (PlaylistInfo)GetValue(SelectedPlaylistProperty); }
+            get { return (Playlist)GetValue(SelectedPlaylistProperty); }
             set { SetValue(SelectedPlaylistProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedPlaylistProperty = DependencyProperty.Register("SelectedPlaylist", typeof(PlaylistInfo), typeof(MainWindowViewModel), new PropertyMetadata(PlaylistInfo.EMPTY, SelectedPlaylistChangedCallback));
+        public static readonly DependencyProperty SelectedPlaylistProperty = DependencyProperty.Register("SelectedPlaylist", typeof(Playlist), typeof(MainWindowViewModel), new PropertyMetadata(Playlist.EMPTY, SelectedPlaylistChangedCallback));
 
         private static void SelectedPlaylistChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            if (sender is MainWindowViewModel viewModel && e.NewValue is PlaylistInfo pinfo)
+            if (sender is MainWindowViewModel viewModel && e.NewValue is Playlist pinfo)
             {
                 var page = new PlaylistPage(new(pinfo, viewModel.View));
 
@@ -235,7 +235,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
         {
             Playlists.Clear();
 
-            System.Collections.Generic.IList<PlaylistInfo> pls = PlaylistRepository.Instance.GetAllPlaylists();
+            System.Collections.Generic.IList<Playlist> pls = PlaylistRepository.Instance.GetAllPlaylists();
 
             foreach (var pl in pls)
             {

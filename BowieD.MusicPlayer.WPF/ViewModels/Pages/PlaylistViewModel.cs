@@ -19,7 +19,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
     public sealed class PlaylistViewModel : BaseViewModelView<MainWindow>
     {
         private readonly ObservableCollection<Song> _songs = new();
-        private PlaylistInfo _playlistInfo;
         private Playlist _playlist;
         private readonly PlaylistViewModelDropHandler _dropHandler;
 
@@ -34,26 +33,24 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
         private void _songs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            PlaylistInfo.SongFileNames.Clear();
+            Playlist.SongFileNames.Clear();
 
             foreach (var s in _songs)
-                PlaylistInfo.SongFileNames.Add(s.FileName);
+                Playlist.SongFileNames.Add(s.FileName);
 
-            PlaylistRepository.Instance.UpdatePlaylist(PlaylistInfo);
-
-            _playlist = (Playlist)_playlistInfo;
+            PlaylistRepository.Instance.UpdatePlaylist(Playlist);
 
             View.ViewModel.ObtainPlaylists();
         }
 
-        public PlaylistInfo PlaylistInfo
+        public Playlist Playlist
         {
-            get => _playlistInfo;
+            get => _playlist;
             set
             {
                 _songs.CollectionChanged -= _songs_CollectionChanged;
 
-                _playlist = (Playlist)value;
+                ChangeProperty(ref _playlist, value, nameof(Playlist));
 
                 _songs.Clear();
 
@@ -65,12 +62,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                     _songs.CollectionChanged += _songs_CollectionChanged;
                 }
 
-                ChangeProperty(ref _playlistInfo, value, nameof(PlaylistInfo), nameof(Playlist), nameof(Songs));
+                TriggerPropertyChanged(nameof(Songs));
             }
-        }
-        public Playlist Playlist
-        {
-            get => _playlist;
         }
         public PlaylistViewModelDropHandler DropHandler => _dropHandler;
 
@@ -90,14 +83,14 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                 {
                     _editDetailsCommand = new BaseCommand(() =>
                     {
-                        EditPlaylistDetailsView detailsView = new(PlaylistInfo)
+                        EditPlaylistDetailsView detailsView = new(Playlist)
                         {
                             Owner = View
                         };
 
                         if (detailsView.ShowDialog() == true)
                         {
-                            PlaylistInfo result = detailsView.ResultInfo;
+                            Playlist result = detailsView.ResultInfo;
 
                             PlaylistRepository.Instance.UpdatePlaylist(result);
 
@@ -119,7 +112,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                 {
                     _playCommand = new BaseCommand(() =>
                     {
-                        View.MusicPlayerViewModel.PlayPlaylist(Playlist, true);
+                        View.MusicPlayerViewModel.PlaySource(Playlist, true);
                     });
                 }
 
@@ -248,7 +241,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                     if (files.Count > 0)
                     {
-                        var info = viewModel.PlaylistInfo;
+                        var info = viewModel.Playlist;
                         int insertIndex = dropInfo.InsertIndex;
 
                         foreach (var fn in files)
@@ -263,7 +256,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
                         PlaylistRepository.Instance.UpdatePlaylist(info);
 
-                        viewModel.PlaylistInfo = info;
+                        viewModel.Playlist = info;
                     }
 
                     return;
@@ -323,13 +316,13 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                                         SongRepository.Instance.UpdateSong(song, false);
                                     }
 
-                                    var info = viewModel.PlaylistInfo;
+                                    var info = viewModel.Playlist;
 
                                     info.SongFileNames.Insert(dropInfo.InsertIndex, song.FileName);
 
                                     PlaylistRepository.Instance.UpdatePlaylist(info);
 
-                                    viewModel.PlaylistInfo = info;
+                                    viewModel.Playlist = info;
                                 }
                             }
                         }));

@@ -117,7 +117,7 @@
                             <ListView Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Playlists}"
                                       SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type models:PlaylistInfo}">
+                                    <DataTemplate DataType="{x:Type models:Playlist}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />

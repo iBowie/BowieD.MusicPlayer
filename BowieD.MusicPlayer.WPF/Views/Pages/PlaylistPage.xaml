@@ -33,7 +33,7 @@
                 </Grid.ColumnDefinitions>
                 <Image Width="150" Height="150" Margin="16,16,5,16" xf:Animations.Primary="{StaticResource SlideFromLeft}"
                                            d:Source="/Resources/Images/missing_texture.jpg"
-                                           Source="{Binding PlaylistInfo.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|232}"/>
+                                           Source="{Binding Playlist.PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=0|232}"/>
                 <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="5,16,16,16">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -42,7 +42,7 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" VerticalAlignment="Bottom" Margin="3.5" Text="PLAYLIST"
                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                    <TextBlock Grid.Row="1" FontWeight="Bold" Text="{Binding PlaylistInfo.Name}" FontSize="36" 
+                    <TextBlock Grid.Row="1" FontWeight="Bold" Text="{Binding Playlist.Name}" FontSize="36" 
                                    VerticalAlignment="Center" Margin="3.5" d:Text="PLAYLIST NAME THAT IS REALLY LONG AND SHOULD BE CONTAINED IN TWO LINES YOO"
                                    TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                                    MaxHeight="100"

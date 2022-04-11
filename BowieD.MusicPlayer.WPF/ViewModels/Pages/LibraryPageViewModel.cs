@@ -37,7 +37,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
         public LibraryPage Page { get; }
 
-        public ObservableCollection<PlaylistInfo> Playlists { get; } = new();
+        public ObservableCollection<Playlist> Playlists { get; } = new();
         public ObservableCollection<Artist> Artists { get; } = new();
         public ObservableCollection<Album> Albums { get; } = new();
     }
