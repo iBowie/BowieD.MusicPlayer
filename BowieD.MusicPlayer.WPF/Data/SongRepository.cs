@@ -122,9 +122,11 @@ namespace BowieD.MusicPlayer.WPF.Data
             return result;
         }
 
-        public IList<Song> GetAllSongs()
+        public IList<Song> GetAllSongs(IList<Song>? result = null)
         {
-            List<Song> result = new();
+            result ??= new List<Song>();
+
+            result.Clear();
 
             string sql = $"SELECT * FROM {TABLE_NAME}";
 
