@@ -175,16 +175,30 @@ namespace BowieD.MusicPlayer.WPF.Data
             string name = reader.GetString(COL_NAME);
             var songs = (System.Text.Json.JsonSerializer.Deserialize<string[]>(reader.GetString(COL_SONGS)) ?? Array.Empty<string>()).ToList();
 
-            byte[] picture;
+            byte[]? picture;
 
-            using (var blob = reader.GetBlob(COL_COVER, true))
+            if (reader.IsDBNull(COL_COVER))
             {
-                var bL = blob.GetCount();
-
-                picture = new byte[bL];
+                picture = null;
             }
+            else
+            {
+                try
+                {
+                    using (var blob = reader.GetBlob(COL_COVER, true))
+                    {
+                        var bL = blob.GetCount();
 
-            reader.GetBytes(COL_COVER, 0, picture, 0, picture.Length);
+                        picture = new byte[bL];
+                    }
+
+                    reader.GetBytes(COL_COVER, 0, picture, 0, picture.Length);
+                }
+                catch
+                {
+                    picture = null;
+                }
+            }
 
             return new Playlist(plId, name, songs, picture);
         }
