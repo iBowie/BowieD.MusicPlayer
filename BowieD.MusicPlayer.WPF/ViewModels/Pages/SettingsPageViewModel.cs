@@ -130,6 +130,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                     foreach (var s in View.MusicPlayerViewModel.UserSongQueue)
                         s.UpdateFromDatabase();
 
+                    CoverCacheRepository.Instance.ClearCovers();
+
                     MessageBox.Show($"Tags re-read complete!\n{cnt} songs affected");
                 });
             }

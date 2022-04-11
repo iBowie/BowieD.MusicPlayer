@@ -9,6 +9,7 @@ namespace BowieD.MusicPlayer.WPF.Models
     {
         private readonly List<Song> _loadedSongs;
         private bool _hasLoaded;
+        private byte[]? _pictureData;
 
         public Album(string name, IList<string> songFileNames)
         {
@@ -34,6 +35,18 @@ namespace BowieD.MusicPlayer.WPF.Models
                 }
 
                 return _loadedSongs;
+            }
+        }
+        public byte[] PictureData
+        {
+            get
+            {
+                if (_pictureData is null)
+                {
+                    _pictureData = CoverCacheRepository.Instance.GetOrCreateCoverFor(this);
+                }
+
+                return _pictureData;
             }
         }
 
