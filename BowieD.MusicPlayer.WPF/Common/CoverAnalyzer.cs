@@ -1,15 +1,91 @@
 ﻿using BowieD.MusicPlayer.WPF.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 
 namespace BowieD.MusicPlayer.WPF.Common
 {
     public static class CoverAnalyzer
     {
+        private sealed class FuzzyImageComparer : IEqualityComparer<byte[]>
+        {
+            public bool Equals(byte[]? x, byte[]? y)
+            {
+                if (x is null && y is null)
+                    return true;
+
+                if (x is null || y is null)
+                    return false;
+
+                if (x == y)
+                    return true;
+
+                if (x.SequenceEqual(y))
+                    return true;
+
+                using var xMs = new MemoryStream(x);
+                using var yMs = new MemoryStream(y);
+                using var xImg = new Bitmap(xMs);
+                using var yImg = new Bitmap(yMs);
+
+                string getHash(Bitmap bitmap)
+                {
+                    var lowRes = new Bitmap(bitmap, 16, 16);
+
+                    List<bool> bits = new();
+
+                    for (int i = 0; i < 16; i++)
+                    {
+                        for (int j = 0; j < 16; j++)
+                        {
+                            var pixel = lowRes.GetPixel(i, j);
+
+                            bits.Add(pixel.GetBrightness() > 0.5);
+                        }
+                    }
+
+                    var binary = convertToBinary(bits);
+
+                    return string.Join("", binary.Select(d => d.ToString("X")));
+                }
+
+                byte[] convertToBinary(IList<bool> bits)
+                {
+                    byte[] res = new byte[(int)Math.Ceiling(bits.Count / 8.0)];
+
+                    for (int i = 0; i < res.Length; i++)
+                    {
+                        byte num = 0x0;
+
+                        for (int j = 0; j < 8; j++)
+                        {
+                            var bit = bits[i + j];
+
+                            if (bit)
+                            {
+                                num |= (byte)(1 << j);
+                            }
+                        }
+                    }
+
+                    return res;
+                }
+
+                return getHash(xImg) == getHash(yImg);
+            }
+
+            public int GetHashCode([DisallowNull] byte[] obj)
+            {
+                return 1;
+            }
+        }
+        private static readonly FuzzyImageComparer _comparer = new();
+
         public static byte[] GenerateCoverArt(this IEnumerable<Song> songs, bool pickOnlyOne = false)
         {
             if (!songs.Any())
@@ -21,7 +97,7 @@ namespace BowieD.MusicPlayer.WPF.Common
 
             using (Graphics g = Graphics.FromImage(resultImage))
             {
-                var validPictures = songs.Select(d => d.PictureData).Where(d => d is not null && d.Length > 0).Distinct().Take(pickOnlyOne ? 1 : 4).ToArray();
+                var validPictures = songs.Select(d => d.PictureData).Where(d => d is not null && d.Length > 0).Distinct(_comparer).Take(pickOnlyOne ? 1 : 4).ToArray();
 
                 if (validPictures.Length >= 4)
                 {
