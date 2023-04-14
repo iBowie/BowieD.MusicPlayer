@@ -32,7 +32,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             COL_COVER = "cover",
             COL_SONGS = "songs";
 
-        public PlaylistRepository() : base(Path.Combine(DataFolder.DataDirectory, "playlists.db")) { }
+        public PlaylistRepository() : base(Path.Combine(DataFolder.DataDirectory, "user_playlists.db")) { }
 
         protected override void OnPrepare()
         {
@@ -44,7 +44,7 @@ namespace BowieD.MusicPlayer.WPF.Data
                 $")");
         }
 
-        public PlaylistInfo GetPlaylist(long id)
+        public Playlist GetPlaylist(long id)
         {
             string sql = $"SELECT * FROM {TABLE_NAME} WHERE {COL_ID} = @id";
 
@@ -58,7 +58,7 @@ namespace BowieD.MusicPlayer.WPF.Data
 
             using var reader = com.ExecuteReader(CommandBehavior.KeyInfo);
 
-            PlaylistInfo result;
+            Playlist result;
 
             if (reader.HasRows && reader.Read())
             {
@@ -66,7 +66,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             }
             else
             {
-                result = PlaylistInfo.EMPTY;
+                result = Playlist.EMPTY;
             }
 
             con.Close();
@@ -74,9 +74,9 @@ namespace BowieD.MusicPlayer.WPF.Data
             return result;
         }
 
-        public IList<PlaylistInfo> GetAllPlaylists()
+        public IList<Playlist> GetAllPlaylists()
         {
-            List<PlaylistInfo> result = new();
+            List<Playlist> result = new();
 
             string sql = $"SELECT * FROM {TABLE_NAME}";
 
@@ -104,7 +104,7 @@ namespace BowieD.MusicPlayer.WPF.Data
             return result;
         }
 
-        public void AddNewPlaylist(ref PlaylistInfo playlistInfo)
+        public void AddNewPlaylist(ref Playlist playlist)
         {
             string sql =
                 $"INSERT INTO {TABLE_NAME} " +
@@ -119,19 +119,19 @@ namespace BowieD.MusicPlayer.WPF.Data
 
                 using var com = new SQLiteCommand(sql, con);
 
-                com.Parameters.Add("@name", DbType.String).Value = playlistInfo.Name;
-                com.Parameters.Add("@cover", DbType.Binary).Value = playlistInfo.PictureData;
-                com.Parameters.Add("@songs", DbType.String).Value = System.Text.Json.JsonSerializer.Serialize(playlistInfo.SongIDs);
+                com.Parameters.Add("@name", DbType.String).Value = playlist.Name;
+                com.Parameters.Add("@cover", DbType.Binary).Value = playlist.PictureData;
+                com.Parameters.Add("@songs", DbType.String).Value = System.Text.Json.JsonSerializer.Serialize(playlist.SongFileNames);
 
                 com.ExecuteNonQuery();
 
                 liri = con.LastInsertRowId;
             }
 
-            playlistInfo.ID = liri;
+            playlist.ID = liri;
         }
 
-        public void UpdatePlaylist(PlaylistInfo playlistInfo)
+        public void UpdatePlaylist(Playlist playlist)
         {
             string sql =
                 $"UPDATE {TABLE_NAME} " +
@@ -144,15 +144,15 @@ namespace BowieD.MusicPlayer.WPF.Data
 
             using var com = new SQLiteCommand(sql, con);
 
-            com.Parameters.Add("@id", DbType.Int64).Value = playlistInfo.ID;
-            com.Parameters.Add("@name", DbType.String).Value = playlistInfo.Name;
-            com.Parameters.Add("@cover", DbType.Binary).Value = playlistInfo.PictureData;
-            com.Parameters.Add("@songs", DbType.String).Value = System.Text.Json.JsonSerializer.Serialize(playlistInfo.SongIDs);
+            com.Parameters.Add("@id", DbType.Int64).Value = playlist.ID;
+            com.Parameters.Add("@name", DbType.String).Value = playlist.Name;
+            com.Parameters.Add("@cover", DbType.Binary).Value = playlist.PictureData;
+            com.Parameters.Add("@songs", DbType.String).Value = System.Text.Json.JsonSerializer.Serialize(playlist.SongFileNames);
 
             com.ExecuteNonQuery();
         }
 
-        public void RemovePlaylist(PlaylistInfo playlistInfo)
+        public void RemovePlaylist(Playlist playlist)
         {
             string sql =
                 $"DELETE FROM {TABLE_NAME} " +
@@ -164,29 +164,43 @@ namespace BowieD.MusicPlayer.WPF.Data
 
             using var com = new SQLiteCommand(sql, con);
 
-            com.Parameters.Add("@id", DbType.Int32).Value = playlistInfo.ID;
+            com.Parameters.Add("@id", DbType.Int32).Value = playlist.ID;
 
             com.ExecuteNonQuery();
         }
 
-        private static PlaylistInfo ReadPlaylist(SQLiteDataReader reader, long? id = null)
+        private static Playlist ReadPlaylist(SQLiteDataReader reader, long? id = null)
         {
             long plId = id ?? reader.GetInt64(COL_ID);
             string name = reader.GetString(COL_NAME);
-            var songs = (System.Text.Json.JsonSerializer.Deserialize<long[]>(reader.GetString(COL_SONGS)) ?? Array.Empty<long>()).ToList();
+            var songs = (System.Text.Json.JsonSerializer.Deserialize<string[]>(reader.GetString(COL_SONGS)) ?? Array.Empty<string>()).ToList();
 
-            byte[] picture;
+            byte[]? picture;
 
-            using (var blob = reader.GetBlob(COL_COVER, true))
+            if (reader.IsDBNull(COL_COVER))
             {
-                var bL = blob.GetCount();
+                picture = null;
+            }
+            else
+            {
+                try
+                {
+                    using (var blob = reader.GetBlob(COL_COVER, true))
+                    {
+                        var bL = blob.GetCount();
 
-                picture = new byte[bL];
+                        picture = new byte[bL];
+                    }
+
+                    reader.GetBytes(COL_COVER, 0, picture, 0, picture.Length);
+                }
+                catch
+                {
+                    picture = null;
+                }
             }
 
-            reader.GetBytes(COL_COVER, 0, picture, 0, picture.Length);
-
-            return new PlaylistInfo(plId, name, songs, picture);
+            return new Playlist(plId, name, songs, picture);
         }
     }
 }

@@ -1,10 +1,15 @@
-﻿using System.Windows.Media;
+﻿using BowieD.MusicPlayer.WPF.Configuration;
+using System;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace BowieD.MusicPlayer.WPF
 {
     public static class AccentColorer
     {
-        public static void SetAccentColor(Color themeColor)
+        private static Color? _prevColor;
+
+        public static void SetAccentColor(Color themeColor, bool ignoreSmooth = false)
         {
             (SolidColorBrush brush, Color color) createVariant(byte opacity, Color color)
             {
@@ -12,7 +17,31 @@ namespace BowieD.MusicPlayer.WPF
 
                 SolidColorBrush scb = new(brushColor);
 
-                scb.Freeze();
+                if (!ignoreSmooth && _prevColor.HasValue && AppSettings.Instance.SmoothAccentColorSwitch)
+                {
+                    var prevBrush = Color.FromArgb(opacity, _prevColor.Value.R, _prevColor.Value.G, _prevColor.Value.B);
+
+                    scb.Color = prevBrush;
+
+                    ColorAnimationUsingKeyFrames caukf = new()
+                    {
+                        Duration = new(TimeSpan.FromSeconds(AppSettings.Instance.SmoothAccentColorSwitchDuration)),
+                        AutoReverse = false,
+                        FillBehavior = FillBehavior.HoldEnd,
+                    };
+
+                    LinearColorKeyFrame kf1 = new(prevBrush);
+                    LinearColorKeyFrame kf2 = new(brushColor);
+
+                    caukf.KeyFrames.Add(kf1);
+                    caukf.KeyFrames.Add(kf2);
+
+                    scb.BeginAnimation(SolidColorBrush.ColorProperty, caukf);
+                }
+                else
+                {
+                    scb.Freeze();
+                }
 
                 return (scb, brushColor);
             }
@@ -66,6 +95,8 @@ namespace BowieD.MusicPlayer.WPF
             lgb.Freeze();
 
             App.Current.Resources["MahApps.Brushes.Progress"] = lgb;
+
+            _prevColor = themeColor;
         }
     }
 }

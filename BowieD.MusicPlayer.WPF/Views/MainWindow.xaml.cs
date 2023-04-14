@@ -1,5 +1,7 @@
 ﻿using BowieD.MusicPlayer.WPF.Api;
 using BowieD.MusicPlayer.WPF.Common;
+using BowieD.MusicPlayer.WPF.Configuration;
+using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.ViewModels;
 using MahApps.Metro.Controls;
 using System.Globalization;
@@ -24,6 +26,10 @@ namespace BowieD.MusicPlayer.WPF.Views
             CultureInfo.CurrentUICulture = currentCulture;
             CultureInfo.DefaultThreadCurrentCulture = currentCulture;
             CultureInfo.DefaultThreadCurrentUICulture = currentCulture;
+
+            App.Current.Resources["AppSettings"] = new AppSettings();
+
+            AppSettings.Instance.Load();
 
             InitializeComponent();
 
@@ -55,6 +61,9 @@ namespace BowieD.MusicPlayer.WPF.Views
 
             Loaded += (sender, e) =>
             {
+                ScanLibraryWindow slw = new();
+                slw.ShowDialog();
+
                 MusicPlayerViewModel.SetupIntegrations();
             };
 

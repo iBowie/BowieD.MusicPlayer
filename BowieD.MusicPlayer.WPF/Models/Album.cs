@@ -9,18 +9,19 @@ namespace BowieD.MusicPlayer.WPF.Models
     {
         private readonly List<Song> _loadedSongs;
         private bool _hasLoaded;
+        private byte[]? _pictureData;
 
-        public Album(string name, IList<long> songIDs)
+        public Album(string name, IList<string> songFileNames)
         {
             _hasLoaded = false;
             _loadedSongs = new List<Song>();
 
             this.Name = name;
-            this.SongIDs = songIDs;
+            this.SongFileNames = songFileNames;
         }
 
         public string Name { get; }
-        public IList<long> SongIDs { get; }
+        public IList<string> SongFileNames { get; }
 
         public IList<Song> Songs
         {
@@ -28,12 +29,24 @@ namespace BowieD.MusicPlayer.WPF.Models
             {
                 if (!_hasLoaded)
                 {
-                    _loadedSongs.AddRange(SongRepository.Instance.GetSongs(SongIDs));
+                    _loadedSongs.AddRange(SongRepository.Instance.GetSongs(SongFileNames));
 
                     _hasLoaded = true;
                 }
 
                 return _loadedSongs;
+            }
+        }
+        public byte[] PictureData
+        {
+            get
+            {
+                if (_pictureData is null)
+                {
+                    _pictureData = CoverCacheRepository.Instance.GetOrCreateCoverFor(this);
+                }
+
+                return _pictureData;
             }
         }
 

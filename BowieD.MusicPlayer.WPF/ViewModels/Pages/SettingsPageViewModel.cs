@@ -1,10 +1,15 @@
-﻿using BowieD.MusicPlayer.WPF.Data;
+﻿using BowieD.MusicPlayer.WPF.Configuration;
+using BowieD.MusicPlayer.WPF.Data;
 using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
 using BowieD.MusicPlayer.WPF.Views.Pages;
+using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
@@ -19,7 +24,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
         public SettingsPage Page { get; }
 
         private ICommand? _locateMissingFilesCommand,
-            _reReadTagsCommand;
+            _reReadTagsCommand, _scanLibraryCommand,
+            _removeDeletedSongsCommand, _addCustomMusicFolderCommand,
+            _deleteCustomMusicFoldersCommand, _pickCustomMusicFolderCommand,
+            _saveCommand, _loadDefaultsCommand;
 
         public ICommand LocateMissingFilesCommand
         {
@@ -122,7 +130,168 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                     foreach (var s in View.MusicPlayerViewModel.UserSongQueue)
                         s.UpdateFromDatabase();
 
+                    CoverCacheRepository.Instance.ClearCovers();
+
                     MessageBox.Show($"Tags re-read complete!\n{cnt} songs affected");
+                });
+            }
+        }
+        public ICommand ScanLibraryCommand
+        {
+            get
+            {
+                return _scanLibraryCommand ??= new BaseCommand(() =>
+                {
+                    ScanLibraryWindow slw = new();
+                    slw.ShowDialog();
+                });
+            }
+        }
+        public ICommand RemoveDeletedSongsCommand
+        {
+            get
+            {
+                return _removeDeletedSongsCommand ??= new BaseCommand(() =>
+                {
+                    var res = MessageBox.Show($"Are you sure you want to remove deleted songs?", "Remove deleted songs", MessageBoxButton.YesNo);
+
+                    if (res != MessageBoxResult.Yes)
+                        return;
+
+                    var mp = View.MusicPlayerViewModel;
+
+                    mp.CurrentSongSource = null;
+                    mp.UserSongQueue.Clear();
+                    mp.SongQueue.Clear();
+                    mp.SongHistory.Clear();
+                    mp.SetCurrentSong(Models.Song.EMPTY, false);
+
+                    var allSongs = SongRepository.Instance.GetAllSongs();
+
+                    for (int i = allSongs.Count - 1; i >= 0; i--)
+                    {
+                        var song = allSongs[i];
+
+                        if (!File.Exists(song.FileName))
+                        {
+                            SongRepository.Instance.RemoveSong(song);
+                        }
+                    }
+
+                    var pls = PlaylistRepository.Instance.GetAllPlaylists();
+
+                    foreach (var pl in pls)
+                    {
+                        var songs = pl.SongFileNames;
+                        bool needsUpdate = false;
+
+                        for (int i = songs.Count - 1; i >= 0; i--)
+                        {
+                            var song = songs[i];
+
+                            if (!File.Exists(song))
+                            {
+                                songs.RemoveAt(i);
+                                needsUpdate = true;
+                            }
+                        }
+
+                        if (needsUpdate)
+                            PlaylistRepository.Instance.UpdatePlaylist(pl);
+                    }
+                });
+            }
+        }
+        public ICommand AddCustomMusicFolderCommand
+        {
+            get
+            {
+                return _addCustomMusicFolderCommand ??= new GenericCommand<string>((p) =>
+                {
+                    if (p is null)
+                        throw new ArgumentNullException(nameof(p));
+
+                    AppSettings.Instance.CustomLibraryFolders.Add(p);
+                }, (p) =>
+                {
+                    if (string.IsNullOrWhiteSpace(p))
+                        return false;
+
+                    if (!Directory.Exists(p))
+                        return false;
+
+                    return true;
+                });
+            }
+        }
+        public ICommand DeleteCustomMusicFoldersCommand
+        {
+            get
+            {
+                return _deleteCustomMusicFoldersCommand ??= new GenericCommand<IList>((lst) =>
+                {
+                    if (lst is null)
+                        throw new ArgumentNullException(nameof(lst));
+
+                    var casted = lst.Cast<string>().ToList();
+
+                    foreach (var item in casted)
+                    {
+                        AppSettings.Instance.CustomLibraryFolders.Remove(item);
+                    }
+                }, (lst) =>
+                {
+                    if (lst is null)
+                        return false;
+
+                    foreach (var item in lst)
+                    {
+                        if (item is not string)
+                            return false;
+                    }
+
+                    return true;
+                });
+            }
+        }
+        public ICommand PickCustomMusicFolderCommand
+        {
+            get
+            {
+                return _pickCustomMusicFolderCommand ??= new BaseCommand(() =>
+                {
+                    Ookii.Dialogs.Wpf.VistaFolderBrowserDialog ofd = new()
+                    {
+                        Multiselect = true,
+                    };
+
+                    if (ofd.ShowDialog() == true)
+                    {
+                        foreach (var folder in ofd.SelectedPaths)
+                        {
+                            AppSettings.Instance.CustomLibraryFolders.Add(folder);
+                        }
+                    }
+                });
+            }
+        }
+        public ICommand SaveCommand
+        {
+            get
+            {
+                return _saveCommand ??= new BaseCommand(() =>
+                {
+                    AppSettings.Instance.Save();
+                });
+            }
+        }
+        public ICommand LoadDefaultsCommand
+        {
+            get
+            {
+                return _loadDefaultsCommand ??= new BaseCommand(() =>
+                {
+                    AppSettings.Instance.LoadDefaults();
                 });
             }
         }

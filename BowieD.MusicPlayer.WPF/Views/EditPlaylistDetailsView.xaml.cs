@@ -14,19 +14,19 @@ namespace BowieD.MusicPlayer.WPF.Views
     /// </summary>
     public partial class EditPlaylistDetailsView : MetroWindow
     {
-        public EditPlaylistDetailsView(PlaylistInfo playlistInfo)
+        public EditPlaylistDetailsView(Playlist playlist)
         {
             InitializeComponent();
 
             mainPanel.DataContext = this;
 
-            PlaylistName = playlistInfo.Name;
-            PlaylistPictureData = playlistInfo.PictureData;
+            PlaylistName = playlist.Name;
+            PlaylistPictureData = playlist.PictureData;
 
-            ResultInfo = playlistInfo;
+            ResultInfo = playlist;
         }
 
-        public PlaylistInfo ResultInfo { get; private set; }
+        public Playlist ResultInfo { get; private set; }
 
         public string PlaylistName
         {
@@ -54,7 +54,7 @@ namespace BowieD.MusicPlayer.WPF.Views
                 {
                     _saveCommand = new BaseCommand(() =>
                     {
-                        ResultInfo = new PlaylistInfo(ResultInfo.ID, PlaylistName, ResultInfo.SongIDs, PlaylistPictureData);
+                        ResultInfo = new Playlist(ResultInfo.ID, PlaylistName, ResultInfo.SongFileNames, PlaylistPictureData);
 
                         DialogResult = true;
                         Close();

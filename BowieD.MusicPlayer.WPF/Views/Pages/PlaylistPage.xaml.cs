@@ -18,7 +18,7 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
 
             ViewModel = new(this, data.MainWindow);
 
-            ViewModel.PlaylistInfo = data.Playlist;
+            ViewModel.Playlist = data.Playlist;
 
             DataContext = ViewModel;
         }
@@ -30,7 +30,7 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
             if (ViewModel is null)
                 return;
 
-            if (ViewModel.PlaylistInfo.IsEmpty)
+            if (ViewModel.Playlist.IsEmpty)
                 return;
 
             var index = playlistSongsListView.SelectedIndex;
@@ -42,7 +42,7 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
 
             if (song.IsAvailable)
             {
-                ViewModel.View.MusicPlayerViewModel.PlaySongFromPlaylist(song, ViewModel.Playlist);
+                ViewModel.View.MusicPlayerViewModel.PlaySongFromSource(song, ViewModel.Playlist);
             }
         }
 
@@ -54,7 +54,7 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
             if (ViewModel is null)
                 return;
 
-            if (ViewModel.PlaylistInfo.IsEmpty)
+            if (ViewModel.Playlist.IsEmpty)
                 return;
 
             switch (e.Key)
@@ -91,9 +91,9 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
 
 
 #if NET6_0_OR_GREATER
-        public record struct PlaylistPageExtraData(PlaylistInfo Playlist, MainWindow MainWindow);
+        public record struct PlaylistPageExtraData(Playlist Playlist, MainWindow MainWindow);
 #elif NET5_0_OR_GREATER
-        public record PlaylistPageExtraData(PlaylistInfo Playlist, MainWindow MainWindow);
+        public record PlaylistPageExtraData(Playlist Playlist, MainWindow MainWindow);
 #endif
     }
 }

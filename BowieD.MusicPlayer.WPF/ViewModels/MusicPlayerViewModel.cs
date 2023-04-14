@@ -1,5 +1,6 @@
 ﻿using BowieD.MusicPlayer.WPF.Collections;
 using BowieD.MusicPlayer.WPF.Common;
+using BowieD.MusicPlayer.WPF.Configuration;
 using BowieD.MusicPlayer.WPF.Extensions;
 using BowieD.MusicPlayer.WPF.Models;
 using BowieD.MusicPlayer.WPF.MVVM;
@@ -39,6 +40,11 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             BassWrapper = new BassWrapper(_timer);
 
+            BassWrapper.SongEnded += (sender, e) =>
+            {
+                NextTrackAuto();
+            };
+
             _timer.Tick += (sender, e) =>
             {
                 Un4seen.Bass.BASSActive newState = BassWrapper.State;
@@ -52,11 +58,6 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
                 TriggerPropertyChanged(nameof(Position01), nameof(IsUpcomingSongVisible), nameof(IsPauseButton), nameof(UpcomingSongSlider));
                 View.ViewModel.TriggerPropertyChanged(nameof(MainWindowViewModel.WindowTitle));
-
-                if (CurrentSong.IsEmpty || newState == Un4seen.Bass.BASSActive.BASS_ACTIVE_STOPPED)
-                {
-                    NextTrackAuto();
-                }
             };
 
             OnPlaybackStateChanged += (song, oldState, newState) =>
@@ -70,6 +71,14 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
             SongQueue.CollectionChanged += _songQueue_CollectionChanged;
             UserSongQueue.CollectionChanged += _userSongQueue_CollectionChanged;
+
+            AppSettings.Instance.StartTrackingSetting((settings) =>
+            {
+                if (settings.EnableDiscordRichPresence)
+                    SetupDiscordRichPresence();
+                else
+                    RemoveRichPresence();
+            }, nameof(AppSettings.EnableDiscordRichPresence));
         }
 
         private void _userSongQueue_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -424,7 +433,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
             CurrentSong = song;
 
             if (!autoPlay)
-                BassWrapper.Pause();
+                BassWrapper.Pause(true);
         }
 
         #region Commands
@@ -667,7 +676,10 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 #if WINDOWS10_0_19041_0_OR_GREATER
             SetupMediaTransport();
 #endif
-            SetupDiscordRichPresence();
+            if (AppSettings.Instance.EnableDiscordRichPresence)
+            {
+                SetupDiscordRichPresence();
+            }
         }
 
         public void RemoveIntegrations()
@@ -824,6 +836,8 @@ namespace BowieD.MusicPlayer.WPF.ViewModels
 
         private void SetupDiscordRichPresence()
         {
+            RemoveRichPresence();
+
             _discordClient = new DiscordRPC.DiscordRpcClient("919242231037169684", autoEvents: true);
 
             if (_discordClient.Initialize())

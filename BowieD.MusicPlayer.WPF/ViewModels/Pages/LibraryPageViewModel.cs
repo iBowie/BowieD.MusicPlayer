@@ -4,6 +4,7 @@ using BowieD.MusicPlayer.WPF.MVVM;
 using BowieD.MusicPlayer.WPF.Views;
 using BowieD.MusicPlayer.WPF.Views.Pages;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 {
@@ -20,14 +21,14 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
                 Playlists.Add(p);
             }
 
-            var artists = SongRepository.Instance.GetAllArtists();
+            var artists = SongRepository.Instance.GetAllArtists().OrderBy(d => d.Name);
 
             foreach (var a in artists)
             {
                 Artists.Add(a);
             }
 
-            var albums = SongRepository.Instance.GetAllAlbums();
+            var albums = SongRepository.Instance.GetAllAlbums().OrderBy(d => d.Name);
 
             foreach (var a in albums)
             {
@@ -37,7 +38,7 @@ namespace BowieD.MusicPlayer.WPF.ViewModels.Pages
 
         public LibraryPage Page { get; }
 
-        public ObservableCollection<PlaylistInfo> Playlists { get; } = new();
+        public ObservableCollection<Playlist> Playlists { get; } = new();
         public ObservableCollection<Artist> Artists { get; } = new();
         public ObservableCollection<Album> Albums { get; } = new();
     }

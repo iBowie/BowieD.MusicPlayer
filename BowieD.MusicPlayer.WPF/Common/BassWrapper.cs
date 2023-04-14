@@ -1,4 +1,5 @@
-﻿using BowieD.MusicPlayer.WPF.MVVM;
+﻿using BowieD.MusicPlayer.WPF.Configuration;
+using BowieD.MusicPlayer.WPF.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,16 +13,31 @@ namespace BowieD.MusicPlayer.WPF.Common
     {
         private int _handle;
         private bool _hasInitDefaultDevice;
+        private readonly SynchronizationContext? _syncContext;
 
         public const int FREQ_HZ = 44100;
 
+        public System.EventHandler? SongEnded;
+
         public BassWrapper(System.Windows.Threading.DispatcherTimer propUpdateTimer)
         {
+            _syncContext = SynchronizationContext.Current;
+
             propUpdateTimer.Tick += (sender, e) =>
             {
                 TriggerPropertyChanged(nameof(Position));
                 TriggerPropertyChanged(nameof(Duration));
             };
+
+            AppSettings.Instance.StartTrackingSetting((settings) =>
+            {
+                UpdateVolume();
+            }, nameof(AppSettings.EnableReplayGain));
+
+            AppSettings.Instance.StartTrackingSetting((settings) =>
+            {
+                FadeDuration = settings.SmoothFadeDuration;
+            }, nameof(AppSettings.SmoothFadeDuration));
         }
 
         public bool Init()
@@ -45,6 +61,18 @@ namespace BowieD.MusicPlayer.WPF.Common
 
             _handle = Bass.BASS_StreamCreateFile(fileName, 0, 0, BASSFlag.BASS_DEFAULT | BASSFlag.BASS_SAMPLE_FLOAT);
 
+            Bass.BASS_ChannelSetSync(_handle, BASSSync.BASS_SYNC_END, 0, _syncEndProc = GetSyncProc(() =>
+            {
+                try
+                {
+                    SongEnded?.Invoke(this, EventArgs.Empty);
+                }
+                finally
+                {
+                    TriggerPropertyChanged(nameof(State));
+                }
+            }), default);
+
             try
             {
                 using var tags = TagLib.File.Create(fileName);
@@ -63,6 +91,28 @@ namespace BowieD.MusicPlayer.WPF.Common
             }
 
             UpdateVolume();
+        }
+
+        private SYNCPROC? _syncEndProc;
+        private SYNCPROC GetSyncProc(Action action)
+        {
+            return (handle, channel, data, usr) =>
+            {
+                if (action is not null)
+                {
+                    if (_syncContext is null)
+                    {
+                        action();
+                    }
+                    else
+                    {
+                        _syncContext.Post((state) =>
+                        {
+                            action();
+                        }, null);
+                    }
+                }
+            };
         }
 
         private bool TrySetReplayGain(double gain, double peak)
@@ -102,12 +152,19 @@ namespace BowieD.MusicPlayer.WPF.Common
             }
         }
 
-        public void Pause()
+        public void Pause(bool immediate = false)
         {
-            BeginAnimateVolumeDown(() =>
+            if (immediate)
             {
                 Bass.BASS_ChannelPause(_handle);
-            });
+            }
+            else
+            {
+                BeginAnimateVolumeDown(() =>
+                {
+                    Bass.BASS_ChannelPause(_handle);
+                });
+            }
         }
 
         public bool Resume()
@@ -200,7 +257,7 @@ namespace BowieD.MusicPlayer.WPF.Common
         {
             CancelCurrentAnimation();
 
-            if (FadeDuration <= 0)
+            if (!AppSettings.Instance.SmoothPlayPause || FadeDuration <= 0)
             {
                 AnimateVolume = 0f;
                 onZero?.Invoke();
@@ -219,7 +276,7 @@ namespace BowieD.MusicPlayer.WPF.Common
         {
             CancelCurrentAnimation();
 
-            if (FadeDuration <= 0)
+            if (!AppSettings.Instance.SmoothPlayPause || FadeDuration <= 0)
             {
                 AnimateVolume = 1f;
                 onMax?.Invoke();
@@ -235,9 +292,12 @@ namespace BowieD.MusicPlayer.WPF.Common
             }
         }
 
-        private float _userVolume = 1f;
+        private float _userVolume = 100f;
         private float _replayGainVolume = 1f;
         private float _animateVolume = 1f;
+        /// <summary>
+        /// Range [0..100]
+        /// </summary>
         public float UserVolume
         {
             get => _userVolume;
@@ -279,7 +339,14 @@ namespace BowieD.MusicPlayer.WPF.Common
         {
             get
             {
-                return UserVolume * ReplayGainVolume * AnimateVolume;
+                float total = UserVolume / 100f;
+
+                if (AppSettings.Instance.EnableReplayGain)
+                    total *= ReplayGainVolume;
+
+                total *= AnimateVolume;
+
+                return total;
             }
         }
 

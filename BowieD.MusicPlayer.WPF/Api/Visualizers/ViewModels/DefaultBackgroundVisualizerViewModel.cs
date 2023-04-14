@@ -70,23 +70,11 @@ namespace BowieD.MusicPlayer.WPF.Api.Visualizers.ViewModels
         public override void Start()
         {
             _fullScreenBackgroundSwitcher.Start();
-
-            MusicPlayerViewModel.OnTrackChanged += MusicPlayerViewModel_OnTrackChanged;
         }
 
         public override void Stop()
         {
-            MusicPlayerViewModel.OnTrackChanged -= MusicPlayerViewModel_OnTrackChanged;
-
             _fullScreenBackgroundSwitcher.Stop();
-        }
-
-        private void MusicPlayerViewModel_OnTrackChanged(Song newSong)
-        {
-            if (Backgrounds.Count == 0)
-            {
-                SetBackgroundFromBytes(newSong.FullScreenPictureData);
-            }
         }
 
         private void SetBackgroundFromFile(string fileName)
@@ -199,56 +187,6 @@ namespace BowieD.MusicPlayer.WPF.Api.Visualizers.ViewModels
                 }
 
                 return _selectFullscreenBackgroundCommand;
-            }
-        }
-        private ICommand? _setSongBackgroundCommand;
-        public ICommand SetSongBackgroundImageCommand
-        {
-            get
-            {
-                if (_setSongBackgroundCommand is null)
-                {
-                    _setSongBackgroundCommand = new BaseCommand(() =>
-                    {
-                        OpenFileDialog ofd = new()
-                        {
-                            Filter = ImageTool.FileDialogFilter,
-                            CheckFileExists = true,
-                            Multiselect = false
-                        };
-
-                        if (ofd.ShowDialog() == true)
-                        {
-                            try
-                            {
-                                byte[] raw = File.ReadAllBytes(ofd.FileName);
-                                Backgrounds.Clear();
-                                SetBackgroundFromBytes(raw);
-                                var current = MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong;
-                                current.FullScreenPictureData = raw;
-                                SongRepository.Instance.UpdateSong(current, false);
-
-                                foreach (var aas in MainWindowViewModel.View.MusicPlayerViewModel.AllActiveSongs)
-                                {
-                                    if (aas.ID == current.ID)
-                                    {
-                                        aas.UpdateFromDatabase();
-                                    }
-                                }
-
-                                MainWindowViewModel.View.MusicPlayerViewModel.SongHistory.RaiseChanged();
-                                MainWindowViewModel.View.MusicPlayerViewModel.SongQueue.RaiseChanged();
-                                MainWindowViewModel.View.MusicPlayerViewModel.UserSongQueue.RaiseChanged();
-                            }
-                            catch { }
-                        }
-                    }, () =>
-                    {
-                        return !MainWindowViewModel.View.MusicPlayerViewModel.CurrentSong.IsEmpty;
-                    });
-                }
-
-                return _setSongBackgroundCommand;
             }
         }
     }

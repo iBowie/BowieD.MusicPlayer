@@ -19,7 +19,7 @@
                 <ScrollViewer>
                     <ItemsControl ItemsSource="{Binding Playlists}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type models:PlaylistInfo}">
+                            <DataTemplate DataType="{x:Type models:Playlist}">
                                 <Border Margin="0,0,24,24" Height="281" Width="202" x:Name="b" MouseDown="b_MouseDown"
                                         CornerRadius="2" Background="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background.Inactive}">
                                     <Grid>
@@ -57,41 +57,14 @@
                     <TextBlock Text="Artists" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
                                FontSize="18" FontWeight="Bold"/>
                 </TabItem.Header>
-                <ScrollViewer>
-                    <ItemsControl ItemsSource="{Binding Artists}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type models:Artist}">
-                                <Border Margin="0,0,24,24" Height="281" Width="202" x:Name="b" MouseDown="b1_MouseDown"
-                                CornerRadius="2" Background="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background.Inactive}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Image Height="170" Width="170" Margin="16"
-                                               Source="{Binding PictureData, Converter={StaticResource binaryToPictureConverter}, ConverterParameter=170|170}"/>
-                                        <TextBlock Grid.Row="1" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                                           Text="{Binding Name}" Margin="16,0,16,13" FontWeight="Bold" FontSize="16"
-                                                   TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Grid.Row="2" Margin="16,0,16,16"/>
-                                    </Grid>
-                                </Border>
-
-                                <DataTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="b" Property="Background" Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background}"/>
-                                    </Trigger>
-                                </DataTemplate.Triggers>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </ScrollViewer>
+                <ListBox ItemsSource="{Binding Artists}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:Artist}">
+                            <TextBlock Text="{Binding Name}" Margin="5" TextTrimming="CharacterEllipsis"
+                                       MouseDown="b1_MouseDown"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </TabItem>
             <TabItem Padding="15">
                 <TabItem.Header>

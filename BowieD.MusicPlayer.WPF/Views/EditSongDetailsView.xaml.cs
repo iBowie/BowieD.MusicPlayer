@@ -114,8 +114,7 @@ namespace BowieD.MusicPlayer.WPF.Views
                             SongAlbum,
                             SongYear,
                             _original.FileName,
-                            SongCover,
-                            _original.FullScreenPictureData);
+                            SongCover);
 
                         DialogResult = true;
                         Close();

@@ -23,7 +23,7 @@ namespace BowieD.MusicPlayer.WPF.Views.Pages
 
         private void b_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (sender is FrameworkElement frameworkElement && frameworkElement.DataContext is PlaylistInfo pInfo)
+            if (sender is FrameworkElement frameworkElement && frameworkElement.DataContext is Playlist pInfo)
             {
                 ViewModel.View.ViewModel.SelectedPlaylist = pInfo;
             }
